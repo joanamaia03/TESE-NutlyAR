@@ -43,7 +43,9 @@ export default function ARScreen() {
     await Linking.openSettings();
   };
 
-  const webArSource = useMemo(() => ({ uri: WEB_AR_URL }), []);
+ const webArSource = useMemo(() => ({ 
+  uri: `${WEB_AR_URL}?nocache=${Math.random()}` 
+}), [WEB_AR_URL]);
 
   if (cameraGranted === null) {
     return (
