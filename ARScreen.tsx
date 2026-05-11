@@ -11,7 +11,7 @@ import {
 import { WebView } from 'react-native-webview';
 
 
-const WEB_AR_URL = 'https://github.com/joanamaia03/TESE-NutlyAR/tree/web-ar';
+const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/';
 
 export default function ARScreen() {
   const [cameraGranted, setCameraGranted] = React.useState<boolean | null>(null);
