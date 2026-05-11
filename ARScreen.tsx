@@ -44,7 +44,7 @@ export default function ARScreen() {
   };
 
  const webArSource = useMemo(() => ({ 
-  uri: `${WEB_AR_URL}?nocache=${Math.random()}` 
+  uri: `${WEB_AR_URL}?update=${Date.now()}` 
 }), [WEB_AR_URL]);
 
   if (cameraGranted === null) {
