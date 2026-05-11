@@ -11,7 +11,7 @@ import {
 import { WebView } from 'react-native-webview';
 
 
-const WEB_AR_URL = 'https://hiukim.github.io/mind-ar-js-doc/samples/basic.html';
+const WEB_AR_URL = 'https://github.com/joanamaia03/TESE-NutlyAR/tree/web-ar';
 
 export default function ARScreen() {
   const [cameraGranted, setCameraGranted] = React.useState<boolean | null>(null);
@@ -76,6 +76,7 @@ export default function ARScreen() {
         mixedContentMode="always"
         originWhitelist={['*']}
         setSupportMultipleWindows={false}
+        onPermissionRequest={(event: { grant: (arg0: any) => any; resources: any; }) => event.grant(event.resources)}
       />
 
       <View style={styles.overlay}>
