@@ -43,9 +43,9 @@ export default function ARScreen() {
     await Linking.openSettings();
   };
 
- const webArSource = useMemo(() => ({ 
-  uri: `${WEB_AR_URL}?update=${Date.now()}` 
-}), [WEB_AR_URL]);
+const webArSource = useMemo(() => ({ 
+  uri: `https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=${Math.random()}` 
+}), []);
 
   if (cameraGranted === null) {
     return (
