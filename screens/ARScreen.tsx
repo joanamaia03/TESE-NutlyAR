@@ -23,6 +23,15 @@ export default function ARScreen() {
         return;
       }
 
+      const alreadyGranted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA
+      );
+
+      if (alreadyGranted) {
+        setCameraGranted(true);
+        return;
+      }
+
       const result = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
         {
