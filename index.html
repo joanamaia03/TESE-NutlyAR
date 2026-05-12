@@ -10,10 +10,25 @@
       body { margin: 0; overflow: hidden; }
       #example-scanning-overlay { display: none; }
     </style>
+    <script>
+    AFRAME.registerComponent('clickable-image', {
+      init: function () {
+        this.el.addEventListener('click', function () {
+          // O pop-up de confirmação
+          const confirmar = confirm("Tem a certeza de que quer continuar?");
+          if (confirmar) {
+            alert("Pagina Seguinte");
+          }
+        });
+      }
+    });
+  </script>
   </head>
   <body>
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes;" 
+      cursor="rayOrigin: mouse"
+      raycaster="objects: .clickable"
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
@@ -23,6 +38,8 @@
       <a-entity mindar-image-target="targetIndex: 0">
         <a-image
           src="./assets/hotdog.png"
+          class="clickable"
+          clickable-food
           position="0 0 0"
           scale="1 0.5">
         </a-image>
@@ -30,6 +47,8 @@
       <a-entity mindar-image-target="targetIndex: 1">
         <a-image
           src="./assets/sardine.png"
+          class="clickable"
+          clickable-food
           position="0 0 0"
           scale="1 0.5">
         </a-image>
@@ -37,6 +56,8 @@
       <a-entity mindar-image-target="targetIndex: 2">
         <a-image
           src="./assets/cozido.png"
+          class="clickable"
+          clickable-food
           position="0 0 0"
           scale="1 0.5">
         </a-image>
