@@ -26,15 +26,16 @@
         padding: 16px;
         box-sizing: border-box;
         font-family: sans-serif;
+        text-align: center;
       }
       .custom-popup-text {
-        margin: 0 0 14px;
+        margin: 0 0 16px;
         color: #111111;
         font-size: 15px;
       }
       .custom-popup-actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         gap: 8px;
       }
       .popup-btn {
@@ -78,12 +79,14 @@
       init: function () {
         let targetVisible = false;
         let lastFoundAt = 0;
+        let popupOpen = false;
         const targetEl = this.el.closest('[mindar-image-target]');
 
         if (targetEl) {
           targetEl.addEventListener('targetFound', function () {
             targetVisible = true;
             lastFoundAt = Date.now();
+            popupOpen = false;
           });
 
           targetEl.addEventListener('targetLost', function () {
@@ -91,13 +94,25 @@
           });
         }
 
-        this.el.addEventListener('click', function () {
-          if (!targetVisible || Date.now() - lastFoundAt < 1200) {
+        const tryOpenPopup = function (event) {
+          if (event && event.type === 'touchend') {
+            event.preventDefault();
+          }
+
+          if (!targetVisible || popupOpen || Date.now() - lastFoundAt < 250) {
             return;
           }
 
+          popupOpen = true;
           openCustomPopup();
-        });
+
+          window.setTimeout(function () {
+            popupOpen = false;
+          }, 250);
+        };
+
+        this.el.addEventListener('click', tryOpenPopup);
+        this.el.addEventListener('touchend', tryOpenPopup);
       }
     });
   </script>
@@ -149,7 +164,7 @@
       <div class="custom-popup-card">
         <p class="custom-popup-text">Tem a certeza de que quer continuar?</p>
         <div class="custom-popup-actions">
-          <button id="popup-cancel" class="popup-btn cancel" type="button">Nao</button>
+          <button id="popup-cancel" class="popup-btn cancel" type="button">Não</button>
           <button id="popup-continue" class="popup-btn confirm" type="button">Sim</button>
         </div>
       </div>
