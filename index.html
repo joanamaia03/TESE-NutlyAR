@@ -9,6 +9,8 @@
     <style>
       body { margin: 0; overflow: hidden; }
       #example-scanning-overlay { display: none; }
+
+      /*Posição do Pop Up*/
       .custom-popup {
         position: fixed;
         inset: 0;
@@ -18,21 +20,28 @@
         background: rgba(0, 0, 0, 0.55);
         z-index: 9999;
       }
+
+      /*Caixa do pop up*/
       .custom-popup.is-open { display: flex; }
       .custom-popup-card {
-        width: min(90vw, 320px);
+        width: min(92vw, 420px);
         background: #ffffff;
         border-radius: 12px;
-        padding: 16px;
+        padding: 20px 22px;
         box-sizing: border-box;
         font-family: sans-serif;
         text-align: center;
       }
+
+      /*Texto do Pop Up*/
       .custom-popup-text {
         margin: 0 0 16px;
         color: #111111;
-        font-size: 15px;
+        font-size: 16px;
+        white-space: nowrap;
       }
+
+      /*Botão do Pop Up*/
       .custom-popup-actions {
         display: flex;
         justify-content: center;
@@ -132,28 +141,43 @@
       </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-image
-          src="./assets/hotdog.png"
+        <a-plane
           class="clickable"
           clickable-image
+          position="0 0 0.01"
+          scale="1.35 0.75 1"
+          material="color: #ffffff; opacity: 0.001; transparent: true; side: double">
+        </a-plane>
+        <a-image
+          src="./assets/hotdog.png"
           position="0 0 0"
           scale="1 0.5">
         </a-image>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-image
-          src="./assets/sardine.png"
+        <a-plane
           class="clickable"
           clickable-image
+          position="0 0 0.01"
+          scale="1.35 0.75 1"
+          material="color: #ffffff; opacity: 0.001; transparent: true; side: double">
+        </a-plane>
+        <a-image
+          src="./assets/sardine.png"
           position="0 0 0"
           scale="1 0.5">
         </a-image>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-image
-          src="./assets/cozido.png"
+        <a-plane
           class="clickable"
           clickable-image
+          position="0 0 0.01"
+          scale="1.35 0.75 1"
+          material="color: #ffffff; opacity: 0.001; transparent: true; side: double">
+        </a-plane>
+        <a-image
+          src="./assets/cozido.png"
           position="0 0 0"
           scale="1 0.5">
         </a-image>
