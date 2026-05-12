@@ -57,7 +57,15 @@
       .popup-btn.cancel { background: #e5e7eb; color: #111827; }
       .popup-btn.confirm { background: #2563eb; color: #ffffff; }
     </style>
+
     <script>
+    let globalTargetStates = {
+      0: { visible: false, lastFoundAt: 0 },
+      1: { visible: false, lastFoundAt: 0 },
+      2: { visible: false, lastFoundAt: 0 }
+    };
+    let globalPopupOpen = false;
+
     const openCustomPopup = () => {
       const popup = document.getElementById('custom-popup');
       if (popup) popup.classList.add('is-open');
@@ -82,46 +90,60 @@
           console.log('Pagina Seguinte');
         });
       }
+
+      // Listener global para clique em qualquer parte do ecrã
+      document.addEventListener('click', function (event) {
+        if (globalPopupOpen) return;
+        
+        const anyTargetVisible = Object.values(globalTargetStates).some(state => 
+          state.visible && Date.now() - state.lastFoundAt >= 250
+        );
+
+        if (anyTargetVisible) {
+          globalPopupOpen = true;
+          openCustomPopup();
+          window.setTimeout(() => {
+            globalPopupOpen = false;
+          }, 250);
+        }
+      });
+
+      // Listener global para touch
+      document.addEventListener('touchend', function (event) {
+        if (globalPopupOpen) return;
+        
+        const anyTargetVisible = Object.values(globalTargetStates).some(state => 
+          state.visible && Date.now() - state.lastFoundAt >= 250
+        );
+
+        if (anyTargetVisible) {
+          event.preventDefault();
+          globalPopupOpen = true;
+          openCustomPopup();
+          window.setTimeout(() => {
+            globalPopupOpen = false;
+          }, 250);
+        }
+      });
     });
 
     AFRAME.registerComponent('clickable-image', {
       init: function () {
-        let targetVisible = false;
-        let lastFoundAt = 0;
-        let popupOpen = false;
         const targetEl = this.el.closest('[mindar-image-target]');
 
         if (targetEl) {
+          const targetIndexAttr = targetEl.getAttribute('mindar-image-target');
+          const targetIndex = targetIndexAttr ? parseInt(targetIndexAttr.split(':')[1] || targetIndexAttr.split('=')[1]) : 0;
+
           targetEl.addEventListener('targetFound', function () {
-            targetVisible = true;
-            lastFoundAt = Date.now();
-            popupOpen = false;
+            globalTargetStates[targetIndex].visible = true;
+            globalTargetStates[targetIndex].lastFoundAt = Date.now();
           });
 
           targetEl.addEventListener('targetLost', function () {
-            targetVisible = false;
+            globalTargetStates[targetIndex].visible = false;
           });
         }
-
-        const tryOpenPopup = function (event) {
-          if (event && event.type === 'touchend') {
-            event.preventDefault();
-          }
-
-          if (!targetVisible || popupOpen || Date.now() - lastFoundAt < 250) {
-            return;
-          }
-
-          popupOpen = true;
-          openCustomPopup();
-
-          window.setTimeout(function () {
-            popupOpen = false;
-          }, 250);
-        };
-
-        this.el.addEventListener('click', tryOpenPopup);
-        this.el.addEventListener('touchend', tryOpenPopup);
       }
     });
   </script>
@@ -135,51 +157,31 @@
       device-orientation-permission-ui="enabled: false">
       <a-camera
         position="0 0 0"
-        look-controls="enabled: false"
-        cursor="rayOrigin: mouse"
-        raycaster="objects: .clickable">
+        look-controls="enabled: false">
       </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane
-          class="clickable"
-          clickable-image
-          position="0 0 0.01"
-          scale="1.35 0.75 1"
-          material="color: #ffffff; opacity: 0.001; transparent: true; side: double">
-        </a-plane>
         <a-image
           src="./assets/hotdog.png"
           position="0 0 0"
-          scale="1 0.5">
+          scale="1 0.5"
+          clickable-image>
         </a-image>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-plane
-          class="clickable"
-          clickable-image
-          position="0 0 0.01"
-          scale="1.35 0.75 1"
-          material="color: #ffffff; opacity: 0.001; transparent: true; side: double">
-        </a-plane>
         <a-image
           src="./assets/sardine.png"
           position="0 0 0"
-          scale="1 0.5">
+          scale="1 0.5"
+          clickable-image>
         </a-image>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-plane
-          class="clickable"
-          clickable-image
-          position="0 0 0.01"
-          scale="1.35 0.75 1"
-          material="color: #ffffff; opacity: 0.001; transparent: true; side: double">
-        </a-plane>
         <a-image
           src="./assets/cozido.png"
           position="0 0 0"
-          scale="1 0.5">
+          scale="1 0.5"
+          clickable-image>
         </a-image>
       </a-entity>
     </a-scene>
