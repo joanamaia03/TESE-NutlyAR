@@ -18,19 +18,14 @@
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
-      <a-assets>
-        <a-asset-item id="meuModelo" src="./assets/hotdog.png"></a-asset-item>
-      </a-assets>
-      
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity
-          gltf-model="#meuModelo"
+        <a-image
+          src="./assets/hotdog.png"
           position="0 0 0"
-          rotation="0 0 0"
-          scale="0.5 0.5 0.5">
-        </a-entity> 
+          scale="0.5 0.5">
+        </a-image>
       </a-entity>
     </a-scene>
   </body>
