@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Alert, Pressable } from 'react-native';
 import { auth, db } from '../src/firebase'; 
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -9,11 +9,17 @@ export default function RegisterScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleRegister = async () => {
     // 1. Validações básicas
     if (!nome || !email || !password) {
       Alert.alert("Erro", "Preenche todos os campos!");
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert("Erro", "A palavra-passe tem de ter pelo menos 6 caracteres.");
       return;
     }
     if (password !== confirmPassword) {
@@ -38,7 +44,17 @@ export default function RegisterScreen({ navigation }: any) {
       navigation.navigate('Login');
       
     } catch (error: any) {
-      Alert.alert("Erro no Registo", error.message);
+      if (error?.code === 'auth/weak-password') {
+        Alert.alert("Erro no Registo", "A palavra-passe tem de ter pelo menos 6 caracteres.");
+        return;
+      }
+
+      if (error?.code === 'auth/email-already-in-use') {
+        Alert.alert("Erro no Registo", "Esse email já está a ser usado.");
+        return;
+      }
+
+      Alert.alert("Erro no Registo", error?.message ?? "Não foi possível criar a conta.");
     }
   };
 
@@ -70,18 +86,24 @@ export default function RegisterScreen({ navigation }: any) {
         placeholder="Palavra-passe"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        secureTextEntry={!showPassword}
         placeholderTextColor="#999"
       />
+      <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
+        <Text style={styles.toggleButtonText}>{showPassword ? 'Ocultar palavra-passe' : 'Mostrar palavra-passe'}</Text>
+      </Pressable>
 
       <TextInput
         style={styles.input}
         placeholder="Confirmar Palavra-passe"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
-        secureTextEntry
+        secureTextEntry={!showConfirmPassword}
         placeholderTextColor="#999"
       />
+      <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.toggleButton}>
+        <Text style={styles.toggleButtonText}>{showConfirmPassword ? 'Ocultar confirmação' : 'Mostrar confirmação'}</Text>
+      </Pressable>
 
       <View style={styles.buttonContainer}>
         <Button title="Registar" color="#10B981" onPress={handleRegister} />
@@ -119,5 +141,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginBottom: 10,
+  },
+  toggleButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 12,
+    paddingVertical: 4,
+  },
+  toggleButtonText: {
+    color: '#60A5FA',
+    fontSize: 13,
+    fontWeight: '600',
   }
 });
