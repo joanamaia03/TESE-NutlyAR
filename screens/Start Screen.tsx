@@ -33,7 +33,7 @@ export const StartPage = ({ navigation }: any) => {
 
         <View style={styles.badge}>
           <Image
-            source={require('../assets/icon.png')}
+            source={require('../assets/NutlyAR.png')}
             style={styles.badgeImage}
             resizeMode="contain"
           />

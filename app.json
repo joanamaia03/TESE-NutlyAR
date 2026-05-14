@@ -6,10 +6,10 @@
     "orientation": "portrait",
     "newArchEnabled": false,
     "edgeToEdgeEnabled": true,
-    "icon": "./assets/icon.png",
+    "icon": "./assets/NutlyAR.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/NutlyAR.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -25,14 +25,14 @@
         "CAMERA"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/NutlyAR.png",
         "backgroundColor": "#ffffff"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.nutlyar"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/NutlyAR.png"
     }
   }
 }
