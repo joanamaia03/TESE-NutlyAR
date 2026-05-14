@@ -1,155 +1,313 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert, Pressable } from 'react-native';
-import { auth, db } from '../src/firebase'; 
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+
+import { auth, db } from '../src/firebase';
 
 export default function RegisterScreen({ navigation }: any) {
-  const [nome, setNome] = useState(''); // Novo campo para o nome
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRegister = async () => {
-    // 1. Validações básicas
-    if (!nome || !email || !password) {
-      Alert.alert("Erro", "Preenche todos os campos!");
+    const cleanUsername = username.trim();
+    const cleanEmail = email.trim();
+
+    if (!cleanUsername || !cleanEmail || !password || !confirmPassword) {
+      Alert.alert('Erro', 'Preencha todos os campos.');
       return;
     }
+
     if (password.length < 6) {
-      Alert.alert("Erro", "A palavra-passe tem de ter pelo menos 6 caracteres.");
+      Alert.alert('Erro', 'A palavra-passe tem de ter pelo menos 6 caracteres.');
       return;
     }
+
     if (password !== confirmPassword) {
-      Alert.alert("Erro", "As palavras-passe não coincidem!");
+      Alert.alert('Erro', 'As palavras-passe não coincidem.');
       return;
     }
 
     try {
-      // 2. Criar utilizador no Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      setIsSubmitting(true);
+
+      const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
       const user = userCredential.user;
 
-      // 3. Criar documento no Firestore AUTOMATICAMENTE
-      // Usamos o UID do utilizador para que o perfil fique ligado ao login
-      await setDoc(doc(db, "usuarios", user.uid), {
-        nome: nome,
-        email: email,
-        dataCriacao: new Date().toISOString()
+      await updateProfile(user, {
+        displayName: cleanUsername,
       });
 
-      Alert.alert("Sucesso!", "Conta criada com sucesso.");
+      await setDoc(doc(db, 'utilizadores', user.uid), {
+        username: cleanUsername,
+        email: cleanEmail,
+        createdAt: new Date().toISOString(),
+      });
+
+      Alert.alert('Sucesso', 'Conta criada com sucesso.');
       navigation.navigate('Login');
-      
     } catch (error: any) {
       if (error?.code === 'auth/weak-password') {
-        Alert.alert("Erro no Registo", "A palavra-passe tem de ter pelo menos 6 caracteres.");
+        Alert.alert('Erro no Registo', 'A palavra-passe tem de ter pelo menos 6 caracteres.');
         return;
       }
 
       if (error?.code === 'auth/email-already-in-use') {
-        Alert.alert("Erro no Registo", "Esse email já está a ser usado.");
+        Alert.alert('Erro no Registo', 'O endereço de email já está a ser utilizado.');
         return;
       }
 
-      Alert.alert("Erro no Registo", error?.message ?? "Não foi possível criar a conta.");
+      Alert.alert('Erro no Registo', error?.message ?? 'Não foi possível criar a conta.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Criar Conta</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      >
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          nestedScrollEnabled
+        >
+          <View style={styles.headerBlock}>
+            <Text style={styles.title}>Criar Conta</Text>
+          </View>
 
-      {/* Adicionei o campo de Nome para a tua base de dados */}
-      <TextInput
-        style={styles.input}
-        placeholder="Nome Completo"
-        value={nome}
-        onChangeText={setNome}
-        placeholderTextColor="#999"
-      />
+          <View style={styles.card}>
+            <View style={styles.field}>
+              <Text style={styles.label}>Nome de utilizador</Text>
+              <TextInput
+                value={username}
+                onChangeText={setUsername}
+                placeholder="nome de utilizador"
+                placeholderTextColor="#7C8596"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+              />
+            </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        placeholderTextColor="#999"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+            <View style={styles.field}>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                placeholder="email"
+                placeholderTextColor="#7C8596"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+              />
+            </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Palavra-passe"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={!showPassword}
-        placeholderTextColor="#999"
-      />
-      <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>{showPassword ? 'Ocultar palavra-passe' : 'Mostrar palavra-passe'}</Text>
-      </Pressable>
+            <View style={styles.field}>
+              <Text style={styles.label}>Palavra-passe</Text>
+              <View style={styles.passwordRow}>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="palavra-passe"
+                  placeholderTextColor="#7C8596"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.passwordInput}
+                />
+                <Pressable onPress={() => setShowPassword((current) => !current)} style={styles.eyeButton}>
+                  <Text style={styles.eyeText}>{showPassword ? 'Ocultar' : 'Ver'}</Text>
+                </Pressable>
+              </View>
+            </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Confirmar Palavra-passe"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry={!showConfirmPassword}
-        placeholderTextColor="#999"
-      />
-      <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>{showConfirmPassword ? 'Ocultar confirmação' : 'Mostrar confirmação'}</Text>
-      </Pressable>
+            <View style={styles.field}>
+              <Text style={styles.label}>Confirmar palavra-passe</Text>
+              <View style={styles.passwordRow}>
+                <TextInput
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  placeholder="confirmar palavra-passe"
+                  placeholderTextColor="#7C8596"
+                  secureTextEntry={!showConfirmPassword}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.passwordInput}
+                />
+                <Pressable
+                  onPress={() => setShowConfirmPassword((current) => !current)}
+                  style={styles.eyeButton}
+                >
+                  <Text style={styles.eyeText}>{showConfirmPassword ? 'Ocultar' : 'Ver'}</Text>
+                </Pressable>
+              </View>
+            </View>
 
-      <View style={styles.buttonContainer}>
-        <Button title="Registar" color="#10B981" onPress={handleRegister} />
-      </View>
+            <Pressable
+              onPress={handleRegister}
+              disabled={isSubmitting}
+              style={({ pressed }) => [styles.submitButton, pressed && styles.submitButtonPressed]}
+            >
+              <Text style={styles.submitButtonText}>{isSubmitting ? 'A criar...' : 'Registe-se'}</Text>
+            </Pressable>
+          </View>
 
-      <View style={styles.buttonContainer}>
-        <Button title="Voltar" color="#666" onPress={() => navigation.goBack()} />
-      </View>
-    </View>
+          <Pressable onPress={() => navigation.navigate('Login')} style={styles.loginLinkButton}>
+            <Text style={styles.loginLinkText}>Já tem conta? Inicie sessão</Text>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  flex: {
     flex: 1,
-    padding: 20,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFF8F1',
+  },
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 56,
+    paddingBottom: 120,
     justifyContent: 'center',
-    backgroundColor: '#050608',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  scroll: {
+    flex: 1,
+  },
+  headerBlock: {
     marginBottom: 20,
-    color: '#fff',
-    textAlign: 'center',
+    width: '100%',
+    alignItems: 'center',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#222838',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    backgroundColor: '#10131a',
-    color: '#fff',
-  },
-  buttonContainer: {
+  kicker: {
+    color: '#E28A47',
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
     marginBottom: 10,
   },
-  toggleButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 12,
-    paddingVertical: 4,
+  title: {
+    color: '#6B3E1F',
+    fontSize: 34,
+    fontWeight: '800',
+    marginBottom: 10,
   },
-  toggleButtonText: {
-    color: '#60A5FA',
+  subtitle: {
+    color: '#8A5A3C',
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#F2D7BF',
+    borderRadius: 24,
+    padding: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.22,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 6,
+  },
+  field: {
+    marginBottom: 14,
+  },
+  label: {
+    color: '#A15B2A',
     fontSize: 13,
     fontWeight: '600',
-  }
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: '#FFFCF8',
+    borderWidth: 1,
+    borderColor: '#F0D7BD',
+    color: '#6B3E1F',
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+  },
+  passwordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFCF8',
+    borderWidth: 1,
+    borderColor: '#F0D7BD',
+    borderRadius: 18,
+    overflow: 'hidden',
+  },
+  passwordInput: {
+    flex: 1,
+    color: '#6B3E1F',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+  },
+  eyeButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  eyeText: {
+    color: '#784115',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  submitButton: {
+    marginTop: 6,
+    backgroundColor: '#784115',
+    borderRadius: 18,
+    minHeight: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submitButtonPressed: {
+    opacity: 0.85,
+  },
+  submitButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  loginLinkButton: {
+    alignSelf: 'center',
+    marginTop: 16,
+    paddingVertical: 6,
+  },
+  loginLinkText: {
+    color: '#784115',
+    fontSize: 13,
+    fontWeight: '600',
+  },
 });

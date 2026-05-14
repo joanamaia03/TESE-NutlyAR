@@ -1,124 +1,254 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert, Pressable } from 'react-native';
-import { auth } from '../src/firebase'; 
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
+import { auth } from '../src/firebase';
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLogin = () => {
-    if (email === '' || password === '') {
-      Alert.alert("Erro", "Por favor, preenche todos os campos.");
+  const handleLogin = async () => {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !password) {
+      Alert.alert('Erro', 'Por favor, preenche todos os campos.');
       return;
     }
 
-    // Lógica real de Login do Firebase
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Login com sucesso!
-        console.log("Logado com:", userCredential.user.email);
-        navigation.navigate('ARScreen'); // Nome da rota para a câmara
-      })
-      .catch((error) => {
-        // Erro detalhado
-        console.error("Login erro code:", error.code);
-        console.error("Login erro message:", error.message);
+    try {
+      setIsSubmitting(true);
+      const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+      console.log('Logado com:', userCredential.user.email);
+      navigation.navigate('Start');
+    } catch (error: any) {
+      console.error('Login erro code:', error?.code);
+      console.error('Login erro message:', error?.message);
 
-        if (error.code === 'auth/user-not-found') {
-          Alert.alert("Erro no Login", "Utilizador não encontrado. Cria uma conta primeiro.");
-        } else if (error.code === 'auth/wrong-password') {
-          Alert.alert("Erro no Login", "Palavra-passe incorreta.");
-        } else if (error.code === 'auth/invalid-email') {
-          Alert.alert("Erro no Login", "Email inválido.");
-        } else {
-          Alert.alert("Erro no Login", error.message || "Email ou palavra-passe incorretos.");
-        }
-      });
+      if (error?.code === 'auth/user-not-found') {
+        Alert.alert('Erro no Login', 'Utilizador não encontrado. Cria uma conta primeiro.');
+        return;
+      }
+
+      if (error?.code === 'auth/wrong-password') {
+        Alert.alert('Erro no Login', 'Palavra-passe incorreta.');
+        return;
+      }
+
+      if (error?.code === 'auth/invalid-email') {
+        Alert.alert('Erro no Login', 'Email inválido.');
+        return;
+      }
+
+      Alert.alert('Erro no Login', error?.message ?? 'Email ou palavra-passe incorretos.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        placeholderTextColor="#999"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Palavra-passe"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={!showPassword}
-        placeholderTextColor="#999"
-      />
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets
+          nestedScrollEnabled
+        >
+          <View style={styles.headerBlock}>
+            <Text style={styles.title}>Iniciar Sessão</Text>
+          </View>
 
-      <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>
-          {showPassword ? 'Ocultar palavra-passe' : 'Mostrar palavra-passe'}
-        </Text>
-      </Pressable>
+          <View style={styles.card}>
+            <View style={styles.field}>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                placeholder="email"
+                placeholderTextColor="#7C8596"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+              />
+            </View>
 
-      {/* Botão de Entrar agora chama a função handleLogin */}
-      <View style={styles.buttonContainer}>
-        <Button title="Entrar" color="#2563eb" onPress={handleLogin} />
-      </View>
+            <View style={styles.field}>
+              <Text style={styles.label}>Palavra-passe</Text>
+              <View style={styles.passwordRow}>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="palavra-passe"
+                  placeholderTextColor="#7C8596"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.passwordInput}
+                />
+                <Pressable onPress={() => setShowPassword((current) => !current)} style={styles.eyeButton}>
+                  <Text style={styles.eyeText}>{showPassword ? 'Ocultar' : 'Ver'}</Text>
+                </Pressable>
+              </View>
+            </View>
 
-      <View style={styles.buttonContainer}>
-        <Button 
-          title="Criar Conta" 
-          color="#10B981" 
-          onPress={() => navigation.navigate('Register')} 
-        />
-      </View>
-    </View>
+            <Pressable
+              onPress={handleLogin}
+              disabled={isSubmitting}
+              style={({ pressed }) => [styles.submitButton, pressed && styles.submitButtonPressed]}
+            >
+              <Text style={styles.submitButtonText}>{isSubmitting ? 'A entrar...' : 'Inicie Sessão'}</Text>
+            </Pressable>
+          </View>
+
+          <Pressable onPress={() => navigation.navigate('Register')} style={styles.registerLinkButton}>
+            <Text style={styles.registerLinkText}>Ainda não tem conta? Registe-se</Text>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  flex: {
     flex: 1,
-    padding: 20,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFF8F1',
+  },
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 56,
+    paddingBottom: 28,
     justifyContent: 'center',
-    backgroundColor: '#050608',
+    alignItems: 'center',
+  },
+  headerBlock: {
+    marginBottom: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  kicker: {
+    color: '#E28A47',
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    marginBottom: 10,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#fff',
-    textAlign: 'center',
+    color: '#6B3E1F',
+    fontSize: 34,
+    fontWeight: '800',
+    marginBottom: 10,
+  },
+  subtitle: {
+    color: '#8A5A3C',
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#F2D7BF',
+    borderRadius: 24,
+    padding: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.22,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 6,
+  },
+  field: {
+    marginBottom: 14,
+  },
+  label: {
+    color: '#A15B2A',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 8,
   },
   input: {
+    backgroundColor: '#FFFCF8',
     borderWidth: 1,
-    borderColor: '#222838',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    backgroundColor: '#10131a',
-    color: '#fff',
+    borderColor: '#F0D7BD',
+    color: '#6B3E1F',
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
   },
-  toggleButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 12,
-    paddingVertical: 4,
+  passwordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFCF8',
+    borderWidth: 1,
+    borderColor: '#F0D7BD',
+    borderRadius: 18,
+    overflow: 'hidden',
   },
-  toggleButtonText: {
-    color: '#60A5FA',
+  passwordInput: {
+    flex: 1,
+    color: '#6B3E1F',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+  },
+  eyeButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  eyeText: {
+    color: '#784115',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  submitButton: {
+    marginTop: 6,
+    backgroundColor: '#784115',
+    borderRadius: 18,
+    minHeight: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submitButtonPressed: {
+    opacity: 0.85,
+  },
+  submitButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  registerLinkButton: {
+    alignSelf: 'center',
+    marginTop: 16,
+    paddingVertical: 6,
+  },
+  registerLinkText: {
+    color: '#784115',
     fontSize: 13,
     fontWeight: '600',
   },
-  buttonContainer: {
-    marginBottom: 10,
-    borderRadius: 8,
-    overflow: 'hidden', 
-  }
 });
