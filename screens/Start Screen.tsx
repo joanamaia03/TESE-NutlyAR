@@ -10,16 +10,39 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  StatusBar,
   View,
 } from 'react-native';
+import { db, auth } from '../src/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const StartPage = ({ navigation }: any) => {
   const handleStart = () => {
-    navigation?.navigate?.('ARScreen');
+    (async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        navigation?.navigate?.('Login');
+        return;
+      }
+
+      try {
+        const userRef = doc(db, 'utilizadores', user.uid);
+        const snap = await getDoc(userRef);
+        const perfilCompleto = snap.exists() && (snap.data() as any).perfilCompleto === true;
+        if (perfilCompleto) {
+          navigation?.navigate?.('Home');
+        } else {
+          navigation?.navigate?.('DemographicsScreen');
+        }
+      } catch (e) {
+        navigation?.navigate?.('DemographicsScreen');
+      }
+    })();
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <StatusBar backgroundColor="#FFF8F1" barStyle="dark-content" />
       <View style={styles.container}>
         <Text style={styles.title}>Bem Vindo!</Text>
 
@@ -29,11 +52,15 @@ export const StartPage = ({ navigation }: any) => {
               {paragraph}
             </Text>
           ))}
+          <View style={styles.speechTailCover} />
+          <View style={styles.speechTailOuter}>
+            <View style={styles.speechTailInner} />
+          </View>
         </View>
 
         <View style={styles.badge}>
           <Image
-            source={require('../assets/NutlyAR.png')}
+            source={require('../assets/Owl.png')}
             style={styles.badgeImage}
             resizeMode="contain"
           />
@@ -80,6 +107,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderColor: '#F2D7BF',
+    backgroundColor: '#FFFFFF',
     borderRadius: 22,
     paddingHorizontal: 20,
     paddingVertical: 24,
@@ -93,24 +121,65 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 18,
   },
+  speechTailOuter: {
+    position: 'absolute',
+    bottom: -16,
+    left: '50%',
+    width: 0,
+    height: 0,
+    borderLeftWidth: 16,
+    borderRightWidth: 16,
+    borderTopWidth: 16,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: '#F2D7BF',
+  },
+  speechTailInner: {
+    position: 'absolute',
+    top: -14,
+    left: -12,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 12,
+    borderRightWidth: 12,
+    borderTopWidth: 12,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: '#FFFFFF',
+  },
+  speechTailCover: {
+    position: 'absolute',
+    bottom: -3,
+    left: '51%',
+    width: 26,
+    height: 6,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
+    zIndex: 2,
+  },
   badge: {
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 8,
+    marginVertical: 15,
+    zIndex: 3,
+    elevation: 3,
   },
   badgeImage: {
-    width: 84,
-    height: 84,
+    width: 140,
+    height: 140,
   },
   button: {
     alignSelf: 'center',
     width: 200,
-    minHeight: 54,
+    minHeight: 50,
     borderRadius: 18,
-    backgroundColor: '#F2A86B',
+    backgroundColor: '#784115',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: -30,
+    zIndex: 1,
+    elevation: 1,
   },
   buttonPressed: {
     opacity: 0.85,

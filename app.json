@@ -1,22 +1,22 @@
-{
+  {
   "expo": {
-    "name": "nutly-ar",
-    "slug": "nutly-ar",
+    "name": "NutlyAR",
+    "slug": "NutlyAR",
     "version": "1.0.0",
     "orientation": "portrait",
     "newArchEnabled": false,
     "edgeToEdgeEnabled": true,
-    "icon": "./assets/NutlyAR.png",
+    "icon": "./assets/NutlyAR.png", 
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/NutlyAR.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "contain", 
+      "backgroundColor": "#050608"
     },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "A app precisa de acesso a camara para funcionalidades de realidade aumentada."
+        "NSCameraUsageDescription": "A app precisa de acesso à câmara para funcionalidades de realidade aumentada."
       }
     },
     "android": {
@@ -25,8 +25,8 @@
         "CAMERA"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/NutlyAR.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/Adaptive.png",
+        "backgroundColor": "#050608"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.nutlyar"

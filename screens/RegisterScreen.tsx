@@ -104,7 +104,7 @@ export default function RegisterScreen({ navigation }: any) {
                 value={username}
                 onChangeText={setUsername}
                 placeholder="nome de utilizador"
-                placeholderTextColor="#7C8596"
+                placeholderTextColor="#8c8e91"
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.input}
@@ -117,7 +117,7 @@ export default function RegisterScreen({ navigation }: any) {
                 value={email}
                 onChangeText={setEmail}
                 placeholder="email"
-                placeholderTextColor="#7C8596"
+                placeholderTextColor="#8c8e91"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -132,7 +132,7 @@ export default function RegisterScreen({ navigation }: any) {
                   value={password}
                   onChangeText={setPassword}
                   placeholder="palavra-passe"
-                  placeholderTextColor="#7C8596"
+                  placeholderTextColor="#8c8e91"
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -151,7 +151,7 @@ export default function RegisterScreen({ navigation }: any) {
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   placeholder="confirmar palavra-passe"
-                  placeholderTextColor="#7C8596"
+                  placeholderTextColor="#8c8e91"
                   secureTextEntry={!showConfirmPassword}
                   autoCapitalize="none"
                   autoCorrect={false}

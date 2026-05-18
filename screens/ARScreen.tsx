@@ -7,14 +7,25 @@ import {
   StyleSheet,
   Text,
   View,
+  Modal,
+  TouchableOpacity,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10';
 
 export default function ARScreen() {
   const [cameraGranted, setCameraGranted] = React.useState<boolean | null>(null);
+  const [showPopup, setShowPopup] = React.useState(false);
+
+  // show popup automatically once camera permission is granted
+  React.useEffect(() => {
+    if (cameraGranted) {
+      setShowPopup(true);
+    }
+  }, [cameraGranted]);
 
   React.useEffect(() => {
     const requestCameraPermission = async () => {
@@ -81,8 +92,26 @@ const webArSource = useMemo(() => ({
         onPermissionRequest={(event: { grant: (arg0: any) => any; resources: any; }) => event.grant(event.resources)}
       />
 
+      {/* floating button to open popup */}
+      <TouchableOpacity style={styles.floatingButton} onPress={() => setShowPopup(true)}>
+        <Text style={styles.floatingButtonText}>i</Text>
+      </TouchableOpacity>
+
+      <Modal visible={showPopup} transparent animationType="slide">
+        <View style={styles.modalOverlayBottom}>
+          <View style={styles.modalCardBottom}>
+            <Text style={styles.modalTitle}>Informação AR</Text>
+            <Text style={styles.modalText}>Qual destas opções considera ter mais energia (calorias), considerando exatamente a quantidade apresentada.</Text>
+            <Text style={styles.modalText}> Selecione apenas uma das opções clicando na refeição! Caso não conheça ou não goste da refeição inidicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito</Text>
+            <Pressable style={styles.modalClose} onPress={() => setShowPopup(false)}>
+              <Icon name="check" size={20} color="#fff" />
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
       <View style={styles.overlay}>
-        <Text style={styles.overlayText}>WebAR ativa</Text>
+        <Text style={styles.overlayText}>Câmara ativa</Text>
       </View>
     </View>
   );
@@ -135,5 +164,59 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#784115',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 50,
+    elevation: 8,
+  },
+  floatingButtonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  modalOverlayBottom: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    justifyContent: 'flex-end',
+    alignItems: 'stretch',
+  },
+  modalCardBottom: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 18,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+    color: '#613512',
+  },
+  modalText: {
+    fontSize: 15,
+    color: '#6B3E1F',
+    textAlign: 'center',
+    marginBottom: 14,
+  },
+  modalClose: {
+    backgroundColor: '#784115',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  modalCloseText: {
+    color: '#fff',
+    fontWeight: '700',
   },
 });

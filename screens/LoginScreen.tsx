@@ -83,7 +83,7 @@ export default function LoginScreen({ navigation }: any) {
                 value={email}
                 onChangeText={setEmail}
                 placeholder="email"
-                placeholderTextColor="#7C8596"
+                placeholderTextColor="#8c8e91"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -98,7 +98,7 @@ export default function LoginScreen({ navigation }: any) {
                   value={password}
                   onChangeText={setPassword}
                   placeholder="palavra-passe"
-                  placeholderTextColor="#7C8596"
+                  placeholderTextColor="#8c8e91"
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
                   autoCorrect={false}
