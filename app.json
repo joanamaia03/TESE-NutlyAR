@@ -1,4 +1,4 @@
-  {
+{
   "expo": {
     "name": "NutlyAR",
     "slug": "NutlyAR",
@@ -6,11 +6,11 @@
     "orientation": "portrait",
     "newArchEnabled": false,
     "edgeToEdgeEnabled": true,
-    "icon": "./assets/NutlyAR.png", 
+    "icon": "./assets/NutlyAR.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/NutlyAR.png",
-      "resizeMode": "contain", 
+      "resizeMode": "contain",
       "backgroundColor": "#050608"
     },
     "ios": {
@@ -33,6 +33,9 @@
     },
     "web": {
       "favicon": "./assets/NutlyAR.png"
-    }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }
