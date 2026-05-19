@@ -10,7 +10,7 @@
       body { margin: 0; overflow: hidden; }
       #example-scanning-overlay { display: none; }
 
-      /*Posição do Pop Up*/
+      /* Posição do Pop Up */
       .custom-popup {
         position: fixed;
         inset: 0;
@@ -21,7 +21,7 @@
         z-index: 9999;
       }
 
-      /*Caixa do pop up*/
+      /* Caixa do pop up */
       .custom-popup.is-open { display: flex; }
       .custom-popup-card {
         width: min(92vw, 420px);
@@ -33,7 +33,7 @@
         text-align: center;
       }
 
-      /*Texto do Pop Up*/
+      /* Texto do Pop Up */
       .custom-popup-text {
         margin: 0 0 16px;
         color: #111111;
@@ -41,7 +41,7 @@
         white-space: nowrap;
       }
 
-      /*Botão do Pop Up*/
+      /* Botão do Pop Up */
       .custom-popup-actions {
         display: flex;
         justify-content: center;
@@ -65,6 +65,46 @@
       2: { visible: false, lastFoundAt: 0 }
     };
     let globalPopupOpen = false;
+
+    // ─── MAPEAMENTO DOS PARES DE IMAGENS (PNG FLUTUANTES) ───
+    // Define a Fase 1 (Imagens originais) e Fase 2 (Imagens alternativas)
+    const imagensFase1 = {
+      0: "./assets/hotdog.png",
+      1: "./assets/sardine.png",
+      2: "./assets/cozido.png"
+    };
+
+    const imagensFase2 = {
+      0: "./assets/pizza.jpg", // Substitui pelos teus novos ficheiros PNG
+      1: "./assets/pataniscas.jpg",
+      2: "./assets/omelete.jpg"
+    };
+
+    let faseAtual = 1;
+
+    // Esta função é chamada diretamente pelo botão de swap do React Native
+    window.trocarModeloAR = function() {
+      const imgTarget0 = document.getElementById('asset-target-0');
+      const imgTarget1 = document.getElementById('asset-target-1');
+      const imgTarget2 = document.getElementById('asset-target-2');
+
+      if (faseAtual === 1) {
+        // Altera o "src" dos PNGs flutuantes para a lista da Fase 2
+        if (imgTarget0) imgTarget0.setAttribute('src', imagensFase2[0]);
+        if (imgTarget1) imgTarget1.setAttribute('src', imagensFase2[1]);
+        if (imgTarget2) imgTarget2.setAttribute('src', imagensFase2[2]);
+        faseAtual = 2;
+        console.log("WebAR: Assets virtuais alterados para a Fase 2");
+      } else {
+        // Volta a colocar os PNGs originais da Fase 1
+        if (imgTarget0) imgTarget0.setAttribute('src', imagensFase1[0]);
+        if (imgTarget1) imgTarget1.setAttribute('src', imagensFase1[1]);
+        if (imgTarget2) imgTarget2.setAttribute('src', imagensFase1[2]);
+        faseAtual = 1;
+        console.log("WebAR: Assets virtuais restaurados para a Fase 1");
+      }
+    };
+    // ─────────────────────────────────────────────────────────
 
     const openCustomPopup = () => {
       const popup = document.getElementById('custom-popup');
@@ -91,38 +131,29 @@
         });
       }
 
-      // Listener global para clique em qualquer parte do ecrã
+      // Listeners globais de clique e toque
       document.addEventListener('click', function (event) {
         if (globalPopupOpen) return;
-        
         const anyTargetVisible = Object.values(globalTargetStates).some(state => 
           state.visible && Date.now() - state.lastFoundAt >= 250
         );
-
         if (anyTargetVisible) {
           globalPopupOpen = true;
           openCustomPopup();
-          window.setTimeout(() => {
-            globalPopupOpen = false;
-          }, 250);
+          window.setTimeout(() => { globalPopupOpen = false; }, 250);
         }
       });
 
-      // Listener global para touch
       document.addEventListener('touchend', function (event) {
         if (globalPopupOpen) return;
-        
         const anyTargetVisible = Object.values(globalTargetStates).some(state => 
           state.visible && Date.now() - state.lastFoundAt >= 250
         );
-
         if (anyTargetVisible) {
           event.preventDefault();
           globalPopupOpen = true;
           openCustomPopup();
-          window.setTimeout(() => {
-            globalPopupOpen = false;
-          }, 250);
+          window.setTimeout(() => { globalPopupOpen = false; }, 250);
         }
       });
     });
@@ -130,7 +161,6 @@
     AFRAME.registerComponent('clickable-image', {
       init: function () {
         const targetEl = this.el.closest('[mindar-image-target]');
-
         if (targetEl) {
           const targetIndexAttr = targetEl.getAttribute('mindar-image-target');
           const targetIndex = targetIndexAttr ? parseInt(targetIndexAttr.split(':')[1] || targetIndexAttr.split('=')[1]) : 0;
@@ -155,29 +185,31 @@
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
-      <a-camera
-        position="0 0 0"
-        look-controls="enabled: false">
-      </a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-image
+          id="asset-target-0"
           src="./assets/hotdog.png"
           position="0 0 0"
           scale="1 0.5"
           clickable-image>
         </a-image>
       </a-entity>
+
       <a-entity mindar-image-target="targetIndex: 1">
         <a-image
+          id="asset-target-1"
           src="./assets/sardine.png"
           position="0 0 0"
           scale="1 0.5"
           clickable-image>
         </a-image>
       </a-entity>
+
       <a-entity mindar-image-target="targetIndex: 2">
         <a-image
+          id="asset-target-2"
           src="./assets/cozido.png"
           position="0 0 0"
           scale="1 0.5"
