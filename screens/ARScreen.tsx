@@ -101,7 +101,6 @@ export default function ARScreen({ navigation }: any) {
   // Função para enviar a ordem de troca de imagem para a WebView
   const enviarOrdemTrocarImagem = () => {
     if (webviewRef.current) {
-      setDebugMsg("A solicitar troca de imagem...");
       const script = `if (typeof trocarModeloAR === 'function') { trocarModeloAR(); } true;`;
       webviewRef.current.injectJavaScript(script);
     }

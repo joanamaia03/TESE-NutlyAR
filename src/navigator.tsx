@@ -5,6 +5,7 @@ import { StartPage } from '../screens/Start Screen';
 import RegisterScreen from '../screens/RegisterScreen';
 import DemographicsScreen from '../screens/DemographicsScreen';
 import ARScreen from '../screens/ARScreen';
+import Question1Screen from '../screens/Question1Screen';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="DemographicsScreen" component={DemographicsScreen} />
       <Stack.Screen name="ARScreen" component={ARScreen} />
+      <Stack.Screen name="Question1Screen" component={Question1Screen} />
     </Stack.Navigator>
   );
 }
