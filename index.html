@@ -144,6 +144,69 @@
       }
     });
   </script>
+  <script>
+    // Popup handlers: abre/fecha o popup e notifica a app mobile quando o utilizador confirma
+    (function(){
+      let globalPopupOpen = false;
+
+      function openCustomPopup(){
+        const popup = document.getElementById('custom-popup');
+        if(popup) popup.classList.add('is-open');
+      }
+
+      function closeCustomPopup(){
+        const popup = document.getElementById('custom-popup');
+        if(popup) popup.classList.remove('is-open');
+      }
+
+      document.addEventListener('DOMContentLoaded', function(){
+        const cancelBtn = document.getElementById('popup-cancel');
+        const continueBtn = document.getElementById('popup-continue');
+
+        if(cancelBtn){
+          cancelBtn.addEventListener('click', function(){ closeCustomPopup(); });
+        }
+
+        if(continueBtn){
+          continueBtn.addEventListener('click', function(){
+            closeCustomPopup();
+            try{
+              if(window.ReactNativeWebView && window.ReactNativeWebView.postMessage){
+                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'POPUP_CONFIRM', action: 'continue' }));
+              }
+            }catch(e){ console.warn('postMessage failed', e); }
+            console.log('Pagina Seguinte');
+          });
+        }
+
+        // Abre o popup quando houver um alvo visível e o utilizador tocar/clicar na página
+        document.addEventListener('click', function(event){
+          if(globalPopupOpen) return;
+          const anyTargetVisible = Object.values(globalTargetStates).some(function(state){
+            return state.visible && (Date.now() - state.lastFoundAt) >= 250;
+          });
+          if(anyTargetVisible){
+            globalPopupOpen = true;
+            openCustomPopup();
+            window.setTimeout(function(){ globalPopupOpen = false; }, 250);
+          }
+        });
+
+        document.addEventListener('touchend', function(event){
+          if(globalPopupOpen) return;
+          const anyTargetVisible = Object.values(globalTargetStates).some(function(state){
+            return state.visible && (Date.now() - state.lastFoundAt) >= 250;
+          });
+          if(anyTargetVisible){
+            event.preventDefault();
+            globalPopupOpen = true;
+            openCustomPopup();
+            window.setTimeout(function(){ globalPopupOpen = false; }, 250);
+          }
+        });
+      });
+    })();
+  </script>
   </head>
   <body>
     <a-scene 
