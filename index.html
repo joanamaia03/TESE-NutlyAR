@@ -149,6 +149,14 @@
     (function(){
       let globalPopupOpen = false;
 
+      function notifyNative(payload){
+        try{
+          if(window.ReactNativeWebView && window.ReactNativeWebView.postMessage){
+            window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+          }
+        }catch(e){ console.warn('postMessage failed', e); }
+      }
+
       function openCustomPopup(){
         const popup = document.getElementById('custom-popup');
         if(popup) popup.classList.add('is-open');
@@ -164,17 +172,20 @@
         const continueBtn = document.getElementById('popup-continue');
 
         if(cancelBtn){
-          cancelBtn.addEventListener('click', function(){ closeCustomPopup(); });
+          cancelBtn.addEventListener('click', function(event){
+            event.preventDefault();
+            event.stopPropagation();
+            closeCustomPopup();
+            notifyNative({ type: 'POPUP_CANCEL', action: 'close' });
+          });
         }
 
         if(continueBtn){
-          continueBtn.addEventListener('click', function(){
+          continueBtn.addEventListener('click', function(event){
+            event.preventDefault();
+            event.stopPropagation();
             closeCustomPopup();
-            try{
-              if(window.ReactNativeWebView && window.ReactNativeWebView.postMessage){
-                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'POPUP_CONFIRM', action: 'continue' }));
-              }
-            }catch(e){ console.warn('postMessage failed', e); }
+            notifyNative({ type: 'POPUP_CONFIRM', action: 'continue' });
             console.log('Pagina Seguinte');
           });
         }
