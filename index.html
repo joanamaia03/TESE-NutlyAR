@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.0/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #example-scanning-overlay { display: none; }
+
+      /* Posição do Pop Up */
+      .custom-popup {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 9999;
+      }
+
+      /* Caixa do pop up */
+      .custom-popup.is-open { display: flex; }
+      .custom-popup-card {
+        width: min(92vw, 420px);
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 20px 22px;
+        box-sizing: border-box;
+        font-family: sans-serif;
+        text-align: center;
+      }
+
+      /* Texto do Pop Up */
+      .custom-popup-text {
+        margin: 0 0 16px;
+        color: #111111;
+        font-size: 16px;
+        white-space: nowrap;
+      }
+
+      /* Botão do Pop Up */
+      .custom-popup-actions {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+      }
+      .popup-btn {
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .popup-btn.cancel { background: #e5e7eb; color: #111827; }
+      .popup-btn.confirm { background: #2563eb; color: #ffffff; }
+    </style>
+
+    <script>
+    let globalTargetStates = {
+      0: { visible: false, lastFoundAt: 0 },
+      1: { visible: false, lastFoundAt: 0 },
+      2: { visible: false, lastFoundAt: 0 }
+    };
+    let globalPopupOpen = false;
+
+    // ─── MAPEAMENTO DOS PARES DE IMAGENS (PNG FLUTUANTES) ───
+    // Define a Fase 1 (Imagens originais) e Fase 2 (Imagens alternativas)
+    const imagensFase1 = {
+      0: "./assets/hotdog.png",
+      1: "./assets/sardine.png",
+      2: "./assets/cozido.png"
+    };
+
+    const imagensFase2 = {
+      0: "./assets/pizza.jpg", // Substitui pelos teus novos ficheiros PNG
+      1: "./assets/pataniscas.jpg",
+      2: "./assets/omelete.jpg"
+    };
+
+    
+    let fasesDosTargets = {
+      0: 1, // 1 = Imagem original, 2 = Imagem alternativa
+      1: 1,
+      2: 1
+    };
+
+    // Esta função é chamada diretamente pelo botão de swap do React Native
+    window.trocarModeloAR = function() {
+      let targetAtivo = null;
+      for (const index in globalTargetStates) {
+        if (globalTargetStates[index].visible) {
+          targetAtivo = parseInt(index);
+          break; // Encontrou o alvo focado, não precisa de continuar a procurar
+        }
+      }
+
+      // Se o utilizador clicar no botão sem estar a apontar para nenhum alvo, não faz nada
+      if (targetAtivo === null) {
+        console.log("WebAR: Nenhum alvo detetado na câmara de momento. Botão ignorado.");
+        return;
+      }
+
+      // 2. Localizar o elemento de imagem virtual do alvo específico que está focado
+      const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
+      if (!imgTarget) return;
+
+      // 3. Mudar APENAS a imagem desse alvo ativo
+      if (fasesDosTargets[targetAtivo] === 1) {
+        imgTarget.setAttribute('src', imagensFase2[targetAtivo]);
+        fasesDosTargets[targetAtivo] = 2;
+        console.log(`WebAR: Alvo ${targetAtivo} alterado para a Fase 2 de forma isolada.`);
+      } else {
+        imgTarget.setAttribute('src', imagensFase1[targetAtivo]);
+        fasesDosTargets[targetAtivo] = 1;
+        console.log(`WebAR: Alvo ${targetAtivo} restaurado para a Fase 1.`);
+      }
+    };
+    // ─────────────────────────────────────────────────────────
+
+    const openCustomPopup = () => {
+      const popup = document.getElementById('custom-popup');
+      if (popup) popup.classList.add('is-open');
+    };
+
+    const closeCustomPopup = () => {
+      const popup = document.getElementById('custom-popup');
+      if (popup) popup.classList.remove('is-open');
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const cancelBtn = document.getElementById('popup-cancel');
+      const continueBtn = document.getElementById('popup-continue');
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeCustomPopup);
+      }
+
+      if (continueBtn) {
+        continueBtn.addEventListener('click', () => {
+          closeCustomPopup();
+          console.log('Pagina Seguinte');
+        });
+      }
+
+      // Listeners globais de clique e toque
+      document.addEventListener('click', function (event) {
+        if (globalPopupOpen) return;
+        const anyTargetVisible = Object.values(globalTargetStates).some(state => 
+          state.visible && Date.now() - state.lastFoundAt >= 250
+        );
+        if (anyTargetVisible) {
+          globalPopupOpen = true;
+          openCustomPopup();
+          window.setTimeout(() => { globalPopupOpen = false; }, 250);
+        }
+      });
+
+      document.addEventListener('touchend', function (event) {
+        if (globalPopupOpen) return;
+        const anyTargetVisible = Object.values(globalTargetStates).some(state => 
+          state.visible && Date.now() - state.lastFoundAt >= 250
+        );
+        if (anyTargetVisible) {
+          event.preventDefault();
+          globalPopupOpen = true;
+          openCustomPopup();
+          window.setTimeout(() => { globalPopupOpen = false; }, 250);
+        }
+      });
+    });
+
+    AFRAME.registerComponent('clickable-image', {
+      init: function () {
+        const targetEl = this.el.closest('[mindar-image-target]');
+        if (targetEl) {
+          const targetIndexAttr = targetEl.getAttribute('mindar-image-target');
+          const targetIndex = targetIndexAttr ? parseInt(targetIndexAttr.split(':')[1] || targetIndexAttr.split('=')[1]) : 0;
+
+          targetEl.addEventListener('targetFound', function () {
+            globalTargetStates[targetIndex].visible = true;
+            globalTargetStates[targetIndex].lastFoundAt = Date.now();
+          });
+
+          targetEl.addEventListener('targetLost', function () {
+            globalTargetStates[targetIndex].visible = false;
+          });
+        }
+      }
+    });
+
+    // component to turn a glTF model into an image on click, and restore on image click
+    AFRAME.registerComponent('model-click-toggle', {
+      init: function () {
+        const modelEl = this.el;
+        const parent = modelEl.parentNode;
+        // determine target index if available
+        let targetIndex = 0;
+        try{
+          const targetEl = modelEl.closest('[mindar-image-target]');
+          if(targetEl){
+            const t = targetEl.getAttribute('mindar-image-target') || '';
+            const num = t.split(':')[1] || t.split('=')[1];
+            targetIndex = num ? parseInt(num) : 0;
+          }
+        }catch(e){}
+
+        const imageSrc = (window.imagensFase1 && window.imagensFase1[targetIndex]) ? window.imagensFase1[targetIndex] : './assets/hotdog.png';
+
+        function createImageFromModel(){
+          const img = document.createElement('a-image');
+          img.setAttribute('src', imageSrc);
+          // copy transform from model if present
+          const pos = modelEl.getAttribute('position') || '0 0 0';
+          const scl = modelEl.getAttribute('scale') || '1 1 1';
+          img.setAttribute('position', pos);
+          img.setAttribute('scale', scl.indexOf(' ')>-1 ? scl : (scl + ' ' + scl + ' ' + scl));
+          img.setAttribute('class','model-replaced-image');
+          img.addEventListener('click', function(){
+            // remove image and show model again
+            if(img.parentNode) img.parentNode.removeChild(img);
+            modelEl.setAttribute('visible','true');
+            if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelRestored', targetIndex }));
+          });
+          parent.appendChild(img);
+          if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelReplacedWithImage', targetIndex }));
+        }
+
+        function onActivate(){
+          try{
+            modelEl.setAttribute('visible','false');
+            createImageFromModel();
+          }catch(e){ console.warn('model-click-toggle error', e); }
+        }
+
+        modelEl.addEventListener('click', onActivate);
+        modelEl.addEventListener('touchstart', onActivate);
+      }
+    });
+  </script>
+  </head>
+  <body>
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-entity
+          id="asset-target-0"
+          gltf-model="url: ./assets/cachorro.glb"
+          position="0 0 0"
+          scale="0.5 0.5 0.5"
+          clickable-image
+          model-click-toggle>
+        </a-entity>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-image
+          id="asset-target-1"
+          src="./assets/sardine.png"
+          position="0 0 0"
+          scale="1 0.5"
+          clickable-image>
+        </a-image>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-image
+          id="asset-target-2"
+          src="./assets/cozido.png"
+          position="0 0 0"
+          scale="1 0.5"
+          clickable-image>
+        </a-image>
+      </a-entity>
+    </a-scene>
+
+    <div id="custom-popup" class="custom-popup">
+      <div class="custom-popup-card">
+        <p class="custom-popup-text">Tem a certeza de que quer continuar?</p>
+        <div class="custom-popup-actions">
+          <button id="popup-cancel" class="popup-btn cancel" type="button">Não</button>
+          <button id="popup-continue" class="popup-btn confirm" type="button">Sim</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
