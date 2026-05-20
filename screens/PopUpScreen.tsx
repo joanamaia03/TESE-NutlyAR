@@ -13,12 +13,12 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 export default function QuestionScreen({ navigation }: any) {
   const [currentStep, setCurrentStep] = useState(1);
-  const steps = [1, 2, 3, 4, 5, 6];
+  const steps = [1, 2, 3, 4];
 
   return (
     <SafeAreaView style={styles.container}>
       
-      {/* 1. INDICADOR DE PROGRESSO (1-6) */}
+      {/* 1. INDICADOR DE PROGRESSO (1-4) */}
       <View style={styles.progressContainer}>
         {steps.map((step) => (
           <React.Fragment key={step}>
@@ -33,7 +33,7 @@ export default function QuestionScreen({ navigation }: any) {
                 {step}
               </Text>
             </View>
-            {step < 6 && <View style={styles.progressLine} />}
+            {step < 4 && <View style={styles.progressLine} />}
           </React.Fragment>
         ))}
       </View>
@@ -53,7 +53,7 @@ export default function QuestionScreen({ navigation }: any) {
       {/* 3. CAIXA DE INSTRUÇÕES COM CORUJA */}
       <View style={styles.instructionBox}>
         <Image 
-          source={{ uri: 'https://i.imgur.com/vH2XwZt.png' }} // Substitui pela tua foto da coruja
+          source={require('../assets/Owl.png')} 
           style={styles.owlImage}
           resizeMode="contain"
         />

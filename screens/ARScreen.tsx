@@ -13,10 +13,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
-// removed asset/file-system handling for image swap
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import ProgressBreadcrumb from '../ProgressBar';
-
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10';
 
@@ -26,8 +24,8 @@ export default function ARScreen({ navigation }: any) {
   const [perguntaAtual, setPerguntaAtual] = React.useState(1);
   const webviewRef = React.useRef<any>(null);
   const [debugMsg, setDebugMsg] = React.useState<string | null>(null);
-
-  // image swap logic removed per request
+  const [imagemSelecionada, setImagemSelecionada] = React.useState<any>(null);
+  const [historicoRespostas, setHistoricoRespostas] = React.useState<any[]>([]);
 
   // Hide Android navigation bar when this screen is active (if expo-navigation-bar is installed)
   React.useEffect(() => {
@@ -104,11 +102,45 @@ export default function ARScreen({ navigation }: any) {
   const enviarOrdemTrocarImagem = () => {
     if (webviewRef.current) {
       setDebugMsg("A solicitar troca de imagem...");
-      
-      // Injeta a chamada da função que tens (ou vais criar) no teu index.html
       const script = `if (typeof trocarModeloAR === 'function') { trocarModeloAR(); } true;`;
       webviewRef.current.injectJavaScript(script);
     }
+  };
+
+  // Lógica executada quando o utilizador confirma a escolha no Pop-up da Coruja
+  const confirmarEscolhaEAvancar = () => {
+    if (!imagemSelecionada) return;
+
+    // 1. Cria o objeto com a resposta da pergunta atual
+    const novaResposta = {
+      pergunta: perguntaAtual,
+      targetIndex: imagemSelecionada.targetIndex,
+      fase: imagemSelecionada.fase,
+      imagem: imagemSelecionada.nomeImagem,
+      timestamp: new Date().toISOString()
+    };
+
+    // 2. Acumula a resposta no histórico do estado
+    const novoHistorico = [...historicoRespostas, novaResposta];
+    setHistoricoRespostas(novoHistorico);
+    
+    setDebugMsg(`Resposta da pergunta ${perguntaAtual} guardada!`);
+    console.log("Histórico Atual de Respostas:", novoHistorico);
+
+    // 3. Fecha o pop-up fofo
+    setShowPopup(false);
+
+    // 4. Avança o breadcrumb ou finaliza o teste (limite de 6 perguntas)
+    if (perguntaAtual < 6) {
+      setPerguntaAtual(perguntaAtual + 1);
+    } else {
+      setDebugMsg("Teste Concluído com Sucesso!");
+      // Opcional: Enviar para o Firestore e navegar para ecrã final
+      // addDoc(collection(db, "resultados"), { historico: novoHistorico });
+    }
+
+    // Limpa a seleção temporária para estar pronto para a próxima focagem
+    setImagemSelecionada(null);
   };
 
   const consoleBridge = `(function(){
@@ -129,30 +161,12 @@ export default function ARScreen({ navigation }: any) {
     }catch(e){ try{ window.ReactNativeWebView.postMessage(JSON.stringify({ type:'bridgeError', error: String(e) })); }catch(_){} }
   })(); true;`;
 
-  if (cameraGranted === null) {
-    return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.infoText}>A verificar permissao da camara...</Text>
-      </View>
-    );
-  }
-
-  if (!cameraGranted) {
-    return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.infoText}>Sem permissao da camara nao e possivel usar WebAR.</Text>
-        <Pressable onPress={openSystemSettings} style={styles.button}>
-          <Text style={styles.buttonText}>Abrir Definicoes</Text>
-        </Pressable>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.breadcrumbContainer}>
         <ProgressBreadcrumb currentStep={perguntaAtual} />
       </View>
+      
       <WebView
         ref={webviewRef}
         source={webArSource}
@@ -178,7 +192,24 @@ export default function ARScreen({ navigation }: any) {
         onMessage={(e) => {
           try {
             const data = JSON.parse(e.nativeEvent.data);
-            console.log('From WebView:', data);
+            
+            // ESCUTA O EVENTO DE CLIQUE DO TEU HTML (index.html)
+            if (data?.type === 'IMAGE_CLICKED') {
+              setImagemSelecionada(data); // Armazena temporariamente os dados da foto clicada
+              setShowPopup(true);         // Abre dinamicamente o Modal fofo da Coruja
+            }
+
+            // Quando o popup da página web envia confirmação (botão 'Sim') navegamos para o ecrã de pergunta
+            if (data?.type === 'POPUP_CONFIRM' && data?.action === 'continue') {
+              // Fecha o modal local caso esteja aberto e navega para o ecrã de perguntas
+              setShowPopup(false);
+              try{
+                navigation.navigate('Question1Screen', { perguntaAtual, historicoRespostas });
+              }catch(err){
+                console.warn('Navigation to Question1Screen failed', err);
+              }
+            }
+
             if (data?.type === 'console') {
               console.log('WebView console[' + data.level + ']:', ...data.args);
             }
@@ -189,72 +220,81 @@ export default function ARScreen({ navigation }: any) {
         onPermissionRequest={(event: { grant: (arg0: any) => any; resources: any; }) => event.grant(event.resources)}
       />
 
-      {/* POP-UP FOFO (MODAL) */}
+      {/* POP-UP FOFO (MODAL DE CONFIRMAÇÃO) */}
       <Modal visible={showPopup} transparent animationType="none">
         <View style={[styles.modalOverlayBottom, styles.modalOverlayTransparent] }>
-          
-          {/* Contentor do Pop-up (Fundo Salmão/Laranja Claro) */}
           <View style={styles.modalCardBottom}>
             
-            {/* Imagem da Mascote Coruja (Saltando para fora da caixa) */}
             <Image 
               source={require('../assets/Owl.png')}
               style={styles.owlMascot}
               resizeMode="contain"
             />
 
-            {/* Seta do Balão de Fala */}
             <View style={styles.speechBubbleTriangle} />
 
-            {/* Balão de Texto (Off-White) */}
             <View style={styles.speechBubble}>
-              <Text style={styles.instructionText}>
-                Qual destas opções considera ter <Text style={styles.boldText}>mais energia (calorias)</Text>, considerando exatamente a quantidade apresentada. Selecione <Text style={styles.boldText}>apenas uma</Text> das opções clicando na refeição!
-              </Text>
-
-              <Text style={styles.subInstructionText}>
-                Caso não conheça ou não goste da refeição indicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito.
-              </Text>
+              {imagemSelecionada ? (
+                // Mensagem contextual dinâmina quando o utilizador clica numa imagem
+                <Text style={styles.instructionText}>
+                  Selecionou a refeição. Tem a certeza de que quer <Text style={styles.boldText}>confirmar esta opção</Text> para a pergunta {perguntaAtual}?
+                </Text>
+              ) : (
+                // Instrução genérica de abertura da página
+                <>
+                  <Text style={styles.instructionText}>
+                    Qual destas opções considera ter <Text style={styles.boldText}>mais energia (calorias)</Text>, considerando exatamente a quantidade apresentada. Selecione <Text style={styles.boldText}>apenas uma</Text> das opções clicando na refeição!
+                  </Text>
+                  <Text style={styles.subInstructionText}>
+                    Caso não conheça ou não goste da refeição indicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito.
+                  </Text>
+                </>
+              )}
             </View>
 
-            {/* Botão de Checkmark para Fechar/Confirmar */}
-            <TouchableOpacity style={styles.checkButton} onPress={() => setShowPopup(false)}>
+            {/* Se houver uma imagem selecionada, o clique aciona o fluxo de guardar e avançar. Caso contrário, apenas fecha a instrução inicial */}
+            <TouchableOpacity 
+              style={styles.checkButton} 
+              onPress={imagemSelecionada ? confirmarEscolhaEAvancar : () => setShowPopup(false)}
+            >
               <Icon name="check" size={40} color="#FFF" />
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      
-        <View style={styles.bottomNav}>
-          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Icon name="home" size={32} color="#613512" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}} disabled={true}>
-            <Icon name="information" size={32} color="#C7B8AA" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={enviarOrdemTrocarImagem}>
+      <View style={styles.bottomNav}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Icon name="home" size={32} color="#613512" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {}} disabled={true}>
+          <Icon name="information" size={32} color="#C7B8AA" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={enviarOrdemTrocarImagem}>
           <View style={styles.iconStack}>
             <Icon name="image" size={36} color="#e2ac77" style={styles.underIcon} />
             <Icon name="swap-horizontal" size={32} color="#613512" style={styles.topIcon} />
           </View>
         </TouchableOpacity>
-        </View>
-        {/* Owl helper button (bottom-right) */}
-        <TouchableOpacity
-          style={styles.owlButton}
-          onPress={() => setShowPopup(true)}
-          accessibilityLabel="Ajuda"
-        >
-          <Image source={require('../assets/Owl2.png')} style={styles.owlButtonImage} resizeMode="contain" />
-        </TouchableOpacity>
-        
-          {debugMsg ? (
-            <View style={styles.debugToast} pointerEvents="none">
-              <Text style={styles.debugText}>{debugMsg}</Text>
-            </View>
-          ) : null}
       </View>
+
+      <TouchableOpacity
+        style={styles.owlButton}
+        onPress={() => {
+          setImagemSelecionada(null); // Garante que abre como texto de instrução limpo
+          setShowPopup(true);
+        }}
+        accessibilityLabel="Ajuda"
+      >
+        <Image source={require('../assets/Owl2.png')} style={styles.owlButtonImage} resizeMode="contain" />
+      </TouchableOpacity>
+      
+      {debugMsg ? (
+        <View style={styles.debugToast} pointerEvents="none">
+          <Text style={styles.debugText}>{debugMsg}</Text>
+        </View>
+      ) : null}
+    </View>
   );
 }
 
@@ -310,7 +350,7 @@ const styles = StyleSheet.create({
   },
   modalOverlayBottom: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.0)', 
+    backgroundColor: 'rgba(0,0,0,0.4)', 
     justifyContent: 'flex-end',
   },
   modalOverlayTransparent: {
@@ -385,8 +425,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-
-  /* Barra de Navegação Inferior */
   bottomNav: {
     position: 'absolute',
     left: 0,
@@ -400,8 +438,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#EBD9C6',
     paddingBottom: 10,
-  }
-  ,
+  },
   iconStack: {
     width: 48,
     height: 48,
@@ -413,7 +450,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     elevation: 1,
     opacity: 0.85,
-    transform: [{ scale: 1 }],
   },
   topIcon: {
     position: 'absolute',
@@ -431,7 +467,6 @@ const styles = StyleSheet.create({
     zIndex: 60,
     elevation: 10,
   },
-
   loading: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
