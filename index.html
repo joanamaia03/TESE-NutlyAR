@@ -80,28 +80,42 @@
       2: "./assets/omelete.jpg"
     };
 
-    let faseAtual = 1;
+    
+    let fasesDosTargets = {
+      0: 1, // 1 = Imagem original, 2 = Imagem alternativa
+      1: 1,
+      2: 1
+    };
 
     // Esta função é chamada diretamente pelo botão de swap do React Native
     window.trocarModeloAR = function() {
-      const imgTarget0 = document.getElementById('asset-target-0');
-      const imgTarget1 = document.getElementById('asset-target-1');
-      const imgTarget2 = document.getElementById('asset-target-2');
+      let targetAtivo = null;
+      for (const index in globalTargetStates) {
+        if (globalTargetStates[index].visible) {
+          targetAtivo = parseInt(index);
+          break; // Encontrou o alvo focado, não precisa de continuar a procurar
+        }
+      }
 
-      if (faseAtual === 1) {
-        // Altera o "src" dos PNGs flutuantes para a lista da Fase 2
-        if (imgTarget0) imgTarget0.setAttribute('src', imagensFase2[0]);
-        if (imgTarget1) imgTarget1.setAttribute('src', imagensFase2[1]);
-        if (imgTarget2) imgTarget2.setAttribute('src', imagensFase2[2]);
-        faseAtual = 2;
-        console.log("WebAR: Assets virtuais alterados para a Fase 2");
+      // Se o utilizador clicar no botão sem estar a apontar para nenhum alvo, não faz nada
+      if (targetAtivo === null) {
+        console.log("WebAR: Nenhum alvo detetado na câmara de momento. Botão ignorado.");
+        return;
+      }
+
+      // 2. Localizar o elemento de imagem virtual do alvo específico que está focado
+      const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
+      if (!imgTarget) return;
+
+      // 3. Mudar APENAS a imagem desse alvo ativo
+      if (fasesDosTargets[targetAtivo] === 1) {
+        imgTarget.setAttribute('src', imagensFase2[targetAtivo]);
+        fasesDosTargets[targetAtivo] = 2;
+        console.log(`WebAR: Alvo ${targetAtivo} alterado para a Fase 2 de forma isolada.`);
       } else {
-        // Volta a colocar os PNGs originais da Fase 1
-        if (imgTarget0) imgTarget0.setAttribute('src', imagensFase1[0]);
-        if (imgTarget1) imgTarget1.setAttribute('src', imagensFase1[1]);
-        if (imgTarget2) imgTarget2.setAttribute('src', imagensFase1[2]);
-        faseAtual = 1;
-        console.log("WebAR: Assets virtuais restaurados para a Fase 1");
+        imgTarget.setAttribute('src', imagensFase1[targetAtivo]);
+        fasesDosTargets[targetAtivo] = 1;
+        console.log(`WebAR: Alvo ${targetAtivo} restaurado para a Fase 1.`);
       }
     };
     // ─────────────────────────────────────────────────────────
