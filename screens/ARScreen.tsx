@@ -200,12 +200,18 @@ export default function ARScreen({ navigation }: any) {
 
             // Quando o popup da página web envia confirmação (botão 'Sim') navegamos para o ecrã de pergunta
             if (data?.type === 'POPUP_CONFIRM' && data?.action === 'continue') {
-              // Fecha o modal local caso esteja aberto e navega para o ecrã de perguntas
+              // Fecha o modal local caso esteja aberto.
+              // Só navegamos para Question1 se a página web confirmou uma IMAGEM (imagemSelecionada existe).
               setShowPopup(false);
-              try{
-                navigation.navigate('Question1Screen', { perguntaAtual, historicoRespostas });
-              }catch(err){
-                console.warn('Navigation to Question1Screen failed', err);
+              if (imagemSelecionada) {
+                try{
+                  navigation.navigate('Question1Screen', { perguntaAtual, historicoRespostas });
+                }catch(err){
+                  console.warn('Navigation to Question1Screen failed', err);
+                }
+              } else {
+                // Se não houver imagem selecionada, foi provavelmente apenas o popup de instrução — nada mais a fazer.
+                console.log('POPUP_CONFIRM recebido sem imagem selecionada — não navega.');
               }
             }
 

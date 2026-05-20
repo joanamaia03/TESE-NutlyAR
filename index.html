@@ -194,6 +194,23 @@
           targetEl.addEventListener('targetLost', function () {
             globalTargetStates[targetIndex].visible = false;
           });
+          
+          // Quando esta imagem é clicada, informa a app nativa com dados do alvo
+          try {
+            this.el.addEventListener('click', function (ev) {
+              try {
+                const src = (ev && ev.target && ev.target.getAttribute) ? ev.target.getAttribute('src') : null;
+                if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'IMAGE_CLICKED',
+                    targetIndex: targetIndex,
+                    nomeImagem: src || '',
+                    fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
+                  }));
+                }
+              } catch (e) { console.warn('IMAGE_CLICKED post failed', e); }
+            });
+          } catch (e) { /* ignore if addEventListener not allowed */ }
         }
       }
     });
@@ -232,7 +249,17 @@
             if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelRestored', targetIndex }));
           });
           parent.appendChild(img);
-          if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelReplacedWithImage', targetIndex }));
+          if(window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelReplacedWithImage', targetIndex }));
+            try {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'IMAGE_CLICKED',
+                targetIndex: targetIndex,
+                nomeImagem: imageSrc,
+                fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
+              }));
+            }catch(e){}
+          }
         }
 
         function onActivate(){

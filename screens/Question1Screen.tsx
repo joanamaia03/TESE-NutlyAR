@@ -10,6 +10,8 @@ import {
 import { Dimensions } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import ProgressBreadcrumb from '../ProgressBar'; // Ajusta o caminho conforme o teu projeto
+import { db, auth } from '../src/firebase';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 export default function ConfidenceScreen({ route, navigation }: any) {
   // Recupera o passo/pergunta atual e o histórico vindo do ecrã AR
@@ -24,25 +26,41 @@ export default function ConfidenceScreen({ route, navigation }: any) {
       return;
     }
 
-    // Atualiza o último registo do histórico com o nível de confiança
-    const historicoAtualizado = [...historicoRespostas];
-    if (historicoAtualizado.length > 0) {
-      historicoAtualizado[historicoAtualizado.length - 1].confianca = rating;
-    }
+    // Guarda no Firestore usando o mesmo princípio da página Demographics
+    (async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Precisas de estar com a sessão iniciada para guardar as respostas.');
+        return;
+      }
 
-    console.log("Histórico Atualizado com Confiança:", historicoAtualizado);
+      try {
+        const qRef = doc(db, 'question', user.uid);
+        await setDoc(qRef, {
+          userId: user.uid,
+          perguntaAtual,
+          confianca: rating,
+          ultimaAtualizacao: new Date().toISOString(),
+        }, { merge: true });
 
-    // Lógica de Fluxo da Tese:
+        const userRef = doc(db, 'utilizadores', user.uid);
+        await updateDoc(userRef, {
+          ultimaAtualizacao: new Date().toISOString(),
+          ultimaRespostaConf: rating,
+        });
+      } catch (error: any) {
+        alert('Erro ao guardar no servidor: ' + (error?.message || String(error)));
+        return;
+      }
+    })();
+
+    // Lógica de navegação: após confiança vamos para o ecrã de motivo (Question2)
     if (perguntaAtual < 6) {
-      // Se ainda não chegou à 6, volta para a câmara AR incrementando o passo
-      navigation.navigate('ARScreen', {
-        perguntaProxima: perguntaAtual + 1,
-        historicoAcumulado: historicoAtualizado,
+      navigation.navigate('Question2Screen', {
+        perguntaAtual: perguntaAtual,
       });
-    } else {
-      // Se terminou a pergunta 6, avança para o ecrã final de submissão/sucesso
-      navigation.navigate('FinishScreen', { historicoFinal: historicoAtualizado });
     }
+
   };
 
   return (
@@ -54,7 +72,7 @@ export default function ConfidenceScreen({ route, navigation }: any) {
 
       {/* Bloco Central de Conteúdo */}
       <View style={styles.content}>
-        <Text style={styles.title}>Quão confiante está na sua{"\n"}resposta?</Text>
+        <Text style={styles.title}>Quão confiante está na sua resposta?</Text>
 
         {/* Zona das 5 Estrelas Interativas */}
         <View style={styles.starsRow}>
@@ -73,7 +91,7 @@ export default function ConfidenceScreen({ route, navigation }: any) {
                   <Icon
                     name={isSelected ? "star" : "star-outline"}
                     size={55}
-                    color="#613512" // Tom castanho escuro idêntico ao teu design
+                    color="#6B3E1F" // Tom castanho escuro idêntico ao teu design
                   />
                   {/* Número impresso no centro da estrela */}
                   <Text style={[styles.starNumberText, isSelected && styles.starNumberTextActive]}>
@@ -87,7 +105,7 @@ export default function ConfidenceScreen({ route, navigation }: any) {
 
         {/* Texto de Apoio / Legenda */}
         <Text style={styles.subtitle}>
-          Preencha as estrelas sabendo que 1 é nada{"\n"}confiante e 5 é muito confiante
+          Preencha as estrelas sabendo que 1 é nada confiante e 5 é muito confiante
         </Text>
       </View>
 
@@ -120,7 +138,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    color: '#613512',
+    color: '#6B3E1F',
     fontWeight: 'bold',
     textAlign: 'center',
     lineHeight: 36,
@@ -146,7 +164,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#613512', // Número castanho quando a estrela está vazia
+    color: '#6B3E1F', // Número castanho quando a estrela está vazia
     top: Platform.OS === 'ios' ? 18 : 16, // Ajuste milimétrico para centralização vertical
   },
   starNumberTextActive: {
@@ -154,7 +172,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 15,
-    color: '#613512',
+    color: '#6B3E1F',
     textAlign: 'center',
     lineHeight: 22,
     opacity: 0.85,
@@ -165,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nextButton: {
-    backgroundColor: '#613512', // Castanho chocolate escuro oficial dos teus botões principais
+    backgroundColor: '#784115', // Castanho chocolate escuro oficial dos teus botões principais
     width: Math.min(190, Dimensions.get('window').width * 0.6),
     paddingVertical: 14,
     borderRadius: 22,

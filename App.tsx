@@ -8,6 +8,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import DemographicsScreen from './screens/DemographicsScreen';
 import ARScreen from './screens/ARScreen';
 import Question1Screen from './screens/Question1Screen';
+import Question2Screen from './screens/Question2screen';
 import HomeScreen from './screens/HomeScreen';
 
 const Stack = createStackNavigator();
@@ -43,6 +44,10 @@ export default function App() {
         <Stack.Screen 
           name="Question1Screen" 
           component={Question1Screen} 
+        />
+        <Stack.Screen 
+          name="Question2Screen" 
+          component={Question2Screen} 
         />
         
       </Stack.Navigator>
