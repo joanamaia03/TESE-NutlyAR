@@ -6,7 +6,7 @@ interface ProgressBreadcrumbProps {
 }
 
 export default function ProgressBreadcrumb({ currentStep }: ProgressBreadcrumbProps) {
-  const steps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const steps = [1, 2, 3, 4];
   const scrollRef = React.useRef<ScrollView | null>(null);
 
   const CIRCLE_SIZE = 42; // usar o tamanho máximo (círculo ativo maior) para cálculos de scroll

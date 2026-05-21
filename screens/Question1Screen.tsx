@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Dimensions } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import ProgressBreadcrumb from '../ProgressBar'; // Ajusta o caminho conforme o teu projeto
+import ProgressBreadcrumb from './ProgressBar'; // Ajusta o caminho conforme o teu projeto
 import { db, auth } from '../src/firebase';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 

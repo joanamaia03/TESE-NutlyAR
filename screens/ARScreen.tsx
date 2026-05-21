@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import ProgressBreadcrumb from '../ProgressBar';
+import ProgressBreadcrumb from './ProgressBar';
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10';
 
