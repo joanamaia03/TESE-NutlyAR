@@ -49,27 +49,7 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
       grauImportancia: orderIndex + 1,
       fator: fatoresLista[factorIndex]
     }));
-
-    // Anexa as decisões ordenadas ao último item do teu histórico global
-    const historicoAtualizado = [...historicoRespostas];
-    if (historicoAtualizado.length > 0) {
-      historicoAtualizado[historicoAtualizado.length - 1].fatoresDecisao = fatoresOrdenadosComTexto;
-    }
-
-    console.log("Histórico Total Atualizado:", historicoAtualizado);
-
-    // CONTROLADOR DE FLUXO GLOBAL (Iteração entre as 6 perguntas da tese)
-    if (perguntaAtual < 6) {
-      // Avança para a câmara AR e reinicia o ciclo para o próximo grupo de imagens
-      navigation.navigate('ARScreen', {
-        perguntaProxima: perguntaAtual + 1,
-        historicoAcumulado: historicoAtualizado,
-      });
-    } else {
-      // Fim do bloco de 6 perguntas! Navega para o ecrã final para submeter os dados
-      navigation.navigate('FinishScreen', { historicoFinal: historicoAtualizado });
-    }
-  };
+  }
 
   return (
     <SafeAreaView style={styles.container}>

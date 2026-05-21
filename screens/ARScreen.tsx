@@ -106,40 +106,29 @@ export default function ARScreen({ navigation }: any) {
     }
   };
 
-  // Lógica executada quando o utilizador confirma a escolha no Pop-up da Coruja
+  // Lógica executada quando o utilizador confirma a escolha no Pop-up 
   const confirmarEscolhaEAvancar = () => {
     if (!imagemSelecionada) return;
 
     // 1. Cria o objeto com a resposta da pergunta atual
-    const novaResposta = {
+    const dadosPergunta = {
       pergunta: perguntaAtual,
-      targetIndex: imagemSelecionada.targetIndex,
-      fase: imagemSelecionada.fase,
-      imagem: imagemSelecionada.nomeImagem,
+      targetIndex: imagemSelecionada ? imagemSelecionada.targetIndex : 'nenhum_detectado',
+      fase: imagemSelecionada ? imagemSelecionada.fase : 1,
+      imagem: imagemSelecionada ? imagemSelecionada.nomeImagem : 'nenhuma_imagem',
       timestamp: new Date().toISOString()
     };
-
-    // 2. Acumula a resposta no histórico do estado
-    const novoHistorico = [...historicoRespostas, novaResposta];
-    setHistoricoRespostas(novoHistorico);
-    
-    setDebugMsg(`Resposta da pergunta ${perguntaAtual} guardada!`);
-    console.log("Histórico Atual de Respostas:", novoHistorico);
 
     // 3. Fecha o pop-up fofo
     setShowPopup(false);
 
-    // 4. Avança o breadcrumb ou finaliza o teste (limite de 6 perguntas)
-    if (perguntaAtual < 6) {
-      setPerguntaAtual(perguntaAtual + 1);
-    } else {
-      setDebugMsg("Teste Concluído com Sucesso!");
-      // Opcional: Enviar para o Firestore e navegar para ecrã final
-      // addDoc(collection(db, "resultados"), { historico: novoHistorico });
-    }
-
-    // Limpa a seleção temporária para estar pronto para a próxima focagem
+    // 4. Limpa a seleção temporária para estar pronto para a próxima focagem
     setImagemSelecionada(null);
+
+    // 5. NAVEGA SEMPRE para o cenário hipotético, sem travar o utilizador
+    navigation.navigate('ImagineScreen', {
+      perguntaAtual: perguntaAtual,
+    });
   };
 
   const consoleBridge = `(function(){
@@ -200,18 +189,12 @@ export default function ARScreen({ navigation }: any) {
 
             // Quando o popup da página web envia confirmação (botão 'Sim') navegamos para o ecrã de pergunta
             if (data?.type === 'POPUP_CONFIRM' && data?.action === 'continue') {
-              // Fecha o modal local caso esteja aberto.
-              // Só navegamos para Question1 se a página web confirmou uma IMAGEM (imagemSelecionada existe).
+              // Fecha o modal local caso esteja aberto e avança para Question1.
               setShowPopup(false);
-              if (imagemSelecionada) {
-                try{
-                  navigation.navigate('Question1Screen', { perguntaAtual, historicoRespostas });
-                }catch(err){
-                  console.warn('Navigation to Question1Screen failed', err);
-                }
-              } else {
-                // Se não houver imagem selecionada, foi provavelmente apenas o popup de instrução — nada mais a fazer.
-                console.log('POPUP_CONFIRM recebido sem imagem selecionada — não navega.');
+              try{
+                navigation.navigate('Question1Screen', { perguntaAtual, historicoRespostas });
+              }catch(err){
+                console.warn('Navigation to Question1Screen failed', err);
               }
             }
 
@@ -260,7 +243,7 @@ export default function ARScreen({ navigation }: any) {
             {/* Se houver uma imagem selecionada, o clique aciona o fluxo de guardar e avançar. Caso contrário, apenas fecha a instrução inicial */}
             <TouchableOpacity 
               style={styles.checkButton} 
-              onPress={imagemSelecionada ? confirmarEscolhaEAvancar : () => setShowPopup(false)}
+              onPress={confirmarEscolhaEAvancar}
             >
               <Icon name="check" size={40} color="#FFF" />
             </TouchableOpacity>
