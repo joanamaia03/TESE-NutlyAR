@@ -25,7 +25,7 @@
       .custom-popup.is-open { display: flex; }
       .custom-popup-card {
         width: min(92vw, 420px);
-        background: #ffffff;
+        background: #FFCDA6;
         border-radius: 12px;
         padding: 20px 22px;
         box-sizing: border-box;
@@ -36,7 +36,7 @@
       /* Texto do Pop Up */
       .custom-popup-text {
         margin: 0 0 16px;
-        color: #111111;
+        color: #6B3E1F;
         font-size: 16px;
         white-space: nowrap;
       }
@@ -54,8 +54,8 @@
         font-size: 14px;
         cursor: pointer;
       }
-      .popup-btn.cancel { background: #e5e7eb; color: #111827; }
-      .popup-btn.confirm { background: #2563eb; color: #ffffff; }
+      .popup-btn.cancel { background: #784115; color: #ffffff; }
+      .popup-btn.confirm { background: #784115; color: #ffffff; }
     </style>
 
     <script>
@@ -89,18 +89,23 @@
         }
       }
 
-      if (targetAtivo === null) return;
+      if (targetAtivo === null) {
+        console.log("WebAR: Nenhum alvo detetado. Botão ignorado.");
+        return;
+      }
 
       const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
-      if (!imgTarget) return;
+        if (!imgTarget) return;
 
-      if (fasesDosTargets[targetAtivo] === 1) {
-        imgTarget.setAttribute('src', imagensFase2[targetAtivo]);
-        fasesDosTargets[targetAtivo] = 2;
-      } else {
-        imgTarget.setAttribute('src', imagensFase1[targetAtivo]);
-        fasesDosTargets[targetAtivo] = 1;
-      }
+        if (fasesDosTargets[targetAtivo] === 1) {
+          imgTarget.setAttribute('src', imagensFase2[targetAtivo]);
+          fasesDosTargets[targetAtivo] = 2;
+          console.log(`WebAR: Alvo ${targetAtivo} alterado para a Fase 2.`);
+        } else {
+          imgTarget.setAttribute('src', imagensFase1[targetAtivo]);
+          fasesDosTargets[targetAtivo] = 1;
+          console.log(`WebAR: Alvo ${targetAtivo} restaurado para a Fase 1.`);
+        }
     };
 
     // Componente do A-Frame que deteta o toque/clique direto no PNG flutuante
@@ -125,16 +130,17 @@
 
           // EVENTO DE CLIQUE DA IMAGEM: Envia a resposta para o React Native
           el.addEventListener('click', function () {
-            // Só envia se a imagem estiver visível na câmara para evitar cliques fantasma
             if (globalTargetStates[targetIndex].visible) {
+              console.log(`WebAR: Refeição ${targetIndex} foi clicada.`);
+          
               const dadosResposta = {
                 type: 'IMAGE_CLICKED',
                 targetIndex: targetIndex,
                 fase: fasesDosTargets[targetIndex],
                 nomeImagem: fasesDosTargets[targetIndex] === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex]
               };
-              
-              // Envia os dados para o React Native
+          
+              // Envia os dados de volta para a aplicação nativa
               if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(JSON.stringify(dadosResposta));
               }
@@ -199,7 +205,6 @@
           if(anyTargetVisible){
             globalPopupOpen = true;
             openCustomPopup();
-            window.setTimeout(function(){ globalPopupOpen = false; }, 250);
           }
         });
 
@@ -233,7 +238,7 @@
           id="asset-target-0"
           src="./assets/hotdog.png"
           position="0 0 0"
-          scale="0.5 0.5 0.5"
+          scale="1 0.5"
           clickable-image
             >
         </a-image>
