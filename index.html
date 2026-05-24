@@ -5,12 +5,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.0/dist/mindar-image-aframe.prod.js"></script>
-    
+
     <style>
       body { margin: 0; overflow: hidden; }
       #example-scanning-overlay { display: none; }
 
-      /* Posição do Pop Up */
       .custom-popup {
         position: fixed;
         inset: 0;
@@ -21,7 +20,6 @@
         z-index: 9999;
       }
 
-      /* Caixa do pop up */
       .custom-popup.is-open { display: flex; }
       .custom-popup-card {
         width: min(92vw, 420px);
@@ -33,7 +31,6 @@
         text-align: center;
       }
 
-      /* Texto do Pop Up */
       .custom-popup-text {
         margin: 0 0 16px;
         color: #6B3E1F;
@@ -41,7 +38,6 @@
         white-space: nowrap;
       }
 
-      /* Botão do Pop Up */
       .custom-popup-actions {
         display: flex;
         justify-content: center;
@@ -59,66 +55,65 @@
     </style>
 
     <script>
-    let globalTargetStates = {
-      0: { visible: false, lastFoundAt: 0 },
-      1: { visible: false, lastFoundAt: 0 },
-      2: { visible: false, lastFoundAt: 0 }
-    };
-    let lastSelectedImage = null;
-
-    const imagensFase1 = {
-      0: "./assets/hotdog.png",
-      1: "./assets/sardine.png",
-      2: "./assets/cozido.png"
-    };
-
-    const imagensFase2 = {
-      0: "./assets/pizza.jpg",
-      1: "./assets/pataniscas.jpg",
-      2: "./assets/omelete.jpg"
-    };
-
-    let fasesDosTargets = { 0: 1, 1: 1, 2: 1 };
-
-    const getCurrentImageData = (targetIndex) => {
-      const faseAtual = (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1;
-      const src = faseAtual === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex];
-
-      return {
-        type: 'IMAGE_STATE_CHANGED',
-        visible: true,
-        targetIndex: targetIndex,
-        nomeImagem: src || '',
-        fase: faseAtual
+      let globalTargetStates = {
+        0: { visible: false, lastFoundAt: 0 },
+        1: { visible: false, lastFoundAt: 0 },
+        2: { visible: false, lastFoundAt: 0 }
       };
-    };
+      let globalPopupOpen = false;
+      let globalLastClicked = null;
 
-    const notifyReactNative = (payload) => {
-      try {
-        if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-          window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+      const imagensFase1 = {
+        0: './assets/hotdog.png',
+        1: './assets/sardine.png',
+        2: './assets/cozido.png'
+      };
+
+      const imagensFase2 = {
+        0: './assets/pizza.jpg',
+        1: './assets/pataniscas.jpg',
+        2: './assets/omelete.jpg'
+      };
+
+      let fasesDosTargets = { 0: 1, 1: 1, 2: 1 };
+
+      const getCurrentImageData = (targetIndex) => {
+        const faseAtual = (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1;
+        const src = faseAtual === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex];
+        return {
+          type: 'IMAGE_STATE_CHANGED',
+          visible: true,
+          targetIndex: targetIndex,
+          nomeImagem: src || '',
+          fase: faseAtual
+        };
+      };
+
+      const notifyReactNative = (payload) => {
+        try {
+          if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+            window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+          }
+        } catch (e) {
+          console.warn('postMessage failed', e);
         }
-      } catch (e) {
-        console.warn('postMessage failed', e);
-      }
-    };
+      };
 
-    // Função chamada pela App para trocar a imagem
-    window.trocarModeloAR = function() {
-      let targetAtivo = null;
-      for (const index in globalTargetStates) {
-        if (globalTargetStates[index].visible) {
-          targetAtivo = parseInt(index);
-          break;
+      window.trocarModeloAR = function() {
+        let targetAtivo = null;
+        for (const index in globalTargetStates) {
+          if (globalTargetStates[index].visible) {
+            targetAtivo = parseInt(index);
+            break;
+          }
         }
-      }
 
-      if (targetAtivo === null) {
-        console.log("WebAR: Nenhum alvo detetado. Botão ignorado.");
-        return;
-      }
+        if (targetAtivo === null) {
+          console.log('WebAR: Nenhum alvo detetado. Botão ignorado.');
+          return;
+        }
 
-      const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
+        const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
         if (!imgTarget) return;
 
         if (fasesDosTargets[targetAtivo] === 1) {
@@ -132,160 +127,150 @@
         }
 
         notifyReactNative(getCurrentImageData(targetAtivo));
-    };
+      };
 
-    // Componente do A-Frame que deteta o toque/clique direto no PNG flutuante
-    AFRAME.registerComponent('clickable-image', {
-      init: function () {
-        const el = this.el;
-        const targetEl = el.closest('[mindar-image-target]');
+      const openCustomPopup = () => {
+        const popup = document.getElementById('custom-popup');
+        if (popup) popup.classList.add('is-open');
+      };
 
-        if (targetEl) {
-          const targetIndexAttr = targetEl.getAttribute('mindar-image-target');
-          const targetIndex = targetIndexAttr ? parseInt(targetIndexAttr.split(':')[1] || targetIndexAttr.split('=')[1]) : 0;
+      const closeCustomPopup = () => {
+        const popup = document.getElementById('custom-popup');
+        if (popup) popup.classList.remove('is-open');
+      };
 
-          // Regista se o target está na câmara
-          targetEl.addEventListener('targetFound', function () {
-            globalTargetStates[targetIndex].visible = true;
-            globalTargetStates[targetIndex].lastFoundAt = Date.now();
-            notifyReactNative(getCurrentImageData(targetIndex));
-          });
-
-          targetEl.addEventListener('targetLost', function () {
-            globalTargetStates[targetIndex].visible = false;
-            notifyReactNative({
-              type: 'IMAGE_STATE_CHANGED',
-              visible: false,
-              targetIndex: targetIndex,
-              nomeImagem: '',
-              fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
-            });
-          });
-
-          // EVENTO DE CLIQUE DA IMAGEM: Envia a resposta para o React Native
-          el.addEventListener('click', function () {
-            if (globalTargetStates[targetIndex].visible) {
-              console.log(`WebAR: Refeição ${targetIndex} foi clicada.`);
-          
-              const dadosResposta = {
-                type: 'IMAGE_CLICKED',
-                targetIndex: targetIndex,
-                fase: fasesDosTargets[targetIndex],
-                nomeImagem: fasesDosTargets[targetIndex] === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex]
-              };
-
-              lastSelectedImage = dadosResposta;
-          
-              // Envia os dados de volta para a aplicação nativa
-              notifyReactNative(dadosResposta);
+      const openPopupForVisibleTarget = () => {
+        if (!globalLastClicked) {
+          for (const idx in globalTargetStates) {
+            if (globalTargetStates[idx].visible) {
+              try { globalLastClicked = getCurrentImageData(parseInt(idx)); } catch (e) {}
+              break;
             }
-          });
-        }
-      }
-    });
-  </script>
-  <script>
-    // Popup handlers: abre/fecha o popup e notifica a app mobile quando o utilizador confirma
-    (function(){
-      let globalPopupOpen = false;
-
-      function notifyNative(payload){
-        try{
-          if(window.ReactNativeWebView && window.ReactNativeWebView.postMessage){
-            window.ReactNativeWebView.postMessage(JSON.stringify(payload));
           }
-        }catch(e){ console.warn('postMessage failed', e); }
-      }
+        }
+        globalPopupOpen = true;
+        openCustomPopup();
+        window.setTimeout(() => { globalPopupOpen = false; }, 250);
+      };
 
-      function openCustomPopup(){
-        const popup = document.getElementById('custom-popup');
-        if(popup) popup.classList.add('is-open');
-      }
-
-      function closeCustomPopup(){
-        const popup = document.getElementById('custom-popup');
-        if(popup) popup.classList.remove('is-open');
-      }
-
-      document.addEventListener('DOMContentLoaded', function(){
+      document.addEventListener('DOMContentLoaded', () => {
         const cancelBtn = document.getElementById('popup-cancel');
         const continueBtn = document.getElementById('popup-continue');
 
-        if(cancelBtn){
-          cancelBtn.addEventListener('click', function(event){
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
             closeCustomPopup();
-            notifyNative({ type: 'POPUP_CANCEL', action: 'close' });
+            notifyReactNative({ type: 'POPUP_CANCEL', action: 'close' });
           });
         }
 
-        if(continueBtn){
-          continueBtn.addEventListener('click', function(event){
+        if (continueBtn) {
+          continueBtn.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
             closeCustomPopup();
-            notifyNative({
+            let payloadImage = globalLastClicked;
+            if (!payloadImage) {
+              for (const idx in globalTargetStates) {
+                if (globalTargetStates[idx].visible) {
+                  payloadImage = getCurrentImageData(parseInt(idx));
+                  break;
+                }
+              }
+            }
+            notifyReactNative({
               type: 'POPUP_CONFIRM',
               action: 'continue',
-              imagemSelecionada: lastSelectedImage
+              imagemSelecionada: payloadImage || null
             });
             console.log('Pagina Seguinte');
           });
         }
 
-        // Abre o popup quando houver um alvo visível e o utilizador tocar/clicar na página
-        document.addEventListener('click', function(event){
-          if(globalPopupOpen) return;
-          const anyTargetVisible = Object.values(globalTargetStates).some(function(state){
+        document.addEventListener('click', function() {
+          if (globalPopupOpen) return;
+          const anyTargetVisible = Object.values(globalTargetStates).some(function(state) {
             return state.visible && (Date.now() - state.lastFoundAt) >= 250;
           });
-          if(anyTargetVisible){
-              // ensure we have a last-clicked / active image to send to native
-              if (!globalLastClicked) {
-                for (const idx in globalTargetStates) {
-                  if (globalTargetStates[idx].visible) {
-                    try { globalLastClicked = getCurrentImageData(parseInt(idx)); } catch(e) {}
-                    break;
-                  }
-                }
-              }
-              globalPopupOpen = true;
-              openCustomPopup();
+          if (anyTargetVisible) {
+            openPopupForVisibleTarget();
           }
         });
 
-        document.addEventListener('touchend', function(event){
-          if(globalPopupOpen) return;
-          const anyTargetVisible = Object.values(globalTargetStates).some(function(state){
+        document.addEventListener('touchend', function(event) {
+          if (globalPopupOpen) return;
+          const anyTargetVisible = Object.values(globalTargetStates).some(function(state) {
             return state.visible && (Date.now() - state.lastFoundAt) >= 250;
           });
-          if(anyTargetVisible){
+          if (anyTargetVisible) {
             event.preventDefault();
-              // ensure we have a last-clicked / active image to send to native
-              if (!globalLastClicked) {
-                for (const idx in globalTargetStates) {
-                  if (globalTargetStates[idx].visible) {
-                    try { globalLastClicked = getCurrentImageData(parseInt(idx)); } catch(e) {}
-                    break;
-                  }
-                }
-              }
-              globalPopupOpen = true;
-              openCustomPopup();
-            window.setTimeout(function(){ globalPopupOpen = false; }, 250);
+            openPopupForVisibleTarget();
           }
         });
       });
-    })();
-  </script>
+
+      AFRAME.registerComponent('clickable-image', {
+        init: function () {
+          const el = this.el;
+          const targetEl = el.closest('[mindar-image-target]');
+
+          if (targetEl) {
+            const targetIndexAttr = targetEl.getAttribute('mindar-image-target');
+            const targetIndex = targetIndexAttr ? parseInt(targetIndexAttr.split(':')[1] || targetIndexAttr.split('=')[1]) : 0;
+
+            targetEl.addEventListener('targetFound', function () {
+              globalTargetStates[targetIndex].visible = true;
+              globalTargetStates[targetIndex].lastFoundAt = Date.now();
+              try { globalLastClicked = getCurrentImageData(targetIndex); } catch(e){}
+              notifyReactNative(getCurrentImageData(targetIndex));
+            });
+
+            targetEl.addEventListener('targetLost', function () {
+              globalTargetStates[targetIndex].visible = false;
+              notifyReactNative({
+                type: 'IMAGE_STATE_CHANGED',
+                visible: false,
+                targetIndex: targetIndex,
+                nomeImagem: '',
+                fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
+              });
+              try { if (globalLastClicked && globalLastClicked.targetIndex === targetIndex) globalLastClicked = null; } catch(e){}
+            });
+
+            try {
+              this.el.addEventListener('click', function (ev) {
+                try {
+                  const src = (ev && ev.target && ev.target.getAttribute) ? ev.target.getAttribute('src') : null;
+                  const clickedPayload = {
+                    type: 'IMAGE_CLICKED',
+                    targetIndex: targetIndex,
+                    nomeImagem: src || '',
+                    fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
+                  };
+                  globalLastClicked = { targetIndex: clickedPayload.targetIndex, nomeImagem: clickedPayload.nomeImagem, fase: clickedPayload.fase };
+                  notifyReactNative(clickedPayload);
+                  openPopupForVisibleTarget();
+                  notifyReactNative(getCurrentImageData(targetIndex));
+                } catch (e) {
+                  console.warn('IMAGE_CLICKED post failed', e);
+                }
+              });
+            } catch (e) {
+              /* ignore if addEventListener not allowed */
+            }
+          }
+        }
+      });
+    </script>
   </head>
   <body>
-    <a-scene 
-      mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: yes; uiScanning: yes;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false">
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
@@ -295,8 +280,7 @@
           src="./assets/hotdog.png"
           position="0 0 0"
           scale="1 0.5"
-          clickable-image
-            >
+          clickable-image>
         </a-image>
       </a-entity>
 
