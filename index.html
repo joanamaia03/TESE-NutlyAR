@@ -241,8 +241,17 @@
             return state.visible && (Date.now() - state.lastFoundAt) >= 250;
           });
           if(anyTargetVisible){
-            globalPopupOpen = true;
-            openCustomPopup();
+              // ensure we have a last-clicked / active image to send to native
+              if (!globalLastClicked) {
+                for (const idx in globalTargetStates) {
+                  if (globalTargetStates[idx].visible) {
+                    try { globalLastClicked = getCurrentImageData(parseInt(idx)); } catch(e) {}
+                    break;
+                  }
+                }
+              }
+              globalPopupOpen = true;
+              openCustomPopup();
           }
         });
 
@@ -253,8 +262,17 @@
           });
           if(anyTargetVisible){
             event.preventDefault();
-            globalPopupOpen = true;
-            openCustomPopup();
+              // ensure we have a last-clicked / active image to send to native
+              if (!globalLastClicked) {
+                for (const idx in globalTargetStates) {
+                  if (globalTargetStates[idx].visible) {
+                    try { globalLastClicked = getCurrentImageData(parseInt(idx)); } catch(e) {}
+                    break;
+                  }
+                }
+              }
+              globalPopupOpen = true;
+              openCustomPopup();
             window.setTimeout(function(){ globalPopupOpen = false; }, 250);
           }
         });
