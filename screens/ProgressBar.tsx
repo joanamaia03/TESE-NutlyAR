@@ -37,7 +37,7 @@ export default function ProgressBreadcrumb({ currentStep }: ProgressBreadcrumbPr
         ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 8 }}
+        contentContainerStyle={styles.scrollContent}
       >
         {steps.map((step, index) => {
           const isActive = currentStep === step;
@@ -63,13 +63,18 @@ export default function ProgressBreadcrumb({ currentStep }: ProgressBreadcrumbPr
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
     paddingVertical: 0,
-    width: '92%',
-    alignSelf: 'center',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
   },
   circle: {
     width: 34,

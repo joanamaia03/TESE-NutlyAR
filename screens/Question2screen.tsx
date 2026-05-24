@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { TextInput } from 'react-native';
-import ProgressBreadcrumb from '../ProgressBar'; // Ajusta o caminho conforme o teu projeto
+import ProgressBreadcrumb from './ProgressBar'; // Ajusta o caminho conforme o teu projeto
 import { db, auth } from '../src/firebase';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
@@ -66,9 +66,8 @@ export default function ReasonScreen({ route, navigation }: any) {
 
     // CONTROLADOR DE FLUXO DA TESE (6 Perguntas no Total)
     if (perguntaAtual < 6) {
-      // Se ainda não concluiu as 6 perguntas, manda de volta para a AR incrementando o passo
-      navigation.navigate('ARScreen', {
-        perguntaProxima: perguntaAtual + 1,
+      navigation.navigate('Question3Screen', {
+        perguntaAtual,
       });
     } else {
       navigation.navigate('FinishScreen');
@@ -85,7 +84,7 @@ export default function ReasonScreen({ route, navigation }: any) {
       </View>
 
       {/* Conteúdo Principal com Scroll para ecrãs mais pequenos */}
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Qual o motivo principal da sua escolha?</Text>
 
         {/* Mapeamento dos botões ovais idênticos ao design */}
@@ -109,6 +108,9 @@ export default function ReasonScreen({ route, navigation }: any) {
             );
           })}
         </View>
+        <Text style={styles.footerNote}>
+            Se identificar mais do que um fator, por favor ordene por ordem de importância {"\n"} (1: nada importante; 5: muito importante) 
+        </Text>
         
       </ScrollView>
 
@@ -130,13 +132,15 @@ const styles = StyleSheet.create({
   },
   breadcrumbContainer: {
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 10,
   },
   content: {
+    flexGrow: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 40,
-    paddingBottom: 20,
+    paddingTop: 0,
+    paddingBottom: 24,
   },
   title: {
     fontSize: 26,
@@ -144,7 +148,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     lineHeight: 36,
-    marginBottom: 35,
+    marginBottom: 28,
+    marginTop: 0,
   },
   optionsContainer: {
     width: '100%',
@@ -195,13 +200,23 @@ const styles = StyleSheet.create({
   radioOuterActive: { borderColor: '#733D14' },
   radioInner: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#733D14' },
   inputReason: { flex: 1, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#E28A47', borderRadius: 12, padding: 10, color: '#613512' },
+  
+  footerNote: {
+    fontSize: 14,
+    color: '#6B3E1F',
+    textAlign: 'center',
+    lineHeight: 20,
+    opacity: 0.85,
+    marginTop: 25,
+    paddingHorizontal: 10,
+  },
   footer: {
-    paddingBottom: 45,
+    paddingBottom: 32,
     alignItems: 'center',
     backgroundColor: '#FAF5F0',
   },
   nextButton: {
-    backgroundColor: '#613512',
+    backgroundColor: '#784115',
     width: '60%',
     maxWidth: 190,
     paddingVertical: 14,

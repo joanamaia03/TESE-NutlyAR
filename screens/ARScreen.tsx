@@ -14,11 +14,12 @@ import {
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import ProgressBreadcrumb from './ProgressBar';
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10';
 
-export default function ARScreen({ navigation }: any) {
+export default function ARScreen({ navigation, route }: any) {
   const [cameraGranted, setCameraGranted] = React.useState<boolean | null>(null);
   const [showPopup, setShowPopup] = React.useState(false);
   const [perguntaAtual, setPerguntaAtual] = React.useState(1);
@@ -26,39 +27,73 @@ export default function ARScreen({ navigation }: any) {
   const [debugMsg, setDebugMsg] = React.useState<string | null>(null);
   const [imagemSelecionada, setImagemSelecionada] = React.useState<any>(null);
   const [historicoRespostas, setHistoricoRespostas] = React.useState<any[]>([]);
+  const [popupOverrideMessage, setPopupOverrideMessage] = React.useState<string | null>(null);
+  const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
 
-  // Hide Android navigation bar when this screen is active (if expo-navigation-bar is installed)
-  React.useEffect(() => {
-    let mounted = true;
-    const tryHide = async () => {
-      if (Platform.OS !== 'android') return;
-      try {
-        const nav: any = await import('expo-navigation-bar');
-        if (!mounted) return;
-        if (nav && typeof nav.setVisibilityAsync === 'function') {
-          await nav.setVisibilityAsync('hidden');
+  // Hide Android navigation bar while this screen is focused and apply any incoming params
+  useFocusEffect(
+    React.useCallback(() => {
+      // Apply incoming navigation params when focused (e.g., from Question4)
+      if (route && route.params) {
+        const { popupOverride, enableInfo, perguntaProxima } = route.params as any;
+        if (typeof popupOverride === 'string' && popupOverride.length > 0) {
+          setPopupOverrideMessage(popupOverride);
+          setShowPopup(true);
         }
-      } catch (e) {
-        console.warn('expo-navigation-bar not available, cannot hide navigation bar', e);
+        if (enableInfo) setInfoEnabled(true);
+        // Keep breadcrumb on step 1 — don't override perguntaAtual from navigation params.
       }
-    };
 
-    tryHide();
+      let active = true;
 
-    return () => {
-      mounted = false;
-      (async () => {
+      const hideNav = async () => {
+        if (Platform.OS !== 'android') return;
         try {
           const nav: any = await import('expo-navigation-bar');
-          if (nav && typeof nav.setVisibilityAsync === 'function') {
-            await nav.setVisibilityAsync('visible');
+          if (!active) return;
+          if (nav) {
+            if (typeof nav.setVisibilityAsync === 'function') {
+              await nav.setVisibilityAsync('hidden');
+            }
+            if (typeof nav.setBehaviorAsync === 'function') {
+              try {
+                await nav.setBehaviorAsync('sticky-immersive');
+              } catch (e) {
+                // ignore if unsupported
+              }
+            }
           }
         } catch (e) {
-          // ignore
+          console.warn('expo-navigation-bar not available, cannot hide navigation bar', e);
         }
-      })();
-    };
-  }, []);
+      };
+
+      hideNav();
+
+      return () => {
+        active = false;
+        (async () => {
+          try {
+            const nav: any = await import('expo-navigation-bar');
+            if (nav) {
+              if (typeof nav.setVisibilityAsync === 'function') {
+                await nav.setVisibilityAsync('visible');
+              }
+              if (typeof nav.setBehaviorAsync === 'function') {
+                try {
+                  await nav.setBehaviorAsync('overlay-swipe');
+                } catch (e) {
+                  // ignore if unsupported
+                }
+              }
+            }
+          } catch (e) {
+            // ignore
+          }
+        })();
+      };
+    }, [route])
+  );
 
   // show popup automatically once camera permission is granted
   React.useEffect(() => {
@@ -108,24 +143,26 @@ export default function ARScreen({ navigation }: any) {
 
   // Lógica executada quando o utilizador confirma a escolha no Pop-up 
   const confirmarEscolhaEAvancar = () => {
-    if (!imagemSelecionada) return;
+    // Se não houver imagem selecionada, apenas fecha o pop-up (comportamento antigo)
+    if (!imagemSelecionada) {
+      setShowPopup(false);
+      return;
+    }
 
     // 1. Cria o objeto com a resposta da pergunta atual
     const dadosPergunta = {
       pergunta: perguntaAtual,
-      targetIndex: imagemSelecionada ? imagemSelecionada.targetIndex : 'nenhum_detectado',
-      fase: imagemSelecionada ? imagemSelecionada.fase : 1,
-      imagem: imagemSelecionada ? imagemSelecionada.nomeImagem : 'nenhuma_imagem',
-      timestamp: new Date().toISOString()
+      targetIndex: imagemSelecionada.targetIndex,
+      fase: imagemSelecionada.fase,
+      imagem: imagemSelecionada.nomeImagem,
+      timestamp: new Date().toISOString(),
     };
 
-    // 3. Fecha o pop-up fofo
+    // Fecha o pop-up e limpa seleção
     setShowPopup(false);
-
-    // 4. Limpa a seleção temporária para estar pronto para a próxima focagem
     setImagemSelecionada(null);
 
-    // 5. NAVEGA SEMPRE para o cenário hipotético, sem travar o utilizador
+    // Navega para o cenário/historico como antes
     navigation.navigate('ImagineScreen', {
       perguntaAtual: perguntaAtual,
     });
@@ -148,6 +185,48 @@ export default function ARScreen({ navigation }: any) {
       window.addEventListener('error', function(ev){ send({ type: 'error', message: ev && ev.message, filename: ev && ev.filename, lineno: ev && ev.lineno }); });
     }catch(e){ try{ window.ReactNativeWebView.postMessage(JSON.stringify({ type:'bridgeError', error: String(e) })); }catch(_){} }
   })(); true;`;
+
+  // Render text that supports **bold** markup inside the popupOverrideMessage
+  const renderFormattedText = (text: string | null, instructionStyle?: any, boldStyle?: any) => {
+    if (!text) return null;
+    // Split by **bold** markers
+    const parts: Array<{ text: string; bold: boolean }> = [];
+    const regex = /\*\*(.+?)\*\*/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push({ text: text.slice(lastIndex, match.index), bold: false });
+      }
+      parts.push({ text: match[1], bold: true });
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      parts.push({ text: text.slice(lastIndex), bold: false });
+    }
+
+    return (
+      <Text style={[instructionStyle || styles.instructionText, { width: '100%' }]}>
+        {parts.map((p, i) => (
+          <Text key={i} style={p.bold ? (boldStyle || styles.boldText) : undefined}>
+            {p.text}
+          </Text>
+        ))}
+      </Text>
+    );
+  };
+
+  const renderFormattedParagraphs = (text: string | null, instructionStyle?: any, boldStyle?: any) => {
+    if (!text) return null;
+    // Normalize line endings and keep original newlines so that a single Text
+    // element handles wrapping consistently across all lines.
+    const normalized = text.replace(/\r\n/g, '\n');
+    return (
+      <View style={{ width: '100%' }}>
+        {renderFormattedText(normalized, instructionStyle, boldStyle)}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -227,7 +306,10 @@ export default function ARScreen({ navigation }: any) {
                 <Text style={styles.instructionText}>
                   Selecionou a refeição. Tem a certeza de que quer <Text style={styles.boldText}>confirmar esta opção</Text> para a pergunta {perguntaAtual}?
                 </Text>
-              ) : (
+                ) : (
+                  popupOverrideMessage ? (
+                    renderFormattedParagraphs(popupOverrideMessage, styles.overrideInstructionText, styles.overrideBoldText)
+                  ) : (
                 // Instrução genérica de abertura da página
                 <>
                   <Text style={styles.instructionText}>
@@ -237,12 +319,13 @@ export default function ARScreen({ navigation }: any) {
                     Caso não conheça ou não goste da refeição indicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito.
                   </Text>
                 </>
-              )}
+                )
+                )}
             </View>
 
             {/* Se houver uma imagem selecionada, o clique aciona o fluxo de guardar e avançar. Caso contrário, apenas fecha a instrução inicial */}
             <TouchableOpacity 
-              style={styles.checkButton} 
+              style={popupOverrideMessage ? styles.overrideCheckButton : styles.checkButton} 
               onPress={confirmarEscolhaEAvancar}
             >
               <Icon name="check" size={40} color="#FFF" />
@@ -255,8 +338,8 @@ export default function ARScreen({ navigation }: any) {
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Icon name="home" size={32} color="#613512" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}} disabled={true}>
-          <Icon name="information" size={32} color="#C7B8AA" />
+        <TouchableOpacity onPress={() => setShowPopup(true)} disabled={!infoEnabled}>
+          <Icon name="information" size={32} color={infoEnabled ? '#613512' : '#C7B8AA'} />
         </TouchableOpacity>
         <TouchableOpacity onPress={enviarOrdemTrocarImagem}>
           <View style={styles.iconStack}>
@@ -383,12 +466,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  instructionText: {
-    fontSize: 16,
-    color: '#613512',
-    textAlign: 'center',
-    lineHeight: 22,
-  },
   boldText: {
     fontWeight: 'bold',
     color: '#9C5325', 
@@ -398,9 +475,29 @@ const styles = StyleSheet.create({
     color: '#8A705A',
     textAlign: 'center',
     marginTop: 12,
+    alignSelf: 'stretch',
+  },
+  instructionText: {
+    fontSize: 16,
+    color: '#613512',
+    textAlign: 'center',
+    lineHeight: 22,
+    alignSelf: 'stretch',
+  },
+  overrideInstructionText: {
+    fontSize: 16,
+    color: '#613512',
+    textAlign: 'center',
+    lineHeight: 22,
+    alignSelf: 'stretch',
+  },
+  overrideBoldText: {
+    fontWeight: 'bold',
+    color: '#9C5325',
+    fontSize: 16,
   },
   checkButton: {
-    backgroundColor: '#613512', 
+    backgroundColor: '#784115', 
     width: 110,
     height: 50,
     borderRadius: 18,
@@ -412,6 +509,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
+  },
+  overrideCheckButton: {
+    backgroundColor: '#784115',
+    width: 110,
+    height: 50,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 6,
   },
   bottomNav: {
     position: 'absolute',

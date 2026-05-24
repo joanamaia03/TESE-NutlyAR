@@ -15,7 +15,7 @@ import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 export default function ConfidenceScreen({ route, navigation }: any) {
   // Recupera o passo/pergunta atual e o histórico vindo do ecrã AR
-  const { perguntaAtual = 1, historicoRespostas = [] } = route.params || {};
+  const { perguntaAtual = 1 } = route.params || {};
   
   // Estado para armazenar a classificação de confiança selecionada (1 a 5)
   const [rating, setRating] = useState<number>(0);
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   breadcrumbContainer: {
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 10,
   },
   content: {
     flex: 1,
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   footer: {
-    paddingBottom: 45,
+    paddingBottom: 32,
     alignItems: 'center',
   },
   nextButton: {
