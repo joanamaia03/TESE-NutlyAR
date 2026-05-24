@@ -16,6 +16,8 @@ import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import ProgressBreadcrumb from './ProgressBar';
+import { auth, db } from '../src/firebase';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10';
 
@@ -129,6 +131,62 @@ export default function ARScreen({ navigation, route }: any) {
       null
     );
   }, [imagemAtiva, imagemSelecionada]);
+
+  const guardarImagemSelecionada = React.useCallback(async (payload: any) => {
+    const user = auth.currentUser;
+    console.log('guardarImagemSelecionada called, payload=', payload, 'state.imagemSelecionada=', imagemSelecionada, 'state.imagemAtiva=', imagemAtiva, 'currentUser=', user);
+    if (!user) {
+      console.warn('Não foi possível guardar a imagem selecionada: utilizador sem sessão.');
+      setDebugMsg('Erro: utilizador não autenticado');
+      setTimeout(() => setDebugMsg(null), 4000);
+      return;
+    }
+
+    // prefer explicit payload, then transient selection, then active image
+    const imagem = payload?.imagemSelecionada || imagemSelecionada || imagemAtiva;
+    if (!imagem) {
+      console.warn('Não foi possível guardar a imagem selecionada: payload vazio ou sem imagem ativa.');
+      setDebugMsg('Erro: nenhuma imagem selecionada');
+      setTimeout(() => setDebugMsg(null), 4000);
+      return;
+    }
+
+    try {
+      const dadosImagem = {
+        targetIndex: imagem.targetIndex ?? null,
+        fase: imagem.fase ?? null,
+        nomeImagem: imagem.nomeImagem ?? '',
+        timestamp: new Date().toISOString(),
+      };
+
+      console.log('Gravando imagem no Firestore para user=', user.uid, 'dados=', dadosImagem);
+      setDebugMsg('A gravar imagem...');
+      const qRef = doc(db, 'question', user.uid);
+      await setDoc(
+        qRef,
+        {
+          userId: user.uid,
+          perguntaAtual,
+          imagemSelecionada: dadosImagem,
+          ultimaAtualizacao: new Date().toISOString(),
+        },
+        { merge: true }
+      );
+
+      const userRef = doc(db, 'utilizadores', user.uid);
+      await updateDoc(userRef, {
+        ultimaAtualizacao: new Date().toISOString(),
+        ultimaImagemSelecionada: dadosImagem,
+      });
+
+      setDebugMsg('Imagem gravada com sucesso');
+      setTimeout(() => setDebugMsg(null), 3000);
+    } catch (error: any) {
+      console.warn('Erro ao guardar imagem selecionada:', error?.message || error);
+      setDebugMsg('Erro ao gravar imagem: ' + (error?.message || String(error)));
+      setTimeout(() => setDebugMsg(null), 5000);
+    }
+  }, [imagemSelecionada, perguntaAtual]);
 
   // Hide Android navigation bar while this screen is focused and apply any incoming params
   useFocusEffect(
@@ -380,6 +438,7 @@ export default function ARScreen({ navigation, route }: any) {
 
             // Quando o popup da página web envia confirmação (botão 'Sim') navegamos para o ecrã de pergunta
             if (data?.type === 'POPUP_CONFIRM' && data?.action === 'continue') {
+              void guardarImagemSelecionada(data);
               // Fecha o modal local caso esteja aberto e avança para Question1.
               setShowPopup(false);
               try{

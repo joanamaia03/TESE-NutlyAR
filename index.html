@@ -65,6 +65,7 @@
       2: { visible: false, lastFoundAt: 0 }
     };
     let globalPopupOpen = false;
+    let globalLastClicked = null;
 
     // ─── MAPEAMENTO DOS PARES DE IMAGENS (PNG FLUTUANTES) ───
     // Define a Fase 1 (Imagens originais) e Fase 2 (Imagens alternativas)
@@ -167,7 +168,17 @@
           closeCustomPopup();
           try {
             if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-              window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'POPUP_CONFIRM', action: 'continue' }));
+              // if there's no explicit last click, try to use the first visible target as fallback
+              var payloadImage = globalLastClicked;
+              if (!payloadImage) {
+                for (const idx in globalTargetStates) {
+                  if (globalTargetStates[idx].visible) {
+                    payloadImage = getCurrentImageData(parseInt(idx));
+                    break;
+                  }
+                }
+              }
+              window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'POPUP_CONFIRM', action: 'continue', imagemSelecionada: payloadImage || null }));
             }
           } catch (e) {
             console.warn('postMessage failed', e);
@@ -213,6 +224,7 @@
           targetEl.addEventListener('targetFound', function () {
             globalTargetStates[targetIndex].visible = true;
             globalTargetStates[targetIndex].lastFoundAt = Date.now();
+            try { globalLastClicked = getCurrentImageData(targetIndex); } catch(e){}
             postImageStateToReactNative(targetIndex);
           });
 
@@ -229,6 +241,7 @@
                 }));
               }
             } catch (e) { console.warn('IMAGE_STATE_CHANGED lost post failed', e); }
+            try { if (globalLastClicked && globalLastClicked.targetIndex === targetIndex) globalLastClicked = null; } catch(e){}
           });
           
           // Quando esta imagem é clicada, informa a app nativa com dados do alvo
@@ -237,12 +250,14 @@
               try {
                 const src = (ev && ev.target && ev.target.getAttribute) ? ev.target.getAttribute('src') : null;
                 if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-                  window.ReactNativeWebView.postMessage(JSON.stringify({
+                  var clickedPayload = {
                     type: 'IMAGE_CLICKED',
                     targetIndex: targetIndex,
                     nomeImagem: src || '',
                     fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
-                  }));
+                  };
+                  globalLastClicked = { targetIndex: clickedPayload.targetIndex, nomeImagem: clickedPayload.nomeImagem, fase: clickedPayload.fase };
+                  window.ReactNativeWebView.postMessage(JSON.stringify(clickedPayload));
                 }
                 postImageStateToReactNative(targetIndex);
               } catch (e) { console.warn('IMAGE_CLICKED post failed', e); }
@@ -289,12 +304,14 @@
           if(window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelReplacedWithImage', targetIndex }));
             try {
-              window.ReactNativeWebView.postMessage(JSON.stringify({
+              var clickedPayload = {
                 type: 'IMAGE_CLICKED',
                 targetIndex: targetIndex,
                 nomeImagem: imageSrc,
                 fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
-              }));
+              };
+              globalLastClicked = { targetIndex: clickedPayload.targetIndex, nomeImagem: clickedPayload.nomeImagem, fase: clickedPayload.fase };
+              window.ReactNativeWebView.postMessage(JSON.stringify(clickedPayload));
             }catch(e){}
           }
         }
