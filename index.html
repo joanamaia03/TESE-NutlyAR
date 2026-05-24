@@ -64,6 +64,7 @@
       1: { visible: false, lastFoundAt: 0 },
       2: { visible: false, lastFoundAt: 0 }
     };
+    let lastSelectedImage = null;
 
     const imagensFase1 = {
       0: "./assets/hotdog.png",
@@ -78,6 +79,29 @@
     };
 
     let fasesDosTargets = { 0: 1, 1: 1, 2: 1 };
+
+    const getCurrentImageData = (targetIndex) => {
+      const faseAtual = (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1;
+      const src = faseAtual === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex];
+
+      return {
+        type: 'IMAGE_STATE_CHANGED',
+        visible: true,
+        targetIndex: targetIndex,
+        nomeImagem: src || '',
+        fase: faseAtual
+      };
+    };
+
+    const notifyReactNative = (payload) => {
+      try {
+        if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+          window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+        }
+      } catch (e) {
+        console.warn('postMessage failed', e);
+      }
+    };
 
     // Função chamada pela App para trocar a imagem
     window.trocarModeloAR = function() {
@@ -106,6 +130,8 @@
           fasesDosTargets[targetAtivo] = 1;
           console.log(`WebAR: Alvo ${targetAtivo} restaurado para a Fase 1.`);
         }
+
+        notifyReactNative(getCurrentImageData(targetAtivo));
     };
 
     // Componente do A-Frame que deteta o toque/clique direto no PNG flutuante
@@ -122,10 +148,18 @@
           targetEl.addEventListener('targetFound', function () {
             globalTargetStates[targetIndex].visible = true;
             globalTargetStates[targetIndex].lastFoundAt = Date.now();
+            notifyReactNative(getCurrentImageData(targetIndex));
           });
 
           targetEl.addEventListener('targetLost', function () {
             globalTargetStates[targetIndex].visible = false;
+            notifyReactNative({
+              type: 'IMAGE_STATE_CHANGED',
+              visible: false,
+              targetIndex: targetIndex,
+              nomeImagem: '',
+              fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
+            });
           });
 
           // EVENTO DE CLIQUE DA IMAGEM: Envia a resposta para o React Native
@@ -139,11 +173,11 @@
                 fase: fasesDosTargets[targetIndex],
                 nomeImagem: fasesDosTargets[targetIndex] === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex]
               };
+
+              lastSelectedImage = dadosResposta;
           
               // Envia os dados de volta para a aplicação nativa
-              if (window.ReactNativeWebView) {
-                window.ReactNativeWebView.postMessage(JSON.stringify(dadosResposta));
-              }
+              notifyReactNative(dadosResposta);
             }
           });
         }
@@ -191,7 +225,11 @@
             event.preventDefault();
             event.stopPropagation();
             closeCustomPopup();
-            notifyNative({ type: 'POPUP_CONFIRM', action: 'continue' });
+            notifyNative({
+              type: 'POPUP_CONFIRM',
+              action: 'continue',
+              imagemSelecionada: lastSelectedImage
+            });
             console.log('Pagina Seguinte');
           });
         }
