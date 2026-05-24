@@ -7,37 +7,47 @@ import React from 'react';
 import {
   Image,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   StatusBar,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { db, auth } from '../src/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
 export const StartPage = ({ navigation }: any) => {
-  const handleStart = () => {
-    (async () => {
+  const handleStart = async () => {
+    try {
+      // quick feedback for debugging
+      // eslint-disable-next-line no-console
+      console.log('Start button pressed');
+
       const user = auth.currentUser;
       if (!user) {
-        navigation?.navigate?.('Login');
+        // eslint-disable-next-line no-console
+        console.log('No user, navigating to Login');
+        navigation && navigation.navigate ? navigation.navigate('Login') : null;
         return;
       }
 
-      try {
-        const userRef = doc(db, 'utilizadores', user.uid);
-        const snap = await getDoc(userRef);
-        const perfilCompleto = snap.exists() && (snap.data() as any).perfilCompleto === true;
-        if (perfilCompleto) {
-          navigation?.navigate?.('Home');
-        } else {
-          navigation?.navigate?.('DemographicsScreen');
-        }
-      } catch (e) {
-        navigation?.navigate?.('DemographicsScreen');
+      const userRef = doc(db, 'utilizadores', user.uid);
+      const snap = await getDoc(userRef);
+      const perfilCompleto = snap.exists() && (snap.data() as any).perfilCompleto === true;
+
+      // eslint-disable-next-line no-console
+      console.log('Perfil completo:', perfilCompleto);
+
+      if (perfilCompleto) {
+        navigation && navigation.navigate ? navigation.navigate('Home') : null;
+      } else {
+        navigation && navigation.navigate ? navigation.navigate('DemographicsScreen') : null;
       }
-    })();
+    } catch (e: any) {
+      // eslint-disable-next-line no-console
+      console.warn('Error in handleStart:', e?.message || e);
+      navigation && navigation.navigate ? navigation.navigate('DemographicsScreen') : null;
+    }
   };
 
   return (
@@ -58,7 +68,7 @@ export const StartPage = ({ navigation }: any) => {
           </View>
         </View>
 
-        <View style={styles.badge}>
+        <View style={styles.badge} pointerEvents="none">
           <Image
             source={require('../assets/Owl.png')}
             style={styles.badgeImage}
@@ -178,8 +188,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: -30,
-    zIndex: 1,
-    elevation: 1,
+    zIndex: 10,
+    elevation: 10,
   },
   buttonPressed: {
     opacity: 0.85,

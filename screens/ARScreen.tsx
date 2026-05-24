@@ -19,6 +19,87 @@ import ProgressBreadcrumb from './ProgressBar';
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10';
 
+type NutritionItem = {
+  key: string;
+  assetName: string;
+  label: string;
+  porcao: string;
+  energiaTotalKcal: number;
+  energia100gKcal: number;
+  proteinaG: number;
+  hidratosG: number;
+  gorduraG: number;
+};
+
+const NUTRITION_DATA: NutritionItem[] = [
+  {
+    key: 'hotdog',
+    assetName: 'hotdog.png',
+    label: 'Hot dog',
+    porcao: '190 g',
+    energiaTotalKcal: 494,
+    energia100gKcal: 260,
+    proteinaG: 16,
+    hidratosG: 34,
+    gorduraG: 29,
+  },
+  {
+    key: 'sardine',
+    assetName: 'sardine.png',
+    label: 'Sardinhas',
+    porcao: '220 g',
+    energiaTotalKcal: 396,
+    energia100gKcal: 180,
+    proteinaG: 35,
+    hidratosG: 2,
+    gorduraG: 25,
+  },
+  {
+    key: 'cozido',
+    assetName: 'cozido.png',
+    label: 'Cozido',
+    porcao: '350 g',
+    energiaTotalKcal: 560,
+    energia100gKcal: 160,
+    proteinaG: 32,
+    hidratosG: 46,
+    gorduraG: 24,
+  },
+  {
+    key: 'pizza',
+    assetName: 'pizza.jpg',
+    label: 'Pizza',
+    porcao: '300 g',
+    energiaTotalKcal: 780,
+    energia100gKcal: 260,
+    proteinaG: 29,
+    hidratosG: 86,
+    gorduraG: 35,
+  },
+  {
+    key: 'pataniscas',
+    assetName: 'pataniscas.jpg',
+    label: 'Pataniscas',
+    porcao: '260 g',
+    energiaTotalKcal: 442,
+    energia100gKcal: 170,
+    proteinaG: 23,
+    hidratosG: 30,
+    gorduraG: 22,
+  },
+  {
+    key: 'omelete',
+    assetName: 'omelete.jpg',
+    label: 'Omelete',
+    porcao: '200 g',
+    energiaTotalKcal: 286,
+    energia100gKcal: 143,
+    proteinaG: 19,
+    hidratosG: 4,
+    gorduraG: 21,
+  },
+];
+
 export default function ARScreen({ navigation, route }: any) {
   const [cameraGranted, setCameraGranted] = React.useState<boolean | null>(null);
   const [showPopup, setShowPopup] = React.useState(false);
@@ -29,6 +110,25 @@ export default function ARScreen({ navigation, route }: any) {
   const [historicoRespostas, setHistoricoRespostas] = React.useState<any[]>([]);
   const [popupOverrideMessage, setPopupOverrideMessage] = React.useState<string | null>(null);
   const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
+  const [showNutritionModal, setShowNutritionModal] = React.useState(false);
+  const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
+
+  const normalizeAssetName = (value: string) => {
+    const fileName = String(value).split('/').pop() || String(value);
+    return fileName.toLowerCase();
+  };
+
+  const currentNutrition = React.useMemo(() => {
+    const nomeImagem = imagemAtiva?.nomeImagem || imagemSelecionada?.nomeImagem;
+    if (!nomeImagem) return null;
+
+    const normalized = normalizeAssetName(String(nomeImagem));
+    return (
+      NUTRITION_DATA.find((item) => item.assetName === normalized) ||
+      NUTRITION_DATA.find((item) => normalized.includes(item.key)) ||
+      null
+    );
+  }, [imagemAtiva, imagemSelecionada]);
 
   // Hide Android navigation bar while this screen is focused and apply any incoming params
   useFocusEffect(
@@ -266,6 +366,18 @@ export default function ARScreen({ navigation, route }: any) {
               setShowPopup(true);         // Abre dinamicamente o Modal fofo da Coruja
             }
 
+            if (data?.type === 'IMAGE_STATE_CHANGED') {
+              if (data?.visible === false) {
+                setImagemAtiva((current) => (current?.targetIndex === data?.targetIndex ? null : current));
+              } else {
+                setImagemAtiva({
+                  targetIndex: data?.targetIndex,
+                  nomeImagem: data?.nomeImagem,
+                  fase: data?.fase,
+                });
+              }
+            }
+
             // Quando o popup da página web envia confirmação (botão 'Sim') navegamos para o ecrã de pergunta
             if (data?.type === 'POPUP_CONFIRM' && data?.action === 'continue') {
               // Fecha o modal local caso esteja aberto e avança para Question1.
@@ -334,11 +446,42 @@ export default function ARScreen({ navigation, route }: any) {
         </View>
       </Modal>
 
+      <Modal visible={showNutritionModal} transparent animationType="slide" onRequestClose={() => setShowNutritionModal(false)}>
+        <View style={styles.nutritionOverlay}>
+          <View style={styles.nutritionCard}>
+            <Text style={styles.nutritionTitle}>Dados Nutricionais</Text>
+
+            {currentNutrition ? (
+              <>
+                <Text style={styles.nutritionMeal}>{currentNutrition.label}</Text>
+                <Text style={styles.nutritionMeta}>Imagem ativa: {currentNutrition.assetName}</Text>
+                <Text style={styles.nutritionMeta}>Porção: {currentNutrition.porcao}</Text>
+                <Text style={styles.nutritionLine}>Energia total da porção: {currentNutrition.energiaTotalKcal} kcal</Text>
+                <Text style={styles.nutritionLine}>Energia por 100g: {currentNutrition.energia100gKcal} kcal</Text>
+                <Text style={styles.nutritionLine}>Proteína: {currentNutrition.proteinaG} g</Text>
+                <Text style={styles.nutritionLine}>Hidratos de carbono: {currentNutrition.hidratosG} g</Text>
+                <Text style={styles.nutritionLine}>Gordura: {currentNutrition.gorduraG} g</Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.nutritionHint}>
+                  Ainda não foi identificada a imagem ativa da RA. Toque numa refeição flutuante ou mude a imagem para ver os dados nutricionais correspondentes.
+                </Text>
+              </>
+            )}
+
+            <TouchableOpacity style={styles.nutritionCloseButton} onPress={() => setShowNutritionModal(false)}>
+              <Text style={styles.nutritionCloseText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Icon name="home" size={32} color="#613512" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowPopup(true)} disabled={!infoEnabled}>
+        <TouchableOpacity onPress={() => setShowNutritionModal(true)} disabled={!infoEnabled}>
           <Icon name="information" size={32} color={infoEnabled ? '#613512' : '#C7B8AA'} />
         </TouchableOpacity>
         <TouchableOpacity onPress={enviarOrdemTrocarImagem}>
@@ -603,5 +746,67 @@ const styles = StyleSheet.create({
   debugText: {
     color: '#fff',
     fontSize: 14,
+  },
+  nutritionOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'flex-end',
+  },
+  nutritionCard: {
+    backgroundColor: '#FFF8F1',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    minHeight: 320,
+  },
+  nutritionTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#613512',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  nutritionMeal: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#7B451B',
+    marginBottom: 4,
+  },
+  nutritionMeta: {
+    fontSize: 14,
+    color: '#7B5A43',
+    marginBottom: 8,
+  },
+  nutritionSubTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#613512',
+    marginTop: 8,
+    marginBottom: 6,
+  },
+  nutritionLine: {
+    fontSize: 15,
+    color: '#613512',
+    lineHeight: 22,
+  },
+  nutritionHint: {
+    fontSize: 15,
+    color: '#7B5A43',
+    lineHeight: 22,
+    marginBottom: 6,
+  },
+  nutritionCloseButton: {
+    marginTop: 16,
+    backgroundColor: '#784115',
+    alignSelf: 'center',
+    borderRadius: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+  },
+  nutritionCloseText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });

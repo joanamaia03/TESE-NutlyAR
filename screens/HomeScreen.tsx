@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   TextInput,
   ScrollView,
   Dimensions,
@@ -12,6 +11,7 @@ import {
   Platform,
   Keyboard,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { db, auth } from '../src/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';

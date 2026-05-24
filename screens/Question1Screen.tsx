@@ -4,9 +4,9 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import ProgressBreadcrumb from './ProgressBar'; // Ajusta o caminho conforme o teu projeto

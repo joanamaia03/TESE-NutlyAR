@@ -1,0 +1,617 @@
+﻿--------- beginning of main
+05-24 11:16:08.993 19984 19984 I onymous.nutlyar: Late-enabling -Xcheck:jni
+05-24 11:16:09.027 19984 19984 I onymous.nutlyar: Using CollectorTypeCC GC.
+05-24 11:16:09.048 19984 19984 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+05-24 11:16:09.057 19984 19984 D ActivityThread: setConscryptValidator
+05-24 11:16:09.059 19984 19984 D ActivityThread: setConscryptValidator - put
+05-24 11:16:09.099 19984 19984 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10703; state: ENABLED
+05-24 11:16:09.100 19984 19984 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10703; state: ENABLED
+05-24 11:16:09.398 19984 19984 D nativeloader: Configuring clns-4 for other apk /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/lib/arm64:/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.anonymous.nutlyar
+05-24 11:16:09.411 19984 19984 D nativeloader: Load libframework-connectivity-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity.jar: ok
+05-24 11:16:09.420 19984 19984 V GraphicsEnvironment: Currently set values for:
+05-24 11:16:09.420 19984 19984 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+05-24 11:16:09.420 19984 19984 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+05-24 11:16:09.422 19984 19984 V GraphicsEnvironment: ANGLE GameManagerService for com.anonymous.nutlyar: false
+05-24 11:16:09.422 19984 19984 V GraphicsEnvironment: com.anonymous.nutlyar is not listed in per-application setting
+05-24 11:16:09.422 19984 19984 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+05-24 11:16:09.505 19984 19984 W SoLoader: Initializing SoLoader: 0
+05-24 11:16:09.506 19984 19984 W SoLoader: Recording new base apk path: /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk
+05-24 11:16:09.506 19984 19984 W SoLoader: Previously recorded 0 base apk paths.
+05-24 11:16:09.508 19984 19984 I SoLoader: Preparing SO source: DirectorySoSource[root = /vendor/lib64 flags = 2]
+05-24 11:16:09.509 19984 19984 I SoLoader: Preparing SO source: DirectorySoSource[root = /system/lib64 flags = 2]
+05-24 11:16:09.509 19984 19984 I SoLoader: Preparing SO source: DirectApkSoSource[root = [/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a]]
+05-24 11:16:09.595 19984 19984 I SoLoader: Preparing SO source: ApplicationSoSource[DirectorySoSource[root = /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/lib/arm64 flags = 0]]
+05-24 11:16:09.595 19984 19984 I SoLoader: init finish: 4 SO sources prepared
+05-24 11:16:09.595 19984 19984 W SoLoader: SoLoader initialized: 8
+05-24 11:16:09.718 19984 19984 D nativeloader: Load /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a/libc++_shared.so using class loader ns clns-4 (caller=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk): ok
+05-24 11:16:09.777 19984 19984 D nativeloader: Load /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a/libjsi.so using class loader ns clns-4 (caller=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk): ok
+05-24 11:16:09.836 19984 19984 D nativeloader: Load /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a/libfbjni.so using class loader ns clns-4 (caller=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk): ok
+05-24 11:16:09.878 19984 19984 D nativeloader: Load /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a/libreactnative.so using class loader ns clns-4 (caller=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk): ok
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Entering merged library JNI_OnLoad.
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Preparing 12 pre-merged libs (including stub)
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Preparing to register libfabricjni_so.  onload_func: 0x7b10f9da5c
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Preparing to register libreact_devsupportjni_so.  onload_func: 0x7b111ba720
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Preparing to register libreact_featureflagsjni_so.  onload_func: 0x7b111ccf88
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Preparing to register libreact_newarchdefaults_so.  onload_func: 0x7b11272320
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Preparing to register libreactnativeblob_so.  onload_func: 0x7b114844c4
+05-24 11:16:09.878 19984 19984 D jni_lib_merge: Preparing to register libreactnativejni_so.  onload_func: 0x7b114c7438
+05-24 11:16:09.879 19984 19984 D jni_lib_merge: Preparing to register libreactnativejni_common_so.  onload_func: 0x7b114d7e2c
+05-24 11:16:09.879 19984 19984 D jni_lib_merge: Preparing to register librninstance_so.  onload_func: 0x7b11521c58
+05-24 11:16:09.879 19984 19984 D jni_lib_merge: Preparing to register libturbomodulejsijni_so.  onload_func: 0x7b1167ed60
+05-24 11:16:09.879 19984 19984 D jni_lib_merge: Preparing to register libuimanagerjni_so.  onload_func: 0x7b11697b00
+05-24 11:16:09.879 19984 19984 D jni_lib_merge: Preparing to register libyoga_so.  onload_func: 0x7b116a7584
+05-24 11:16:09.879 19984 19984 D jni_lib_merge: About to register 11 actual methods.
+05-24 11:16:10.007 19984 19984 D nativeloader: Load /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a/libreact_codegen_rnscreens.so using class loader ns clns-4 (caller=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk): ok
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Entering merged library JNI_OnLoad.
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing 12 pre-merged libs (including stub)
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libfabricjni_so.  onload_func: 0x7b10f9da5c
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libreact_devsupportjni_so.  onload_func: 0x7b111ba720
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libreact_featureflagsjni_so.  onload_func: 0x7b111ccf88
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libreact_newarchdefaults_so.  onload_func: 0x7b11272320
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libreactnativeblob_so.  onload_func: 0x7b114844c4
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libreactnativejni_so.  onload_func: 0x7b114c7438
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libreactnativejni_common_so.  onload_func: 0x7b114d7e2c
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register librninstance_so.  onload_func: 0x7b11521c58
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libturbomodulejsijni_so.  onload_func: 0x7b1167ed60
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libuimanagerjni_so.  onload_func: 0x7b11697b00
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: Preparing to register libyoga_so.  onload_func: 0x7b116a7584
+05-24 11:16:10.007 19984 19984 D jni_lib_merge: About to register 11 actual methods.
+05-24 11:16:10.064 19984 19984 D nativeloader: Load /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a/libreact_codegen_safeareacontext.so using class loader ns clns-4 (caller=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk): ok
+05-24 11:16:10.076 19984 19984 D nativeloader: Load /data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk!/lib/arm64-v8a/libappmodules.so using class loader ns clns-4 (caller=/data/app/~~hCGq8PsKuPm18VB1CreE2Q==/com.anonymous.nutlyar-JMqoDs0mdt4Rp3lcBF6yZQ==/base.apk): ok
+05-24 11:16:10.135 19984 19984 D OpenGLRenderer: HWUI - treat SMPTE_170M as sRGB
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: QUALCOMM build                   : e1ac91e, I2b3b5fbd00
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: Build Date                       : 11/17/20
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: OpenGL ES Shader Compiler Version: EV031.32.02.06
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: Local Branch                     : 
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: Remote Branch                    : 
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: Remote Branch                    : 
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: Reconstruct Branch               : 
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: Build Config                     : S P 10.0.7 AArch64
+05-24 11:16:10.138 19984 20006 I AdrenoGLES-0: Driver Path                      : /vendor/lib64/egl/libGLESv2_adreno.so
+05-24 11:16:10.143 19984 20006 I AdrenoGLES-0: PFP: 0x016ee190, ME: 0x00000000
+05-24 11:16:10.181 19984 19984 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+05-24 11:16:10.313 19984 19984 D SensorManager: registerListener :: 11, lsm6dso Accelerometer Non-wakeup, 66667, 0, 
+05-24 11:16:10.381 19984 19984 W unknown:BridgelessReact: ReactHost{0}.startSurface(surfaceId = 0): Schedule
+05-24 11:16:10.381 19984 19984 W unknown:BridgelessReact: ReactHost{0}.attachSurface(surfaceId = 0)
+05-24 11:16:10.383 19984 20021 W unknown:BridgelessReact: ReactHost{0}.getOrCreateReactInstanceTask()
+05-24 11:16:10.383 19984 20021 W unknown:BridgelessReact: ReactHost{0}.getOrCreateReactInstanceTask(): Start
+05-24 11:16:10.383 19984 20021 W unknown:BridgelessReact: ReactHost{0}.getJSBundleLoader()
+05-24 11:16:10.383 19984 20021 W unknown:BridgelessReact: ReactHost{0}.isMetroRunning()
+05-24 11:16:10.403 19984 19984 I DecorView: setWindowBackground: isPopOver=false color=ff303030 d=android.graphics.drawable.ColorDrawable@830a551
+05-24 11:16:10.413 19984 19984 I onymous.nutlyar: hiddenapi: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (runtime_flags=0, domain=platform, api=unsupported) from Landroidx/appcompat/widget/ViewUtils; (domain=app, TargetSdkVersion=36) using reflection: allowed
+05-24 11:16:10.428 19984 19984 W unknown:BridgelessReact: ReactHost{0}.onHostResume(activity)
+05-24 11:16:10.428 19984 19984 W unknown:ReactNative: Packager connection already open, nooping.
+05-24 11:16:10.435 19984 19984 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10703; state: DISABLED
+05-24 11:16:10.439 19984 20006 D NativeCustomFrequencyManager: [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+05-24 11:16:10.449 19984 19984 I InsetsController: onStateChanged: host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity, from=android.view.ViewRootImpl.setView:1753, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1080, 2400), mDisplayCutout=DisplayCutout{insets=Rect(0, 88 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(512, 0 - 568, 88), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2400 physicalDisplayWidth=1080 physicalDisplayHeight=2400 density={2.625} cutoutSpec={M 0,0 M 0,12.25101276465640 a 10.60613009248640,10.60613009248640 0 1,0 0,21.21226018497290 a 10.60613009248640,10.60613009248640 0 1,0 0,-21.21226018497290 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=0, center=Point(0, 0)}, RoundedCorner{position=TopRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomLeft, radius=0, center=Point(0, 0)}]}  mRoundedCornerFrame=Rect(0, 0 - 1080, 2400), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(964, 0 - 1080, 88) rotation=0}, mDisplayShape=DisplayShape{ spec=-311912193 displayWidth=1080 displayHeight=2400 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}, mSources= { InsetsSource: {8b400000 mType=statusBars mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {8b400005 mType=mandatorySystemGestures mFrame=[0,0][1080,120] mVisible=true mFlags=[]}, InsetsSource: {8b400006 mType=tappableElement mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {55340001 mType=navigationBars mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340004 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]}, InsetsSource: {55340005 mType=mandatorySystemGestures mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340006 mType=tappableElement mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340024 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]} }
+05-24 11:16:10.451 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: synced displayState. AttachInfo displayState=2
+05-24 11:16:10.451 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: setView = com.android.internal.policy.DecorView@cdd54d8 TM=true
+05-24 11:16:10.452 19984 19984 I IDS_TAG : Starting IDS observe window
+05-24 11:16:10.452 19984 19984 I IDS_TAG : Getting Shared Preference for com.anonymous.nutlyar.MainApplication@f5bd5c4 uid = 10703
+05-24 11:16:10.459 19984 19984 I IDS_TAG : App com.anonymous.nutlyar.MainApplication@f5bd5c4 has not finished training
+05-24 11:16:10.461 19984 19984 I IDS_TAG : Closing IDS observe window
+05-24 11:16:10.461 19984 19984 I IDS_TAG : Getting Shared Preference for com.anonymous.nutlyar.MainApplication@f5bd5c4 uid = 10703
+05-24 11:16:10.462 19984 19984 I IDS_TAG : IDS count updated to 2 for com.anonymous.nutlyar.MainApplication@f5bd5c4
+05-24 11:16:10.489 19984 19984 I BufferQueueProducer: [](id:4e1000000000,api:0,p:892416095,c:19984) setDequeueTimeout:2077252342
+05-24 11:16:10.489 19984 19984 I BLASTBufferQueue_Java: new BLASTBufferQueue, mName= ViewRootImpl@383c5ec[MainActivity] mNativeObject= 0xb400007b7d20ab00 sc.mNativeObject= 0xb400007b8af2b940 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3028 android.view.ViewRootImpl.relayoutWindow:10131 android.view.ViewRootImpl.performTraversals:4110 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 android.view.Choreographer$CallbackRecord.run:1689 android.view.Choreographer$CallbackRecord.run:1698 android.view.Choreographer.doCallbacks:1153 android.view.Choreographer.doFrame:1079 android.view.Choreographer$FrameDisplayEventReceiver.run:1646 
+05-24 11:16:10.490 19984 19984 I BLASTBufferQueue_Java: update, w= 1080 h= 2400 mName = ViewRootImpl@383c5ec[MainActivity] mNativeObject= 0xb400007b7d20ab00 sc.mNativeObject= 0xb400007b8af2b940 format= -1 caller= android.graphics.BLASTBufferQueue.<init>:89 android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3028 android.view.ViewRootImpl.relayoutWindow:10131 android.view.ViewRootImpl.performTraversals:4110 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 
+05-24 11:16:10.492 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: Relayout returned: old=(0,0,1080,2400) new=(0,0,1080,2400) relayoutAsync=false req=(1080,2400)0 dur=10 res=0x403 s={true 0xb400007b6cc22800} ch=true seqId=0
+05-24 11:16:10.493 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: performConfigurationChange setNightDimText nightDimLevel=0
+05-24 11:16:10.493 19984 19984 D ViewRootImpl@383c5ec[MainActivity]: mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007b6cc22800} hwInitialized=true
+05-24 11:16:10.498 19984 19984 D ViewRootImpl@383c5ec[MainActivity]: reportNextDraw android.view.ViewRootImpl.performTraversals:4718 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 android.view.Choreographer$CallbackRecord.run:1689 android.view.Choreographer$CallbackRecord.run:1698 
+05-24 11:16:10.498 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: Setup new sync=wmsSync-ViewRootImpl@383c5ec[MainActivity]#0
+05-24 11:16:10.499 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: Creating new active sync group ViewRootImpl@383c5ec[MainActivity]#1
+05-24 11:16:10.501 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: registerCallbacksForSync syncBuffer=false
+05-24 11:16:10.505 19984 20034 I ViewRootImpl@383c5ec[MainActivity]: Received frameDrawingCallback syncResult=0 frameNum=1.
+05-24 11:16:10.505 19984 20034 I ViewRootImpl@383c5ec[MainActivity]: mWNT: t=0xb400007b6ccc6900 mBlastBufferQueue=0xb400007b7d20ab00 fn= 1 mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$8.onFrameDraw:13841 android.view.ThreadedRenderer$1.onFrameDraw:792 <bottom of call stack> 
+05-24 11:16:10.505 19984 20034 I ViewRootImpl@383c5ec[MainActivity]: Setting up sync and frameCommitCallback
+05-24 11:16:10.508 19984 20006 I BLASTBufferQueue: [ViewRootImpl@383c5ec[MainActivity]#0](f:0,a:0,s:0) onFrameAvailable the first frame is available
+05-24 11:16:10.509 19984 20006 I ViewRootImpl@383c5ec[MainActivity]: Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+05-24 11:16:10.510 19984 20006 D OpenGLRenderer: CFMS:: SetUp Pid : 19984    Tid : 20006
+05-24 11:16:10.510 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: reportDrawFinished seqId=0
+05-24 11:16:10.511 19984 20006 D OpenGLRenderer: HWUI - treat SMPTE_170M as sRGB
+05-24 11:16:10.513 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=navigationBars, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:10.514 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=statusBars, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:10.540 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: handleWindowFocusChanged: 1 0 call from android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged:0
+05-24 11:16:10.541 19984 19984 D ViewRootImpl@383c5ec[MainActivity]: mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400007b6cc22800}
+05-24 11:16:10.542 19984 19984 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(onWindowFocusChange(hasFocus = "true")): Tried to access onWindowFocusChange while context is not ready
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(onWindowFocusChange(hasFocus = "true")): Tried to access onWindowFocusChange while context is not ready
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.onWindowFocusChange(ReactHostImpl.kt:668)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.facebook.react.ReactDelegate.onWindowFocusChanged(ReactDelegate.kt:232)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.facebook.react.ReactActivityDelegate.onWindowFocusChanged(ReactActivityDelegate.java:237)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invokeSuspend(ReactActivityDelegateWrapper.kt:320)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invoke(Unknown Source:8)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invoke(Unknown Source:4)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$launchLifecycleScopeWithLock$1.invokeSuspend(ReactActivityDelegateWrapper.kt:452)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.internal.DispatchedContinuationKt.resumeCancellableWith(DispatchedContinuation.kt:375)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.intrinsics.CancellableKt.startCoroutineCancellable(Cancellable.kt:26)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:358)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:134)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:53)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt.launch(Unknown Source:1)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch$default(Builders.common.kt:44)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt.launch$default(Unknown Source:1)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.launchLifecycleScopeWithLock(ReactActivityDelegateWrapper.kt:450)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.launchLifecycleScopeWithLock$default(ReactActivityDelegateWrapper.kt:446)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.onWindowFocusChanged(ReactActivityDelegateWrapper.kt:318)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.facebook.react.ReactActivity.onWindowFocusChanged(ReactActivity.java:158)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at androidx.appcompat.view.WindowCallbackWrapper.onWindowFocusChanged(WindowCallbackWrapper.java:124)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.android.internal.policy.DecorView.onWindowFocusChanged(DecorView.java:2372)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.view.View.dispatchWindowFocusChanged(View.java:16503)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.view.ViewGroup.dispatchWindowFocusChanged(ViewGroup.java:1517)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl.dispatchFocusEvent(ViewRootImpl.java:5080)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl.handleWindowFocusChanged(ViewRootImpl.java:4964)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged(Unknown Source:0)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl$ViewRootHandler.handleMessageImpl(ViewRootImpl.java:7258)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl$ViewRootHandler.handleMessage(ViewRootImpl.java:7166)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loopOnce(Looper.java:230)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loop(Looper.java:319)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at android.app.ActivityThread.main(ActivityThread.java:8919)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at java.lang.reflect.Method.invoke(Native Method)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:578)
+05-24 11:16:10.544 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1103)
+05-24 11:16:10.548 19984 19984 D InputMethodManagerUtils: startInputInner - Id : 0
+05-24 11:16:10.548 19984 19984 I InputMethodManager: startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+05-24 11:16:10.555 19984 19984 D InputMethodManagerUtils: startInputInner - Id : 0
+05-24 11:16:10.569 19984 19984 I InsetsController: onStateChanged: host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity, from=android.view.ViewRootImpl$ViewRootHandler.handleMessageImpl:7209, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1080, 2400), mDisplayCutout=DisplayCutout{insets=Rect(0, 88 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(512, 0 - 568, 88), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2400 physicalDisplayWidth=1080 physicalDisplayHeight=2400 density={2.625} cutoutSpec={M 0,0 M 0,12.25101276465640 a 10.60613009248640,10.60613009248640 0 1,0 0,21.21226018497290 a 10.60613009248640,10.60613009248640 0 1,0 0,-21.21226018497290 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=0, center=Point(0, 0)}, RoundedCorner{position=TopRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomLeft, radius=0, center=Point(0, 0)}]}  mRoundedCornerFrame=Rect(0, 0 - 1080, 2400), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(964, 0 - 1080, 88) rotation=0}, mDisplayShape=DisplayShape{ spec=-311912193 displayWidth=1080 displayHeight=2400 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}, mSources= { InsetsSource: {8b400000 mType=statusBars mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {8b400005 mType=mandatorySystemGestures mFrame=[0,0][1080,120] mVisible=true mFlags=[]}, InsetsSource: {8b400006 mType=tappableElement mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {3 mType=ime mFrame=[0,0][0,0] mVisible=false mFlags=[]}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {55340001 mType=navigationBars mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340004 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]}, InsetsSource: {55340005 mType=mandatorySystemGestures mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340006 mType=tappableElement mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340024 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]} }
+05-24 11:16:10.570 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=false, type=ime, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:11.392 19984 19989 I onymous.nutlyar: Compiler allocated 6763KB to compile void android.view.ViewRootImpl.performTraversals()
+05-24 11:16:11.887 19984 20022 W unknown:BridgelessReact: ReactHost{0}.isMetroRunning(): Async result = true
+05-24 11:16:11.889 19984 20021 W unknown:BridgelessReact: ReactHost{0}.loadJSBundleFromMetro()
+05-24 11:16:11.918 19984 19984 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10703; state: ENABLED
+05-24 11:16:11.935 19984 19984 I WindowManager: WindowManagerGlobal#addView, ty=1000, view=android.widget.PopupWindow$PopupDecorView{970aa4c V.E...... R.....I. 0,0-0,0}, caller=android.view.WindowManagerImpl.addView:150 android.widget.PopupWindow.invokePopup:1717 android.widget.PopupWindow.showAtLocation:1417 
+05-24 11:16:11.938 19984 20006 D NativeCustomFrequencyManager: [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+05-24 11:16:11.945 19984 19984 I InsetsController: onStateChanged: host=PopupWindow:b2a9a7f, from=android.view.ViewRootImpl.setView:1753, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1080, 2400), mDisplayCutout=DisplayCutout{insets=Rect(0, 88 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(512, 0 - 568, 88), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2400 physicalDisplayWidth=1080 physicalDisplayHeight=2400 density={2.625} cutoutSpec={M 0,0 M 0,12.25101276465640 a 10.60613009248640,10.60613009248640 0 1,0 0,21.21226018497290 a 10.60613009248640,10.60613009248640 0 1,0 0,-21.21226018497290 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=0, center=Point(0, 0)}, RoundedCorner{position=TopRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomLeft, radius=0, center=Point(0, 0)}]}  mRoundedCornerFrame=Rect(0, 0 - 1080, 2400), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(964, 0 - 1080, 88) rotation=0}, mDisplayShape=DisplayShape{ spec=-311912193 displayWidth=1080 displayHeight=2400 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}, mSources= { InsetsSource: {8b400000 mType=statusBars mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {8b400005 mType=mandatorySystemGestures mFrame=[0,0][1080,120] mVisible=true mFlags=[]}, InsetsSource: {8b400006 mType=tappableElement mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {55340001 mType=navigationBars mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340004 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]}, InsetsSource: {55340005 mType=mandatorySystemGestures mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340006 mType=tappableElement mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340024 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]} }
+05-24 11:16:11.945 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: synced displayState. AttachInfo displayState=2
+05-24 11:16:11.946 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: setView = android.widget.PopupWindow$PopupDecorView@970aa4c TM=true
+05-24 11:16:11.946 19984 20006 D OpenGLRenderer: HWUI - treat SMPTE_170M as sRGB
+05-24 11:16:11.962 19984 20017 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Resizing android.view.ViewRootImpl@b348b11: frame = [0,88][1080,163] reportDraw = true forceLayout = false syncSeqId = -1
+05-24 11:16:11.962 19984 19984 I BufferQueueProducer: [](id:4e1000000001,api:0,p:0,c:19984) setDequeueTimeout:2077252342
+05-24 11:16:11.963 19984 19984 I BLASTBufferQueue_Java: new BLASTBufferQueue, mName= ViewRootImpl@ba3da95[PopupWindow:b2a9a7f] mNativeObject= 0xb400007b7d34c200 sc.mNativeObject= 0xb400007b7d39b3c0 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3028 android.view.ViewRootImpl.relayoutWindow:10131 android.view.ViewRootImpl.performTraversals:4110 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 android.view.Choreographer$CallbackRecord.run:1689 android.view.Choreographer$CallbackRecord.run:1698 android.view.Choreographer.doCallbacks:1153 android.view.Choreographer.doFrame:1079 android.view.Choreographer$FrameDisplayEventReceiver.run:1646 
+05-24 11:16:11.963 19984 19984 I BLASTBufferQueue_Java: update, w= 1080 h= 75 mName = ViewRootImpl@ba3da95[PopupWindow:b2a9a7f] mNativeObject= 0xb400007b7d34c200 sc.mNativeObject= 0xb400007b7d39b3c0 format= -3 caller= android.graphics.BLASTBufferQueue.<init>:89 android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3028 android.view.ViewRootImpl.relayoutWindow:10131 android.view.ViewRootImpl.performTraversals:4110 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 
+05-24 11:16:11.964 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Relayout returned: old=(0,88,1080,2274) new=(0,88,1080,163) relayoutAsync=false req=(1080,75)0 dur=9 res=0x403 s={true 0xb400007b7d2ba800} ch=true seqId=0
+05-24 11:16:11.964 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: performConfigurationChange setNightDimText nightDimLevel=0
+05-24 11:16:11.965 19984 19984 D ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007b7d2ba800} hwInitialized=true
+05-24 11:16:11.967 19984 19984 D ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: reportNextDraw android.view.ViewRootImpl.performTraversals:4718 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 android.view.Choreographer$CallbackRecord.run:1689 android.view.Choreographer$CallbackRecord.run:1698 
+05-24 11:16:11.967 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Setup new sync=wmsSync-ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]#2
+05-24 11:16:11.967 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Creating new active sync group ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]#3
+05-24 11:16:11.968 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: registerCallbacksForSync syncBuffer=false
+05-24 11:16:11.969 19984 20035 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Received frameDrawingCallback syncResult=0 frameNum=1.
+05-24 11:16:11.970 19984 20035 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: mWNT: t=0xb400007b6ccc8e80 mBlastBufferQueue=0xb400007b7d34c200 fn= 1 mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$8.onFrameDraw:13841 android.view.ThreadedRenderer$1.onFrameDraw:792 <bottom of call stack> 
+05-24 11:16:11.970 19984 20035 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Setting up sync and frameCommitCallback
+05-24 11:16:11.980 19984 20006 I BLASTBufferQueue: [ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]#1](f:0,a:0,s:0) onFrameAvailable the first frame is available
+05-24 11:16:11.981 19984 20006 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+05-24 11:16:11.983 19984 20006 D OpenGLRenderer: CFMS:: SetUp Pid : 19984    Tid : 20006
+05-24 11:16:11.983 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: reportDrawFinished seqId=0
+05-24 11:16:11.985 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: handleResized, msg = 5 frames=ClientWindowFrames{frame=[0,88][1080,163] display=[0,88][1080,2274] parentFrame=[0,0][0,0] attachedFrame=[0,0][1080,2400]} forceNextWindowRelayout=false displayId=0 dragResizing=false compatScale=1.0 frameChanged=false attachedFrameChanged=false configChanged=false displayChanged=false compatScaleChanged=false
+05-24 11:16:11.986 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: handleResized mSyncSeqId = 0
+05-24 11:16:11.986 19984 19984 D ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: reportNextDraw android.view.ViewRootImpl.handleResized:2530 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$ViewRootHandler.handleMessageImpl:7197 android.view.ViewRootImpl$ViewRootHandler.handleMessage:7166 android.os.Handler.dispatchMessage:106 
+05-24 11:16:11.986 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Setup new sync=wmsSync-ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]#4
+05-24 11:16:11.986 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Creating new active sync group ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]#5
+05-24 11:16:11.987 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: registerCallbacksForSync syncBuffer=false
+05-24 11:16:11.987 19984 20034 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Received frameDrawingCallback syncResult=0 frameNum=2.
+05-24 11:16:11.987 19984 20034 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: mWNT: t=0xb400007b7d3bbf00 mBlastBufferQueue=0xb400007b7d34c200 fn= 2 mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$8.onFrameDraw:13841 android.view.ThreadedRenderer$1.onFrameDraw:792 <bottom of call stack> 
+05-24 11:16:11.987 19984 20034 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Setting up sync and frameCommitCallback
+05-24 11:16:11.987 19984 20006 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: Received frameCommittedCallback lastAttemptedDrawFrameNum=2 didProduceBuffer=false
+05-24 11:16:11.988 19984 20006 I BLASTBufferQueue_Java: gatherPendingTransactions, mName= ViewRootImpl@ba3da95[PopupWindow:b2a9a7f] mNativeObject= 0xb400007b7d34c200 frameNumber= 2 caller= android.view.ViewRootImpl$8.lambda$onFrameDraw$1:13914 android.view.ViewRootImpl$8.$r8$lambda$6frSHsGsDhUEo8Wl9hChpniTVZ0:0 android.view.ViewRootImpl$8$$ExternalSyntheticLambda1.onFrameCommit:9 android.view.ThreadedRenderer$1.lambda$onFrameDraw$0:804 android.view.ThreadedRenderer$1$$ExternalSyntheticLambda0.onFrameCommit:2 <bottom of call stack> 
+05-24 11:16:11.988 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: reportDrawFinished seqId=0
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: Could not parse DebugServerException from: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: org.json.JSONException: No value for filename
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at org.json.JSONObject.get(JSONObject.java:398)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at org.json.JSONObject.getString(JSONObject.java:559)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at com.facebook.react.common.DebugServerException$Companion.parse(DebugServerException.kt:88)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.processBundleResult(BundleDownloader.kt:287)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.access$processBundleResult(BundleDownloader.kt:35)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader$downloadBundleFromURL$1.onResponse(BundleDownloader.kt:140)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:519)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.624 19984 20022 W unknown:ReactNative: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: Unable to download JS bundle
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: com.facebook.react.common.DebugServerException: The development server returned response error code: 500
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: Body:
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.processBundleResult(BundleDownloader.kt:300)
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.access$processBundleResult(BundleDownloader.kt:35)
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader$downloadBundleFromURL$1.onResponse(BundleDownloader.kt:140)
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:519)
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.627 19984 20022 E unknown:ReactNative: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.628 19984 19984 I WindowManager: WindowManagerGlobal#removeView, ty=1000, view=android.widget.PopupWindow$PopupDecorView{970aa4c V.E...... R....... 0,0-1080,75}, caller=android.view.WindowManagerGlobal.removeView:628 android.view.WindowManagerImpl.removeViewImmediate:208 android.widget.PopupWindow.dismissImmediate:2410 
+05-24 11:16:14.631 19984 19984 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda19@1241f38
+05-24 11:16:14.639 19984 19984 I ViewRootImpl@ba3da95[PopupWindow:b2a9a7f]: dispatchDetachedFromWindow
+05-24 11:16:14.650 19984 19984 D InputTransport: Input channel destroyed: 'ceda5ed', fd=123
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: Exception in native call
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: com.facebook.react.common.DebugServerException: The development server returned response error code: 500
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: Body:
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.processBundleResult(BundleDownloader.kt:300)
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.access$processBundleResult(BundleDownloader.kt:35)
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader$downloadBundleFromURL$1.onResponse(BundleDownloader.kt:140)
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:519)
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.652 19984 19984 E unknown:ReactNative: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.681 19984 19984 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10703; state: ENABLED
+05-24 11:16:14.821 19984 19984 I Dialog  : mIsDeviceDefault = false, mIsSamsungBasicInteraction = false, isMetaDataInActivity = false
+05-24 11:16:14.825 19984 19984 I DecorView: setWindowBackground: isPopOver=false color=eecc0000 d=android.graphics.drawable.ColorDrawable@66880fd
+05-24 11:16:14.826 19984 19984 I DecorView: setWindowBackground: isPopOver=false color=ff000000 d=android.graphics.drawable.ColorDrawable@92a26c0
+05-24 11:16:14.827 19984 19984 I WindowManager: WindowManagerGlobal#addView, ty=2, view=DecorView@7412ff9[MainActivity], caller=android.view.WindowManagerImpl.addView:150 android.app.Dialog.show:512 com.facebook.react.devsupport.RedBoxDialogSurfaceDelegate.show:130 
+05-24 11:16:14.830 19984 20006 D NativeCustomFrequencyManager: [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+05-24 11:16:14.842 19984 19984 I InsetsController: onStateChanged: host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity, from=android.view.ViewRootImpl.setView:1753, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1080, 2400), mDisplayCutout=DisplayCutout{insets=Rect(0, 88 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(512, 0 - 568, 88), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2400 physicalDisplayWidth=1080 physicalDisplayHeight=2400 density={2.625} cutoutSpec={M 0,0 M 0,12.25101276465640 a 10.60613009248640,10.60613009248640 0 1,0 0,21.21226018497290 a 10.60613009248640,10.60613009248640 0 1,0 0,-21.21226018497290 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=0, center=Point(0, 0)}, RoundedCorner{position=TopRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomLeft, radius=0, center=Point(0, 0)}]}  mRoundedCornerFrame=Rect(0, 0 - 1080, 2400), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(964, 0 - 1080, 88) rotation=0}, mDisplayShape=DisplayShape{ spec=-311912193 displayWidth=1080 displayHeight=2400 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}, mSources= { InsetsSource: {8b400000 mType=statusBars mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {8b400005 mType=mandatorySystemGestures mFrame=[0,0][1080,120] mVisible=true mFlags=[]}, InsetsSource: {8b400006 mType=tappableElement mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {3 mType=ime mFrame=[0,0][0,0] mVisible=false mFlags=[]}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1080,88] mVisible=true mFlags=[]}, InsetsSource: {55340001 mType=navigationBars mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340004 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]}, InsetsSource: {55340005 mType=mandatorySystemGestures mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340006 mType=tappableElement mFrame=[0,2274][1080,2400] mVisible=true mFlags=[]}, InsetsSource: {55340024 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]} }
+05-24 11:16:14.842 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: synced displayState. AttachInfo displayState=2
+05-24 11:16:14.843 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: setView = com.android.internal.policy.DecorView@7412ff9 TM=true
+05-24 11:16:14.843 19984 19984 W unknown:BridgelessReact: ReactHost{0}.handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.843 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.843 19984 19984 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.843 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.843 19984 19984 W unknown:BridgelessReact: Body:
+05-24 11:16:14.843 19984 19984 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: Exception in native call
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: com.facebook.react.common.DebugServerException: The development server returned response error code: 500
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: Body:
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.processBundleResult(BundleDownloader.kt:300)
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader.access$processBundleResult(BundleDownloader.kt:35)
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 	at com.facebook.react.devsupport.BundleDownloader$downloadBundleFromURL$1.onResponse(BundleDownloader.kt:140)
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:519)
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.844 19984 19984 E unknown:ReactNative: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.845 19984 20021 W unknown:BridgelessReact: ReactHost{0}.getOrCreateDestroyTask()
+05-24 11:16:14.846 19984 20021 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.846 19984 20021 W unknown:BridgelessReact: 
+05-24 11:16:14.846 19984 20021 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.846 19984 20021 W unknown:BridgelessReact: 
+05-24 11:16:14.846 19984 20021 W unknown:BridgelessReact: Body:
+05-24 11:16:14.846 19984 20021 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: Body:
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask(ReactHostImpl.kt:1466)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.destroy$lambda$11(ReactHostImpl.kt:543)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$RqPT6VdmhA-RKBsb9qAdshHTgug(Unknown Source:0)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda37.call(D8$$SyntheticClass:0)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.call$lambda$2(Task.kt:319)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$MFqd_-X5KhHmu0hvNE2Bec_4mJM(Unknown Source:0)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda1.run(D8$$SyntheticClass:0)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: Caused by: com.facebook.react.common.DebugServerException: The development server returned response error code: 500
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: Body:
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.devsupport.BundleDownloader.processBundleResult(BundleDownloader.kt:300)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.devsupport.BundleDownloader.access$processBundleResult(BundleDownloader.kt:35)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at com.facebook.react.devsupport.BundleDownloader$downloadBundleFromURL$1.onResponse(BundleDownloader.kt:140)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:519)
+05-24 11:16:14.848 19984 20021 E unknown:ReactHost: 	... 3 more
+05-24 11:16:14.848 19984 19984 D AnimatorSet: mReversing is false. Don't call initChildren.
+05-24 11:16:14.848 19984 20021 W unknown:BridgelessReact: ReactHost{0}.getOrCreateDestroyTask(): Resetting createReactInstance task ref
+05-24 11:16:14.851 19984 19984 D AnimatorSet: mReversing is false. Don't call initChildren.
+05-24 11:16:14.852 19984 19984 D AnimatorSet: mReversing is false. Don't call initChildren.
+05-24 11:16:14.872 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=navigationBars, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:14.873 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=statusBars, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:14.874 19984 19984 I BufferQueueProducer: [](id:4e1000000002,api:0,p:0,c:19984) setDequeueTimeout:2077252342
+05-24 11:16:14.874 19984 19984 I BLASTBufferQueue_Java: new BLASTBufferQueue, mName= ViewRootImpl@6f57b3e[MainActivity] mNativeObject= 0xb400007b7d34da00 sc.mNativeObject= 0xb400007b7d37b040 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3028 android.view.ViewRootImpl.relayoutWindow:10131 android.view.ViewRootImpl.performTraversals:4110 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 android.view.Choreographer$CallbackRecord.run:1689 android.view.Choreographer$CallbackRecord.run:1698 android.view.Choreographer.doCallbacks:1153 android.view.Choreographer.doFrame:1079 android.view.Choreographer$FrameDisplayEventReceiver.run:1646 
+05-24 11:16:14.875 19984 19984 I BLASTBufferQueue_Java: update, w= 1080 h= 2400 mName = ViewRootImpl@6f57b3e[MainActivity] mNativeObject= 0xb400007b7d34da00 sc.mNativeObject= 0xb400007b7d37b040 format= -1 caller= android.graphics.BLASTBufferQueue.<init>:89 android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3028 android.view.ViewRootImpl.relayoutWindow:10131 android.view.ViewRootImpl.performTraversals:4110 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 
+05-24 11:16:14.875 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: Relayout returned: old=(0,0,1080,2400) new=(0,0,1080,2400) relayoutAsync=false req=(1080,2400)0 dur=12 res=0x403 s={true 0xb400007b7d36e000} ch=true seqId=0
+05-24 11:16:14.876 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: performConfigurationChange setNightDimText nightDimLevel=0
+05-24 11:16:14.876 19984 19984 D ViewRootImpl@6f57b3e[MainActivity]: mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007b7d36e000} hwInitialized=true
+05-24 11:16:14.903 19984 19984 D AbsListView:  in onLayout changed 
+05-24 11:16:14.904 19984 19984 D ViewRootImpl@6f57b3e[MainActivity]: reportNextDraw android.view.ViewRootImpl.performTraversals:4718 android.view.ViewRootImpl.doTraversal:3288 android.view.ViewRootImpl$TraversalRunnable.run:11344 android.view.Choreographer$CallbackRecord.run:1689 android.view.Choreographer$CallbackRecord.run:1698 
+05-24 11:16:14.904 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: Setup new sync=wmsSync-ViewRootImpl@6f57b3e[MainActivity]#6
+05-24 11:16:14.905 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: Creating new active sync group ViewRootImpl@6f57b3e[MainActivity]#7
+05-24 11:16:14.905 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: registerCallbacksForSync syncBuffer=false
+05-24 11:16:14.911 19984 20035 I ViewRootImpl@6f57b3e[MainActivity]: Received frameDrawingCallback syncResult=0 frameNum=1.
+05-24 11:16:14.912 19984 20035 I ViewRootImpl@6f57b3e[MainActivity]: mWNT: t=0xb400007b7d4bc000 mBlastBufferQueue=0xb400007b7d34da00 fn= 1 mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$8.onFrameDraw:13841 android.view.ThreadedRenderer$1.onFrameDraw:792 <bottom of call stack> 
+05-24 11:16:14.912 19984 20035 I ViewRootImpl@6f57b3e[MainActivity]: Setting up sync and frameCommitCallback
+05-24 11:16:14.930 19984 20006 I BLASTBufferQueue: [ViewRootImpl@6f57b3e[MainActivity]#2](f:0,a:0,s:0) onFrameAvailable the first frame is available
+05-24 11:16:14.932 19984 20006 I ViewRootImpl@6f57b3e[MainActivity]: Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+05-24 11:16:14.934 19984 20006 D OpenGLRenderer: CFMS:: SetUp Pid : 19984    Tid : 20006
+05-24 11:16:14.935 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: reportDrawFinished seqId=0
+05-24 11:16:14.936 19984 20006 D OpenGLRenderer: HWUI - treat SMPTE_170M as sRGB
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: ReactHost{0}.getOrCreateDestroyTask(): Starting React Native destruction
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task faulted. Stage: 1: Starting destroy. Fault reason: The development server returned response error code: 500
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: Body:
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: Body:
+05-24 11:16:14.936 19984 19984 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task faulted. Stage: 1: Starting destroy. Fault reason: The development server returned response error code: 500
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: Body:
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: Body:
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.createReactInstanceUnwrapper$lambda$49(ReactHostImpl.kt:1264)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$wxqWPZPIM84yb-DFfq8PhEXI2r4(Unknown Source:0)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda38.invoke(D8$$SyntheticClass:0)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$60(ReactHostImpl.kt:1481)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$W_3hbG2jNwurg3jPo_rFnHCrsPg(Unknown Source:0)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda29.then(D8$$SyntheticClass:0)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at android.os.Handler.handleCallback(Handler.java:958)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loopOnce(Looper.java:230)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loop(Looper.java:319)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at android.app.ActivityThread.main(ActivityThread.java:8919)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at java.lang.reflect.Method.invoke(Native Method)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:578)
+05-24 11:16:14.937 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1103)
+05-24 11:16:14.937 19984 19984 W unknown:BridgelessReact: ReactHost{0}.getOrCreateDestroyTask(): DevSupportManager cleanup
+05-24 11:16:14.938 19984 19984 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): ReactContext is null. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.938 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.938 19984 19984 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.938 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.938 19984 19984 W unknown:BridgelessReact: Body:
+05-24 11:16:14.938 19984 19984 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): ReactContext is null. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: Body:
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$60(ReactHostImpl.kt:1501)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$W_3hbG2jNwurg3jPo_rFnHCrsPg(Unknown Source:0)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda29.then(D8$$SyntheticClass:0)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at android.os.Handler.handleCallback(Handler.java:958)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loopOnce(Looper.java:230)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loop(Looper.java:319)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at android.app.ActivityThread.main(ActivityThread.java:8919)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at java.lang.reflect.Method.invoke(Native Method)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:578)
+05-24 11:16:14.938 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1103)
+05-24 11:16:14.939 19984 19984 W unknown:BridgelessReact: ReactHost{0}.getOrCreateDestroyTask(): Move ReactHost to onHostDestroy()
+05-24 11:16:14.940 19984 20021 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task returned null. Stage: 2: Stopping surfaces. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.940 19984 20021 W unknown:BridgelessReact: 
+05-24 11:16:14.940 19984 20021 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.940 19984 20021 W unknown:BridgelessReact: 
+05-24 11:16:14.940 19984 20021 W unknown:BridgelessReact: Body:
+05-24 11:16:14.940 19984 20021 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.940 19984 19984 I ViewRootImpl@383c5ec[MainActivity]: handleWindowFocusChanged: 0 0 call from android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged:0
+05-24 11:16:14.941 19984 19984 I ImeFocusController: onPreWindowFocus: skipped, hasWindowFocus=false mHasImeFocus=true
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task returned null. Stage: 2: Stopping surfaces. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: Body:
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.createReactInstanceUnwrapper$lambda$49(ReactHostImpl.kt:1280)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$wxqWPZPIM84yb-DFfq8PhEXI2r4(Unknown Source:0)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda38.invoke(D8$$SyntheticClass:0)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$62(ReactHostImpl.kt:1513)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$xpeTQfuVN0XbBBJsIsVmA6wzF00(Unknown Source:0)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda30.then(D8$$SyntheticClass:0)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.941 19984 20021 E unknown:ReactHost: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.941 19984 20021 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): Skipping surface shutdown: ReactInstance null
+05-24 11:16:14.941 19984 19984 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(onWindowFocusChange(hasFocus = "false")): Tried to access onWindowFocusChange while context is not ready
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(onWindowFocusChange(hasFocus = "false")): Tried to access onWindowFocusChange while context is not ready
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.onWindowFocusChange(ReactHostImpl.kt:668)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.facebook.react.ReactDelegate.onWindowFocusChanged(ReactDelegate.kt:232)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.facebook.react.ReactActivityDelegate.onWindowFocusChanged(ReactActivityDelegate.java:237)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invokeSuspend(ReactActivityDelegateWrapper.kt:320)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invoke(Unknown Source:8)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invoke(Unknown Source:4)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$launchLifecycleScopeWithLock$1.invokeSuspend(ReactActivityDelegateWrapper.kt:452)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.internal.DispatchedContinuationKt.resumeCancellableWith(DispatchedContinuation.kt:375)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.intrinsics.CancellableKt.startCoroutineCancellable(Cancellable.kt:26)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:358)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:134)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:53)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt.launch(Unknown Source:1)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch$default(Builders.common.kt:44)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt.launch$default(Unknown Source:1)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.launchLifecycleScopeWithLock(ReactActivityDelegateWrapper.kt:450)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.launchLifecycleScopeWithLock$default(ReactActivityDelegateWrapper.kt:446)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.onWindowFocusChanged(ReactActivityDelegateWrapper.kt:318)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.facebook.react.ReactActivity.onWindowFocusChanged(ReactActivity.java:158)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at androidx.appcompat.view.WindowCallbackWrapper.onWindowFocusChanged(WindowCallbackWrapper.java:124)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.android.internal.policy.DecorView.onWindowFocusChanged(DecorView.java:2372)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.view.View.dispatchWindowFocusChanged(View.java:16503)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.view.ViewGroup.dispatchWindowFocusChanged(ViewGroup.java:1517)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl.dispatchFocusEvent(ViewRootImpl.java:5080)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl.handleWindowFocusChanged(ViewRootImpl.java:4964)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged(Unknown Source:0)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl$ViewRootHandler.handleMessageImpl(ViewRootImpl.java:7258)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.view.ViewRootImpl$ViewRootHandler.handleMessage(ViewRootImpl.java:7166)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loopOnce(Looper.java:230)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loop(Looper.java:319)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at android.app.ActivityThread.main(ActivityThread.java:8919)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at java.lang.reflect.Method.invoke(Native Method)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:578)
+05-24 11:16:14.942 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1103)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): Skipping surface shutdown: ReactInstance null
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$62(ReactHostImpl.kt:1515)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$xpeTQfuVN0XbBBJsIsVmA6wzF00(Unknown Source:0)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda30.then(D8$$SyntheticClass:0)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.942 19984 20021 E unknown:ReactHost: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.943 19984 19984 I ImeFocusController: onPostWindowFocus: skipped, hasWindowFocus=false mHasImeFocus=true
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task returned null. Stage: 3: Destroying ReactContext. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: Body:
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task returned null. Stage: 3: Destroying ReactContext. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: Body:
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.createReactInstanceUnwrapper$lambda$49(ReactHostImpl.kt:1280)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$wxqWPZPIM84yb-DFfq8PhEXI2r4(Unknown Source:0)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda38.invoke(D8$$SyntheticClass:0)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$63(ReactHostImpl.kt:1527)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$1etx-ZrSQEOF71Lae3pWSrnIh44(Unknown Source:0)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda31.then(D8$$SyntheticClass:0)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at android.os.Handler.handleCallback(Handler.java:958)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loopOnce(Looper.java:230)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loop(Looper.java:319)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at android.app.ActivityThread.main(ActivityThread.java:8919)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at java.lang.reflect.Method.invoke(Native Method)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:578)
+05-24 11:16:14.944 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1103)
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): ReactContext is null. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: 
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: Body:
+05-24 11:16:14.944 19984 19984 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): ReactContext is null. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: Body:
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$63(ReactHostImpl.kt:1534)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$1etx-ZrSQEOF71Lae3pWSrnIh44(Unknown Source:0)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda31.then(D8$$SyntheticClass:0)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at android.os.Handler.handleCallback(Handler.java:958)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loopOnce(Looper.java:230)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at android.os.Looper.loop(Looper.java:319)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at android.app.ActivityThread.main(ActivityThread.java:8919)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at java.lang.reflect.Method.invoke(Native Method)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:578)
+05-24 11:16:14.945 19984 19984 E unknown:ReactHost: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1103)
+05-24 11:16:14.945 19984 19984 W unknown:BridgelessReact: ReactHost{0}.getOrCreateDestroyTask(): Destroying MemoryPressureRouter
+05-24 11:16:14.951 19984 20021 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task returned null. Stage: 4: Destroying ReactInstance. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.951 19984 20021 W unknown:BridgelessReact: 
+05-24 11:16:14.951 19984 20021 W unknown:BridgelessReact: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.951 19984 20021 W unknown:BridgelessReact: 
+05-24 11:16:14.951 19984 20021 W unknown:BridgelessReact: Body:
+05-24 11:16:14.951 19984 20021 W unknown:BridgelessReact: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): Destroy: ReactInstance task returned null. Stage: 4: Destroying ReactInstance. Destroy reason: handleHostException(message = "The development server returned response error code: 500
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: URL: http://localhost:8082/.expo/.virtual-metro-entry.bundle?platform=android&dev=true&lazy=true&minify=false&app=com.anonymous.nutlyar&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: Body:
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: {"type":"InternalError","errors":[],"message":"Metro has encountered an error: Cannot read properties of undefined (reading 'get'): C:\\nutly-ar Rascunho\\node_modules\\metro\\src\\node-haste\\DependencyGraph.js (28:20)\n\n\u001b[0m \u001b[90m 26 |\u001b[39m \u001b[36mconst\u001b[39m \u001b[33mNULL_PLATFORM\u001b[39m \u001b[33m=\u001b[39m \u001b[33mSymbol\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 27 |\u001b[39m \u001b[36mfunction\u001b[39m getOrCreateMap(map\u001b[33m,\u001b[39m field) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mlet\u001b[39m subMap \u001b[33m=\u001b[39m map\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(field)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39msubMap) {\n \u001b[90m 30 |\u001b[39m     subMap \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mMap\u001b[39m()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m     map\u001b[33m.\u001b[39m\u001b[36mset\u001b[39m(field\u001b[33m,\u001b[39m subMap)\u001b[33m;\u001b[39m\u001b[0m"}")
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.createReactInstanceUnwrapper$lambda$49(ReactHostImpl.kt:1280)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$wxqWPZPIM84yb-DFfq8PhEXI2r4(Unknown Source:0)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda38.invoke(D8$$SyntheticClass:0)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$64(ReactHostImpl.kt:1560)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$pZQLDAYacAywfrMsO1yVYS8XibU(Unknown Source:0)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda32.then(D8$$SyntheticClass:0)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.951 19984 20021 E unknown:ReactHost: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.951 19984 20021 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(getOrCreateDestroyTask()): Skipping ReactInstance.destroy(): ReactInstance null
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: Unhandled SoftException
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(getOrCreateDestroyTask()): Skipping ReactInstance.destroy(): ReactInstance null
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:905)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:896)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.getOrCreateDestroyTask$lambda$64(ReactHostImpl.kt:1562)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.$r8$lambda$pZQLDAYacAywfrMsO1yVYS8XibU(Unknown Source:0)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl$$ExternalSyntheticLambda32.then(D8$$SyntheticClass:0)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.completeAfterTask$lambda$5(Task.kt:394)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion.$r8$lambda$IPpysnehFwANEiW061YzapkMdoE(Unknown Source:0)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at com.facebook.react.runtime.internal.bolts.Task$Companion$$ExternalSyntheticLambda4.run(D8$$SyntheticClass:0)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-24 11:16:14.952 19984 20021 E unknown:ReactHost: 	at java.lang.Thread.run(Thread.java:1564)
+05-24 11:16:14.952 19984 20021 W unknown:BridgelessReact: ReactHost{0}.getOrCreateDestroyTask(): Resetting start/destroy task ref
+05-24 11:16:14.991 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: handleWindowFocusChanged: 1 0 call from android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged:0
+05-24 11:16:14.992 19984 19984 D ViewRootImpl@6f57b3e[MainActivity]: mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400007b7d36e000}
+05-24 11:16:14.994 19984 19984 D InputMethodManagerUtils: startInputInner - Id : 0
+05-24 11:16:14.995 19984 19984 I InputMethodManager: startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+05-24 11:16:15.020 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=false, type=ime, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:15.515 19984 20052 D ProfileInstaller: Installing profile for com.anonymous.nutlyar
+05-24 11:16:40.779 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: handleWindowFocusChanged: 0 0 call from android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged:0
+05-24 11:16:40.780 19984 19984 I ImeFocusController: onPreWindowFocus: skipped, hasWindowFocus=false mHasImeFocus=true
+05-24 11:16:40.780 19984 19984 I ImeFocusController: onPostWindowFocus: skipped, hasWindowFocus=false mHasImeFocus=true
+05-24 11:16:44.876 19984 19990 I onymous.nutlyar: Background concurrent copying GC freed 7677KB AllocSpace bytes, 23(1228KB) LOS objects, 54% free, 5059KB/10MB, paused 1.966ms,63us total 109.247ms
+05-24 11:16:44.879 19984 19991 D InputTransport: Input channel destroyed: 'ClientS', fd=135
+05-24 11:16:53.114 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=navigationBars, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:53.118 19984 19984 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=statusBars, host=com.anonymous.nutlyar/com.anonymous.nutlyar.MainActivity
+05-24 11:16:53.133 19984 19984 I ViewRootImpl@6f57b3e[MainActivity]: handleWindowFocusChanged: 1 0 call from android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged:0
+05-24 11:16:53.133 19984 20034 I ViewRootImpl@6f57b3e[MainActivity]: mWNT: t=0xb400007b7d4beb80 mBlastBufferQueue=0xb400007b7d34da00 fn= 2 mRenderHdrSdrRatio=1.0 caller= android.view.SyncRtSurfaceTransactionApplier.applyTransaction:96 android.view.SyncRtSurfaceTransactionApplier.lambda$scheduleApply$0:69 android.view.SyncRtSurfaceTransactionApplier.$r8$lambda$SgowXC58rj3PR958kHUfRgLZmvE:0 
+05-24 11:16:53.135 19984 19984 D ViewRootImpl@6f57b3e[MainActivity]: mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400007b7d36e000}
+05-24 11:16:53.136 19984 19984 D InputMethodManagerUtils: startInputInner - Id : 0
+05-24 11:16:53.136 19984 19984 I InputMethodManager: startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus

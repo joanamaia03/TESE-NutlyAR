@@ -4,11 +4,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   Platform,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native';
 import ProgressBreadcrumb from './ProgressBar'; // Ajusta o caminho conforme o teu projeto
 import { db, auth } from '../src/firebase';

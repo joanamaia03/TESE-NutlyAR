@@ -4,13 +4,13 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   TextInput,
   ScrollView,
   Platform,
   KeyboardAvoidingView,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
 import { db, auth } from '../src/firebase';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
@@ -140,15 +140,16 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     paddingHorizontal: 24,
     paddingBottom: 16,
+    paddingTop: 8,
     alignItems: 'center',
   },
   breadcrumbContainer: {
     alignItems: 'center',
-    marginTop: -100,
-    marginBottom: 100,
+    marginTop: 8,
+    marginBottom: 28,
   },
   questionContainer: {
     width: '100%',

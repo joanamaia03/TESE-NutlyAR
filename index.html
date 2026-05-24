@@ -87,6 +87,28 @@
       2: 1
     };
 
+    const getCurrentImageData = (targetIndex) => {
+      const faseAtual = (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1;
+      const src = faseAtual === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex];
+      return {
+        visible: true,
+        targetIndex: targetIndex,
+        nomeImagem: src || '',
+        fase: faseAtual
+      };
+    };
+
+    const postImageStateToReactNative = (targetIndex) => {
+      try {
+        const payload = Object.assign({ type: 'IMAGE_STATE_CHANGED' }, getCurrentImageData(targetIndex));
+        if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+          window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+        }
+      } catch (e) {
+        console.warn('IMAGE_STATE_CHANGED post failed', e);
+      }
+    };
+
     // Esta função é chamada diretamente pelo botão de swap do React Native
     window.trocarModeloAR = function() {
       let targetAtivo = null;
@@ -117,6 +139,8 @@
         fasesDosTargets[targetAtivo] = 1;
         console.log(`WebAR: Alvo ${targetAtivo} restaurado para a Fase 1.`);
       }
+
+      postImageStateToReactNative(targetAtivo);
     };
     // ─────────────────────────────────────────────────────────
 
@@ -189,10 +213,22 @@
           targetEl.addEventListener('targetFound', function () {
             globalTargetStates[targetIndex].visible = true;
             globalTargetStates[targetIndex].lastFoundAt = Date.now();
+            postImageStateToReactNative(targetIndex);
           });
 
           targetEl.addEventListener('targetLost', function () {
             globalTargetStates[targetIndex].visible = false;
+            try {
+              if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                  type: 'IMAGE_STATE_CHANGED',
+                  visible: false,
+                  targetIndex: targetIndex,
+                  nomeImagem: '',
+                  fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
+                }));
+              }
+            } catch (e) { console.warn('IMAGE_STATE_CHANGED lost post failed', e); }
           });
           
           // Quando esta imagem é clicada, informa a app nativa com dados do alvo
@@ -208,6 +244,7 @@
                     fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
                   }));
                 }
+                postImageStateToReactNative(targetIndex);
               } catch (e) { console.warn('IMAGE_CLICKED post failed', e); }
             });
           } catch (e) { /* ignore if addEventListener not allowed */ }

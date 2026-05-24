@@ -4,11 +4,11 @@ import {
   View, 
   Text, 
   TouchableOpacity, 
-  SafeAreaView, 
   Image, 
   ScrollView,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 export default function QuestionScreen({ navigation }: any) {
