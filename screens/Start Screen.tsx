@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 15,
-    zIndex: 3,
+    zIndex: 6,
     elevation: 3,
   },
   badgeImage: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: -30,
-    zIndex: 10,
+    zIndex: 5,
     elevation: 10,
   },
   buttonPressed: {

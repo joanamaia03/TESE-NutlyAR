@@ -24,81 +24,46 @@ const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10';
 type NutritionItem = {
   key: string;
   assetName: string;
-  label: string;
+  energia: string;
   porcao: string;
-  energiaTotalKcal: number;
-  energia100gKcal: number;
-  proteinaG: number;
-  hidratosG: number;
-  gorduraG: number;
 };
 
 const NUTRITION_DATA: NutritionItem[] = [
   {
     key: 'hotdog',
     assetName: 'hotdog.png',
-    label: 'Hot dog',
-    porcao: '190 g',
-    energiaTotalKcal: 494,
-    energia100gKcal: 260,
-    proteinaG: 16,
-    hidratosG: 34,
-    gorduraG: 29,
+    energia: '270 kcal/100g',
+    porcao: '206g',
   },
   {
     key: 'sardine',
     assetName: 'sardine.png',
-    label: 'Sardinhas',
-    porcao: '220 g',
-    energiaTotalKcal: 396,
-    energia100gKcal: 180,
-    proteinaG: 35,
-    hidratosG: 2,
-    gorduraG: 25,
+    energia: '106 kcal/100g',
+    porcao: '383g',
   },
   {
     key: 'cozido',
     assetName: 'cozido.png',
-    label: 'Cozido',
-    porcao: '350 g',
-    energiaTotalKcal: 560,
-    energia100gKcal: 160,
-    proteinaG: 32,
-    hidratosG: 46,
-    gorduraG: 24,
+    energia: '151 kcal/100g',
+    porcao: '265g',
   },
   {
     key: 'pizza',
     assetName: 'pizza.jpg',
-    label: 'Pizza',
     porcao: '300 g',
-    energiaTotalKcal: 780,
-    energia100gKcal: 260,
-    proteinaG: 29,
-    hidratosG: 86,
-    gorduraG: 35,
+    energia: '260',
   },
   {
     key: 'pataniscas',
     assetName: 'pataniscas.jpg',
-    label: 'Pataniscas',
     porcao: '260 g',
-    energiaTotalKcal: 442,
-    energia100gKcal: 170,
-    proteinaG: 23,
-    hidratosG: 30,
-    gorduraG: 22,
+    energia: '170',
   },
   {
     key: 'omelete',
     assetName: 'omelete.jpg',
-    label: 'Omelete',
     porcao: '200 g',
-    energiaTotalKcal: 286,
-    energia100gKcal: 143,
-    proteinaG: 19,
-    hidratosG: 4,
-    gorduraG: 21,
+    energia: '143',
   },
 ];
 
@@ -114,6 +79,7 @@ export default function ARScreen({ navigation, route }: any) {
   const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
   const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
+  const processandoCliqueRef = React.useRef<boolean>(false);
 
   const normalizeAssetName = (value: string) => {
     const fileName = String(value).split('/').pop() || String(value);
@@ -134,7 +100,8 @@ export default function ARScreen({ navigation, route }: any) {
 
   const guardarImagemSelecionada = React.useCallback(async (payload: any) => {
     const user = auth.currentUser;
-    console.log('guardarImagemSelecionada called, payload=', payload, 'state.imagemSelecionada=', imagemSelecionada, 'state.imagemAtiva=', imagemAtiva, 'currentUser=', user);
+    console.log('guardarImagemSelecionada called, payload=', payload, 'currentUser=', user);
+    
     if (!user) {
       console.warn('Não foi possível guardar a imagem selecionada: utilizador sem sessão.');
       setDebugMsg('Erro: utilizador não autenticado');
@@ -142,25 +109,21 @@ export default function ARScreen({ navigation, route }: any) {
       return;
     }
 
-    // prefer explicit payload, then transient selection, then active image
-    const imagem = payload?.imagemSelecionada || imagemSelecionada || imagemAtiva;
-    if (!imagem) {
-      console.warn('Não foi possível guardar a imagem selecionada: payload vazio ou sem imagem ativa.');
-      setDebugMsg('Erro: nenhuma imagem selecionada');
-      setTimeout(() => setDebugMsg(null), 4000);
-      return;
-    }
+    // Procura a imagem no payload enviado explicitamente, ou nos estados locais da app
+    const imagem = payload?.imagemSelecionada || payload || imagemSelecionada || imagemAtiva;
+
+    // Se mesmo assim não houver objeto válido (ex: avançar sem imagem na câmara), criamos um registo de contingência
+    const dadosImagem = {
+      targetIndex: (imagem && imagem.targetIndex !== undefined) ? imagem.targetIndex : 'nenhum_focado',
+      fase: (imagem && imagem.fase !== undefined) ? imagem.fase : 1,
+      nomeImagem: (imagem && imagem.nomeImagem) ? imagem.nomeImagem : 'nenhuma_imagem_ativa',
+      timestamp: new Date().toISOString(),
+    };
 
     try {
-      const dadosImagem = {
-        targetIndex: imagem.targetIndex ?? null,
-        fase: imagem.fase ?? null,
-        nomeImagem: imagem.nomeImagem ?? '',
-        timestamp: new Date().toISOString(),
-      };
-
-      console.log('Gravando imagem no Firestore para user=', user.uid, 'dados=', dadosImagem);
-      setDebugMsg('A gravar imagem...');
+      console.log('Gravando no Firestore para user=', user.uid, 'dados=', dadosImagem);
+      setDebugMsg('A gravar dados...');
+      
       const qRef = doc(db, 'question', user.uid);
       await setDoc(
         qRef,
@@ -179,14 +142,14 @@ export default function ARScreen({ navigation, route }: any) {
         ultimaImagemSelecionada: dadosImagem,
       });
 
-      setDebugMsg('Imagem gravada com sucesso');
+      setDebugMsg('Dados gravados com sucesso');
       setTimeout(() => setDebugMsg(null), 3000);
     } catch (error: any) {
       console.warn('Erro ao guardar imagem selecionada:', error?.message || error);
-      setDebugMsg('Erro ao gravar imagem: ' + (error?.message || String(error)));
+      setDebugMsg('Erro ao gravar: ' + (error?.message || String(error)));
       setTimeout(() => setDebugMsg(null), 5000);
     }
-  }, [imagemSelecionada, perguntaAtual]);
+  }, [imagemSelecionada, imagemAtiva, perguntaAtual]);
 
   // Hide Android navigation bar while this screen is focused and apply any incoming params
   useFocusEffect(
@@ -299,33 +262,61 @@ export default function ARScreen({ navigation, route }: any) {
     }
   };
 
-  // Lógica executada quando o utilizador confirma a escolha no Pop-up 
-  const confirmarEscolhaEAvancar = () => {
-    // Se não houver imagem selecionada, apenas fecha o pop-up (comportamento antigo)
-    if (!imagemSelecionada) {
+  const confirmarEscolhaEAvancar = async () => {
+    const isOverrideFlow = Boolean(popupOverrideMessage && !imagemSelecionada);
+
+    // Se não há imagem nem override nem imagem ativa, apenas fecha
+    if (!imagemSelecionada && !popupOverrideMessage && !imagemAtiva) {
       setShowPopup(false);
       return;
     }
 
-    // 1. Cria o objeto com a resposta da pergunta atual
-    const dadosPergunta = {
-      pergunta: perguntaAtual,
-      targetIndex: imagemSelecionada.targetIndex,
-      fase: imagemSelecionada.fase,
-      imagem: imagemSelecionada.nomeImagem,
-      timestamp: new Date().toISOString(),
-    };
+    // O popup vindo da Question4 só deve desbloquear o botão de informação e
+    // manter a câmara ativa; não deve avançar para outro ecrã.
+    if (isOverrideFlow) {
+      setShowPopup(false);
+      setInfoEnabled(true);
+      setImagemSelecionada(null);
+      return;
+    }
 
-    // Fecha o pop-up e limpa seleção
+    // Ativa o bloqueio protetor contra re-renders frenéticos da câmara
+    processandoCliqueRef.current = true;
+
+    try {
+      setDebugMsg("A enviar para o Firestore...");
+      
+      // Define com precisão cirúrgica o que vai ser gravado
+      const dadosParaGravar = imagemSelecionada || imagemAtiva || { 
+        targetIndex: 'override_texto', 
+        fase: 1, 
+        nomeImagem: 'avanco_por_override' 
+      };
+
+      await guardarImagemSelecionada({ imagemSelecionada: dadosParaGravar });
+      
+    } catch (dbError) {
+      console.warn("Erro ao processar gravação, avançando por segurança:", dbError);
+    } finally {
+      // Liberta o bloqueio protetor após a tentativa de gravação
+      processandoCliqueRef.current = false;
+    }
+
+    // Limpa os estados locais e fecha as modais antes de mudar de ecrã
     setShowPopup(false);
     setImagemSelecionada(null);
+    setPopupOverrideMessage(null);
 
-    // Navega para o cenário/historico como antes
-    navigation.navigate('ImagineScreen', {
-      perguntaAtual: perguntaAtual,
-    });
+    // Navega em segurança para o cenário hipotético
+    try {
+      navigation.navigate('ImagineScreen', {
+        perguntaAtual: perguntaAtual,
+        historicoRespostas: historicoRespostas,
+      });
+    } catch (navErr) {
+      console.warn('A navegação falhou:', navErr);
+    }
   };
-
   const consoleBridge = `(function(){
     try{
       function send(obj){ try{ window.ReactNativeWebView.postMessage(JSON.stringify(obj)); }catch(e){} }
@@ -420,19 +411,37 @@ export default function ARScreen({ navigation, route }: any) {
             
             // ESCUTA O EVENTO DE CLIQUE DO TEU HTML (index.html)
             if (data?.type === 'IMAGE_CLICKED') {
-              setImagemSelecionada(data); // Armazena temporariamente os dados da foto clicada
-              setShowPopup(true);         // Abre dinamicamente o Modal fofo da Coruja
+              // Normalize the incoming payload: web may send the image inside
+              // `imagemSelecionada` or inline as fields. Store only the image object
+              // in state so later code can rely on `imagemSelecionada.targetIndex` etc.
+              const imgPayload = data?.imagemSelecionada ?? data?.payload ?? (data?.targetIndex !== undefined ? {
+                targetIndex: data.targetIndex,
+                nomeImagem: data.nomeImagem,
+                fase: data.fase,
+              } : null);
+
+              if (imgPayload) {
+                setImagemSelecionada(imgPayload);
+              } else {
+                console.warn('IMAGE_CLICKED received without imagem payload', data);
+              }
+              setShowPopup(true); // Abre dinamicamente o Modal fofo da Coruja
             }
 
             if (data?.type === 'IMAGE_STATE_CHANGED') {
               if (data?.visible === false) {
                 setImagemAtiva((current) => (current?.targetIndex === data?.targetIndex ? null : current));
               } else {
-                setImagemAtiva({
-                  targetIndex: data?.targetIndex,
-                  nomeImagem: data?.nomeImagem,
-                  fase: data?.fase,
-                });
+                // Só atualiza se o utilizador não estiver no meio do processo de clique
+                if (!processandoCliqueRef.current) {
+                  setImagemAtiva({
+                    targetIndex: data?.targetIndex,
+                    nomeImagem: data?.nomeImagem,
+                    fase: data?.fase,
+                  });
+                }
+                // Quando a imagem flutuante aparece, o botão de informação pode ser desbloqueado.
+                setInfoEnabled(true);
               }
             }
 
@@ -508,23 +517,18 @@ export default function ARScreen({ navigation, route }: any) {
       <Modal visible={showNutritionModal} transparent animationType="slide" onRequestClose={() => setShowNutritionModal(false)}>
         <View style={styles.nutritionOverlay}>
           <View style={styles.nutritionCard}>
-            <Text style={styles.nutritionTitle}>Dados Nutricionais</Text>
 
             {currentNutrition ? (
               <>
-                <Text style={styles.nutritionMeal}>{currentNutrition.label}</Text>
-                <Text style={styles.nutritionMeta}>Imagem ativa: {currentNutrition.assetName}</Text>
-                <Text style={styles.nutritionMeta}>Porção: {currentNutrition.porcao}</Text>
-                <Text style={styles.nutritionLine}>Energia total da porção: {currentNutrition.energiaTotalKcal} kcal</Text>
-                <Text style={styles.nutritionLine}>Energia por 100g: {currentNutrition.energia100gKcal} kcal</Text>
-                <Text style={styles.nutritionLine}>Proteína: {currentNutrition.proteinaG} g</Text>
-                <Text style={styles.nutritionLine}>Hidratos de carbono: {currentNutrition.hidratosG} g</Text>
-                <Text style={styles.nutritionLine}>Gordura: {currentNutrition.gorduraG} g</Text>
+                <Text style={styles.nutritionMeta}>
+                  Energia: {currentNutrition.energiaTotalKcal ?? currentNutrition.energia ?? (currentNutrition.energia100gKcal ? `${currentNutrition.energia100gKcal} kcal/100g` : '—')}
+                </Text>
+                <Text style={styles.nutritionMeta}>Porção: {currentNutrition.porcao ?? '—'}</Text>
               </>
             ) : (
               <>
                 <Text style={styles.nutritionHint}>
-                  Ainda não foi identificada a imagem ativa da RA. Toque numa refeição flutuante ou mude a imagem para ver os dados nutricionais correspondentes.
+                  Aponte a câmara para uma das refeições para ver a informação nutricional aqui!
                 </Text>
               </>
             )}
@@ -808,34 +812,36 @@ const styles = StyleSheet.create({
   },
   nutritionOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   nutritionCard: {
-    backgroundColor: '#FFF8F1',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingVertical: 18,
-    minHeight: 320,
+    backgroundColor: '#FBE1CE',
+    borderRadius: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 36,
+    minHeight: 160,
+    width: '100%',
+    alignItems: 'center', 
   },
   nutritionTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     color: '#613512',
-    marginBottom: 8,
+    marginBottom: 6,
     textAlign: 'center',
   },
   nutritionMeal: {
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: '700',
-    color: '#7B451B',
-    marginBottom: 4,
+    color: '#613512',
+    marginVertical: 10,
   },
   nutritionMeta: {
-    fontSize: 14,
+    fontSize: 20,
     color: '#7B5A43',
-    marginBottom: 8,
+    marginBottom: 6,
+    textAlign: 'center',
   },
   nutritionSubTitle: {
     fontSize: 16,
@@ -845,18 +851,20 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   nutritionLine: {
-    fontSize: 15,
+    fontSize: 20,
     color: '#613512',
-    lineHeight: 22,
+    lineHeight: 28,
+    textAlign: 'center',
   },
   nutritionHint: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#7B5A43',
     lineHeight: 22,
     marginBottom: 6,
+    textAlign: 'center',
   },
   nutritionCloseButton: {
-    marginTop: 16,
+    marginTop: 18,
     backgroundColor: '#784115',
     alignSelf: 'center',
     borderRadius: 16,
