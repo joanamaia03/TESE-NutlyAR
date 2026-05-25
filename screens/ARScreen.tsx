@@ -34,6 +34,13 @@ const NUTRITION_DATA: NutritionItem[] = [
   { key: 'lombo', assetName: 'lombo.jpg', energia: '174 kcal/100g', porcao: '317g' },
   { key: 'panado', assetName: 'panado.jpg', energia: '174 kcal/100g', porcao: '263g' },
   { key: 'arrozdepolvo', assetName: 'arrozdepolvo.jpg', energia: '127 kcal/100g', porcao: '293g' },
+  { key: 'presunto', assetName: 'presunto.png', energia: '262 kcal/100g', porcao: '123g' },
+  { key: 'lanche', assetName: 'lanche.png', energia: '287 kcal/100g', porcao: '108g' },
+  { key: 'rissois', assetName: 'rissois.png', energia: '280 kcal/100g', porcao: '162g' },
+  { key: 'hamburger', assetName: 'hamburger.png', energia: '228 kcal/100g', porcao: '144g' },
+  { key: 'vaca', assetName: 'vaca.png', energia: '130 kcal/100g', porcao: '198g' },
+  { key: 'croquete', assetName: 'croquete.png', energia: '316 kcal/100g', porcao: '135g' },
+  
 ];
 
 export default function ARScreen({ navigation, route }: any) {
