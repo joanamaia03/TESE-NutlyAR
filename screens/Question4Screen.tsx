@@ -7,77 +7,49 @@ import {
   TextInput,
   ScrollView,
   Platform,
-  KeyboardAvoidingView,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
-import { db, auth } from '../src/firebase';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { useNutlySession } from '../src/NutlySessionContext';
+
+const opcoes = ['Sim', 'Não'];
 
 export default function ImagineScreen({ route, navigation }: any) {
-  const { perguntaAtual = 4 } = route.params || {};
+  const { saveAnswer, currentGroup } = useNutlySession();
+  const { perguntaAtual = 4, groupNumber } = route.params || {};
+  const breadcrumbStep = groupNumber ?? currentGroup ?? 1;
 
   const [opcaoSelecionada, setOpcaoSelecionada] = useState<string | null>(null);
   const [porqueTexto, setPorqueTexto] = useState('');
 
-  const opcoes = ['Sim', 'Não', 'Não Sei'];
-
-  const handleSeguinte = () => {
-    if (!opcaoSelecionada) {
-      Alert.alert('Aviso', 'Por favor, selecione uma das opções antes de continuar.');
-      return;
-    }
-    if (!porqueTexto.trim()) {
-      Alert.alert('Aviso', 'Por favor, escreva uma justificação antes de continuar.');
+  const handleSeguinte = async () => {
+    if (!opcaoSelecionada || !porqueTexto.trim()) {
+      Alert.alert('Aviso', 'Preencha todas as opções.');
       return;
     }
 
-    (async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        Alert.alert('Sessão necessária', 'Precisas de estar com a sessão iniciada para guardar as respostas.');
-        return;
-      }
+    const answerData = {
+      questionId: `g${currentGroup}_q${perguntaAtual}_imagine`,
+      groupNumber: currentGroup,
+      imagineResponse: { opcaoSelecionada, porqueTexto },
+      answeredAt: new Date(),
+    };
 
-      try {
-        const resposta = { opcaoSelecionada, porqueTexto };
-        const qRef = doc(db, 'question', user.uid);
-        await setDoc(
-          qRef,
-          {
-            userId: user.uid,
-            perguntaAtual,
-            respostaQuestion4: resposta,
-            ultimaAtualizacao: new Date().toISOString(),
-          },
-          { merge: true }
-        );
+    try {
+      await saveAnswer(currentGroup, answerData);
+    } catch (error) {
+      console.error(error);
+    }
 
-        const userRef = doc(db, 'utilizadores', user.uid);
-        await updateDoc(userRef, {
-          ultimaAtualizacao: new Date().toISOString(),
-          ultimaRespostaQuestion4: resposta,
-        });
-      } catch (error: any) {
-        Alert.alert('Erro', 'Erro ao guardar no servidor: ' + (error?.message || String(error)));
-        return;
-      }
-
-        if (perguntaAtual < 6) {
-        navigation.navigate('ARScreen', {
-          perguntaProxima: perguntaAtual + 1,
-          faseDaPergunta: 2,
-          respostaQuestion4: { opcaoSelecionada, porqueTexto },
-          popupOverride: 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.',
-          enableInfo: true,
-        });
-      } else {
-        navigation.navigate('FinishScreen', {
-          respostaQuestion4: { opcaoSelecionada, porqueTexto },
-        });
-      }
-    })();
+    navigation.navigate('ARScreen', {
+      // Esta fase continua a pertencer ao grupo 1 — manter breadcrumb no passo 1
+      perguntaProxima: 1,
+      enableInfo: true,
+      finalGroupStep: true,
+      popupOverride: 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.',
+    });
   };
 
   return (
@@ -85,7 +57,7 @@ export default function ImagineScreen({ route, navigation }: any) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           <View style={styles.breadcrumbContainer}>
-            <ProgressBreadcrumb currentStep={perguntaAtual} />
+            <ProgressBreadcrumb currentStep={breadcrumbStep} />
           </View>
 
           <View style={styles.questionContainer}>

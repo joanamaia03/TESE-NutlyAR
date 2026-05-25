@@ -12,8 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
 import { MaterialIcons } from '@expo/vector-icons';
-import { auth, db } from '../src/firebase';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { useNutlySession } from '../src/NutlySessionContext';
 
 type FactorItem = {
   id: number;
@@ -25,13 +24,15 @@ type FactorItem = {
 const INITIAL_FACTORS: Omit<FactorItem, 'text' | 'order'>[] = [
   { id: 1, title: 'Tamanho / Quantidade da Porção' },
   { id: 2, title: 'Tipo de alimentos / Ingredientes' },
-  { id: 3, title: 'Forma de condefeção (molho, frito,...)' },
+  { id: 3, title: 'Forma de confeção (molho, frito,...)' },
   { id: 4, title: 'Foi um palpite / Não sei explicar' },
   { id: 5, title: 'Outro' },
 ];
 
 export default function DecisionFactorsScreen({ route, navigation }: any) {
-  const { perguntaAtual = 1 } = route.params || {};
+  const { saveAnswer, currentGroup } = useNutlySession();
+  const { perguntaAtual = 1, groupNumber } = route.params || {};
+  const breadcrumbStep = groupNumber ?? currentGroup ?? 1;
 
   const [items, setItems] = useState<FactorItem[]>(
     INITIAL_FACTORS.map((factor) => ({ ...factor, text: '', order: null }))
@@ -51,17 +52,13 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
 
     setItems((prev) => {
       const current = prev.find((item) => item.id === id);
-      if (!current) {
-        return prev;
-      }
+      if (!current) return prev;
 
       const hasOrder = typeof current.order === 'number';
       if (hasOrder) {
         const removedOrder = current.order as number;
         return prev.map((item) => {
-          if (item.id === id) {
-            return { ...item, order: null };
-          }
+          if (item.id === id) return { ...item, order: null };
           if (typeof item.order === 'number' && item.order > removedOrder) {
             return { ...item, order: item.order - 1 };
           }
@@ -70,11 +67,13 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
       }
 
       const nextOrder = prev.filter((item) => typeof item.order === 'number').length + 1;
-      return prev.map((item) => (item.id === id ? { ...item, order: nextOrder } : item));
+      return prev.map((item) =>
+        item.id === id ? { ...item, order: nextOrder } : item
+      );
     });
   };
 
-  const handleSeguinte = () => {
+  const handleSeguinte = async () => {
     if (selectedItems.length === 0) {
       Alert.alert('Aviso', 'Por favor, preencha pelo menos um fator antes de continuar.');
       return;
@@ -84,61 +83,35 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
       .filter((item) => item.text.trim().length > 0)
       .sort((a, b) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER))
       .map((item) => ({
-        id: item.id,
         title: item.title,
         text: item.text.trim(),
         order: item.order,
       }));
 
-    const fatoresOrdenadosComTexto = orderedItems;
-    const fatores = orderedItems.map((item) => ({
-      id: item.id,
-      title: item.title,
-      order: item.order,
-    }));
+    const answerData = {
+      questionId: `g${currentGroup}_q${perguntaAtual}_fatores`,
+      groupNumber: currentGroup,
+      factors: orderedItems,
+      answeredAt: new Date(),
+    };
 
-    (async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        Alert.alert('Sessão necessária', 'Precisas de estar com a sessão iniciada para guardar as respostas.');
-        return;
-      }
+    try {
+      await saveAnswer(currentGroup, answerData);
+      console.log(`✅ Fatores guardados no grupo ${currentGroup}`);
+    } catch (error) {
+      console.error('Erro ao guardar fatores:', error);
+      Alert.alert('Erro', 'Não foi possível guardar as respostas.');
+    }
 
-      try {
-        const qRef = doc(db, 'question', user.uid);
-        await setDoc(
-          qRef,
-          {
-            userId: user.uid,
-            perguntaAtual,
-            fatoresOrdenadosComTexto,
-            fatores,
-            ultimaAtualizacao: new Date().toISOString(),
-          },
-          { merge: true }
-        );
-
-        const userRef = doc(db, 'utilizadores', user.uid);
-        await updateDoc(userRef, {
-          ultimaAtualizacao: new Date().toISOString(),
-          fatoresOrdenadosComTexto,
-          fatores,
-        });
-      } catch (error: any) {
-        Alert.alert('Erro', 'Erro ao guardar no servidor: ' + (error?.message || String(error)));
-        return;
-      }
-
-      navigation.navigate('Question4Screen', {
-        perguntaAtual,
-      });
-    })();
+    navigation.navigate('Question4Screen', {
+      perguntaAtual,
+      groupNumber: currentGroup,
+    });
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.breadcrumbContainer}>
-        <ProgressBreadcrumb currentStep={perguntaAtual} />
+        <ProgressBreadcrumb currentStep={breadcrumbStep} />
       </View>
 
       <ScrollView

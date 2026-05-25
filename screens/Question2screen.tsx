@@ -10,111 +10,75 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native';
-import ProgressBreadcrumb from './ProgressBar'; // Ajusta o caminho conforme o teu projeto
-import { db, auth } from '../src/firebase';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import ProgressBreadcrumb from './ProgressBar';
+import { useNutlySession } from '../src/NutlySessionContext';
 
 export default function ReasonScreen({ route, navigation }: any) {
-  // Recupera o estado atual, histórico e a classificação de confiança vinda do ecrã anterior
-  const { perguntaAtual = 1 } = route.params || {};
+  const { saveAnswer, currentGroup } = useNutlySession();
+  const { perguntaAtual = 1, groupNumber } = route.params || {};
+  const breadcrumbStep = groupNumber ?? currentGroup ?? 1;
 
-  // Não usamos radio buttons — o motivo principal será o primeiro motivo não vazio
+  const [reason1, setReason1] = useState('');
+  const [reason2, setReason2] = useState('');
+  const [reason3, setReason3] = useState('');
+  const [reason4, setReason4] = useState('');
+  const [reason5, setReason5] = useState('');
 
-  // Cinco campos editáveis separados (remoção de `motivosLista` a pedido)
-  const [reason1, setReason1] = useState<string>('');
-  const [reason2, setReason2] = useState<string>('');
-  const [reason3, setReason3] = useState<string>('');
-  const [reason4, setReason4] = useState<string>('');
-  const [reason5, setReason5] = useState<string>('');
-
-  const handleSeguinte = () => {
-    // Prepara motivoPrincipal
+  const handleSeguinte = async () => {
     const reasons = [reason1, reason2, reason3, reason4, reason5];
-    const selected = reasons.find((r) => r && r.trim().length > 0) || reasons[0] || '';
-    const motivoPrincipal = selected;
+    const motivoPrincipal = reasons.find(r => r.trim().length > 0) || '';
 
-    // Guarda no Firestore seguindo o mesmo padrão do Question1
-    (async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        Alert.alert('Sessão necessária', 'Precisas de estar com a sessão iniciada para guardar as respostas.');
-        return;
-      }
+    const answerData = {
+      questionId: `g${currentGroup}_q${perguntaAtual}_motivos`,
+      groupNumber: currentGroup,
+      reasons: reasons.filter(r => r.trim().length > 0),
+      motivoPrincipal,
+      answeredAt: new Date(),
+    };
 
-      try {
-        const motivos = [reason1, reason2, reason3, reason4, reason5];
-        const qRef = doc(db, 'question', user.uid);
-        await setDoc(qRef, {
-          userId: user.uid,
-          perguntaAtual,
-          motivoPrincipal,
-          motivos,
-          ultimaAtualizacao: new Date().toISOString(),
-        }, { merge: true });
-
-        const userRef = doc(db, 'utilizadores', user.uid);
-        await updateDoc(userRef, {
-          ultimaAtualizacao: new Date().toISOString(),
-          ultimaRespostaMotivo: motivoPrincipal,
-          ultimaRespostaMotivos: motivos,
-        });
-      } catch (error: any) {
-        Alert.alert('Erro', 'Erro ao guardar no servidor: ' + (error?.message || String(error)));
-        return;
-      }
-    })();
-
-    // CONTROLADOR DE FLUXO DA TESE (6 Perguntas no Total)
-    if (perguntaAtual < 6) {
-      navigation.navigate('Question3Screen', {
-        perguntaAtual,
-      });
-    } else {
-      navigation.navigate('FinishScreen');
+    try {
+      await saveAnswer(currentGroup, answerData);
+    } catch (error) {
+      console.error("Erro ao guardar motivos:", error);
     }
-  };
 
-  
+    navigation.navigate('Question3Screen', { perguntaAtual, groupNumber: currentGroup });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Indicador de Progresso (Breadcrumb) */}
       <View style={styles.breadcrumbContainer}>
-        <ProgressBreadcrumb currentStep={perguntaAtual} />
+        <ProgressBreadcrumb currentStep={breadcrumbStep} />
       </View>
 
-      {/* Conteúdo Principal com Scroll para ecrãs mais pequenos */}
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Qual o motivo principal da sua escolha?</Text>
 
-        {/* Mapeamento dos botões ovais idênticos ao design */}
         <View style={styles.optionsContainer}>
           {[0,1,2,3,4].map((index) => {
-            const reasons = [reason1, reason2, reason3, reason4, reason5];
-            const setters: Array<(t: string) => void> = [setReason1, setReason2, setReason3, setReason4, setReason5];
-            const motivo = reasons[index];
+            const setters = [setReason1, setReason2, setReason3, setReason4, setReason5];
+            const values = [reason1, reason2, reason3, reason4, reason5];
 
             return (
               <View key={index} style={styles.optionRow}>
-                <TextInput
-                  value={motivo}
-                  onChangeText={(text) => setters[index](text)}
-                  placeholder={`${index + 1}`}
-                  placeholderTextColor="#E28A47"
-                  style={[styles.inputReason, styles.optionTextInactive]}
-                  multiline
-                />
+                <View style={styles.inputReasonWrapper}>
+                  <Text style={styles.inputNumberInside}>{index + 1}</Text>
+                  <TextInput
+                    value={values[index]}
+                    onChangeText={setters[index]}
+                    style={styles.inputReason}
+                    multiline
+                  />
+                </View>
               </View>
             );
           })}
         </View>
         <Text style={styles.footerNote}>
-            Se identificar mais do que um fator, por favor ordene por ordem de importância {"\n"} (1: nada importante; 5: muito importante) 
+          Se identificar mais do que um fator, por favor ordene por ordem de importância {'\n'}(1: nada importante; 5: muito importante) 
         </Text>
-        
       </ScrollView>
 
-      {/* Botão Fixo Inferior - Seguinte */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.nextButton} onPress={handleSeguinte}>
           <Text style={styles.nextButtonText}>Seguinte</Text>
@@ -191,15 +155,25 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
     marginBottom: 12,
+  },
+  inputReasonWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
+  inputNumberInside: {
+    position: 'absolute',
+    left: 14,
+    top: 14,
+    color: '#E28A47',
+    fontSize: 15,
+    fontWeight: '700',
+    zIndex: 2,
   },
   radioOuter: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: '#613512', alignItems: 'center', justifyContent: 'center' },
   radioOuterActive: { borderColor: '#733D14' },
   radioInner: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#733D14' },
-  inputReason: { flex: 1, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#E28A47', borderRadius: 12, padding: 10, color: '#613512' },
+  inputReason: { width: '100%', minHeight: 52, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#E28A47', borderRadius: 12, paddingVertical: 12, paddingLeft: 34, paddingRight: 10, color: '#613512' },
   
   footerNote: {
     fontSize: 14,
