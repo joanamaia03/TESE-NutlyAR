@@ -42,7 +42,7 @@ export const nutlySessionService = {
 
     const sessionRef = doc(db, COLLECTION, sessionDocId);
 
-    console.log('🔄 A guardar imagem na base de dados:', {
+    console.log('A guardar imagem na base de dados:', {
       sessionDocId,
       groupNumber,
       questionId: answer.questionId,
@@ -57,7 +57,7 @@ export const nutlySessionService = {
       [`groups.${groupKey}.startedAt`]: Timestamp.fromDate(new Date())
     });
 
-    console.log('✅ Imagem guardada com sucesso na base de dados:', {
+    console.log('Imagem guardada com sucesso na base de dados:', {
       sessionDocId,
       groupNumber,
       questionId: answer.questionId,

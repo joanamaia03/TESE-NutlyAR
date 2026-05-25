@@ -32,7 +32,7 @@ export const NutlySessionProvider = ({ children }: { children: ReactNode }) => {
     try {
       const newSessionId = await nutlySessionService.createSession();
       setSessionDocId(newSessionId);
-      console.log('✅ Nova sessão Nutly criada:', newSessionId);
+      console.log('Nova sessão Nutly criada:', newSessionId);
     } catch (error) {
       console.error('Erro ao criar sessão:', error);
     } finally {

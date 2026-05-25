@@ -96,11 +96,15 @@ export default function ARScreen({ navigation, route }: any) {
   }, [saveAnswer, currentGroup, perguntaAtual, imagemSelecionada, imagemAtiva]);
 
   const avançarDepoisDaConfirmacao = React.useCallback(() => {
-    if (isFinalGroupStep && currentGroup === 1) {
-      nextGroup();
-      navigation.navigate('Transition1Screen', {
-        groupNumber: currentGroup,
-      });
+    if (isFinalGroupStep) {
+      if (currentGroup < 4) {
+        nextGroup();
+        navigation.navigate('Transition1Screen', {
+          groupNumber: currentGroup,
+        });
+      } else {
+        navigation.navigate('FinishScreen');
+      }
       return;
     }
 
@@ -108,9 +112,8 @@ export default function ARScreen({ navigation, route }: any) {
 
     if (isLastQuestionOfGroup && currentGroup < 4) {
       nextGroup();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'ARScreen', params: { perguntaProxima: 1 } }],
+      navigation.navigate('Transition1Screen', {
+        groupNumber: currentGroup,
       });
     } else if (isLastQuestionOfGroup) {
       navigation.navigate('FinishScreen');
@@ -265,51 +268,7 @@ export default function ARScreen({ navigation, route }: any) {
     setPopupOverrideMessage(null);
     setPopupMode('help');
 
-    if (isFinalGroupStep && currentGroup === 1) {
-      console.log(`Grupo ${currentGroup} concluído!`);
-      nextGroup();
-      navigation.navigate('Transition1Screen', {
-        groupNumber: currentGroup,
-      });
-      return;
-    }
-
-    const isLastQuestionOfGroup = perguntaAtual >= 4;   // Ajusta se a última pergunta AR for diferente
-
-    if (isLastQuestionOfGroup) {
-      // Final do grupo atual
-      console.log(`Grupo ${currentGroup} concluído!`);
-
-      if (currentGroup < 4) {
-        nextGroup(); // Avança para o próximo grupo
-
-        if (currentGroup === 1) {
-          navigation.navigate('Transition1Screen', {
-            groupNumber: currentGroup,
-          });
-        } else {
-          navigation.reset({
-            index: 0,
-            routes: [{
-              name: 'ARScreen',
-              params: {
-                perguntaProxima: 1,
-                groupNumber: currentGroup + 1,
-              },
-            }],
-          });
-        }
-      } else {
-        // Todos os grupos completos
-        navigation.navigate('FinishScreen');
-      }
-    } else {
-      // Ainda dentro do mesmo grupo → vai para Question1
-      navigation.navigate('Question1Screen', { 
-        perguntaAtual: perguntaAtual, 
-        groupNumber: currentGroup 
-      });
-    }
+    avançarDepoisDaConfirmacao();
 };
 
   // ==================== OUTRAS FUNÇÕES ====================
