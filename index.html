@@ -10,7 +10,7 @@
       body { margin: 0; overflow: hidden; }
       #example-scanning-overlay { display: none; }
 
-      /*Posição do Pop Up*/
+      /* Posição do Pop Up */
       .custom-popup {
         position: fixed;
         inset: 0;
@@ -21,7 +21,7 @@
         z-index: 9999;
       }
 
-      /*Caixa do pop up*/
+      /* Caixa do pop up */
       .custom-popup.is-open { display: flex; }
       .custom-popup-card {
         width: min(92vw, 420px);
@@ -33,7 +33,7 @@
         text-align: center;
       }
 
-      /*Texto do Pop Up*/
+      /* Texto do Pop Up */
       .custom-popup-text {
         margin: 0 0 16px;
         color: #111111;
@@ -41,7 +41,7 @@
         white-space: nowrap;
       }
 
-      /*Botão do Pop Up*/
+      /* Botão do Pop Up */
       .custom-popup-actions {
         display: flex;
         justify-content: center;
@@ -67,7 +67,9 @@
         6: { visible: false, lastFoundAt: 0 }, 7: { visible: false, lastFoundAt: 0 }, 8: { visible: false, lastFoundAt: 0 },
         9: { visible: false, lastFoundAt: 0 }, 10: { visible: false, lastFoundAt: 0 }, 11: { visible: false, lastFoundAt: 0 }
       };
-       let globalPopupOpen = false;
+      
+      let globalPopupOpen = false;
+      let lastSelectedImage = null; // DECLARAÇÃO GLOBAL CORRIGIDA
 
       // 2. Mapeamento da Imagem Base (Fase 1) para todos os grupos
       const imagensFase1 = {
@@ -137,21 +139,34 @@
         }
       };
 
+      // Função global de abertura do Pop-up para ser usada de qualquer bloco
+      function openCustomPopup() {
+        const popup = document.getElementById('custom-popup');
+        if (popup) popup.classList.add('is-open');
+        globalPopupOpen = true;
+      }
+
+      function closeCustomPopup() {
+        const popup = document.getElementById('custom-popup');
+        if (popup) popup.classList.remove('is-open');
+        globalPopupOpen = false;
+      }
+
       window.trocarModeloAR = function() {
-      let targetAtivo = null;
-      for (const index in globalTargetStates) {
-        if (globalTargetStates[index].visible) {
-          targetAtivo = parseInt(index);
-          break;
+        let targetAtivo = null;
+        for (const index in globalTargetStates) {
+          if (globalTargetStates[index].visible) {
+            targetAtivo = parseInt(index);
+            break;
+          }
         }
-      }
 
-      if (targetAtivo === null) {
-        console.log("WebAR: Nenhum alvo detetado. Botão ignorado.");
-        return;
-      }
+        if (targetAtivo === null) {
+          console.log("WebAR: Nenhum alvo detetado. Botão ignorado.");
+          return;
+        }
 
-      const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
+        const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
         if (!imgTarget) return;
 
         if (fasesDosTargets[targetAtivo] === 1) {
@@ -165,9 +180,9 @@
         }
 
         notifyReactNative(getCurrentImageData(targetAtivo));
-    };
+      };
 
-    AFRAME.registerComponent('clickable-image', {
+      AFRAME.registerComponent('clickable-image', {
         init: function () {
           const el = this.el;
           const targetEl = el.closest('[mindar-image-target]');
@@ -193,102 +208,78 @@
               });
             });
 
-            // EVENTO DE CLIQUE DA IMAGEM: Envia a resposta para o React Native
-          el.addEventListener('click', function () {
-            if (globalTargetStates[targetIndex].visible) {
-              console.log(`WebAR: Refeição ${targetIndex} foi clicada.`);
+            // Clique direto na imagem tridimensional
+            el.addEventListener('click', function () {
+              if (globalTargetStates[targetIndex].visible) {
+                console.log(`WebAR: Refeição ${targetIndex} foi clicada.`);
 
-              const dadosResposta = {
-                type: 'IMAGE_CLICKED',
-                targetIndex: targetIndex,
-                fase: fasesDosTargets[targetIndex],
-                nomeImagem: fasesDosTargets[targetIndex] === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex]
-              };
+                const dadosResposta = {
+                  type: 'IMAGE_CLICKED',
+                  targetIndex: targetIndex,
+                  fase: fasesDosTargets[targetIndex],
+                  nomeImagem: fasesDosTargets[targetIndex] === 1 ? imagensFase1[targetIndex] : imagensFase2[targetIndex]
+                };
 
-              lastSelectedImage = dadosResposta;
+                lastSelectedImage = dadosResposta;
 
-              // Comunica imediatamente o clique à app em React Native
-              notifyReactNative(dadosResposta);
-            }
-          });
-        }
-      }
-    });
-  </script>
-  <script>
-    // Popup handlers: abre/fecha o popup e notifica a app mobile quando o utilizador confirma
-    (function(){
-      let globalPopupOpen = false;
-
-      function notifyNative(payload){
-        try{
-          if(window.ReactNativeWebView && window.ReactNativeWebView.postMessage){
-            window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+                // Envia para a app e abre o pop-up local
+                notifyReactNative(dadosResposta);
+                openCustomPopup();
+              }
+            });
           }
-        }catch(e){ console.warn('postMessage failed', e); }
-      }
+        }
+      });
 
-      function openCustomPopup(){
-        const popup = document.getElementById('custom-popup');
-        if(popup) popup.classList.add('is-open');
-      }
-
-      function closeCustomPopup(){
-        const popup = document.getElementById('custom-popup');
-        if(popup) popup.classList.remove('is-open');
-      }
-
-      document.addEventListener('DOMContentLoaded', function(){
+      // Gestão de listeners do Pop-up unificada
+      document.addEventListener('DOMContentLoaded', function() {
         const cancelBtn = document.getElementById('popup-cancel');
         const continueBtn = document.getElementById('popup-continue');
 
-        if(cancelBtn){
-          cancelBtn.addEventListener('click', function(event){
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
             closeCustomPopup();
-            notifyNative({ type: 'POPUP_CANCEL', action: 'close' });
+            notifyReactNative({ type: 'POPUP_CANCEL', action: 'close' });
           });
         }
 
-        if(continueBtn){
-          continueBtn.addEventListener('click', function(event){
+        if (continueBtn) {
+          continueBtn.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
             closeCustomPopup();
-            notifyNative({
+            
+            // Se o utilizador clicou sem selecionar fisicamente, apanha o que estiver focado na câmara
+            if (!lastSelectedImage) {
+              for (const idx in globalTargetStates) {
+                if (globalTargetStates[idx].visible) {
+                  lastSelectedImage = getCurrentImageData(parseInt(idx));
+                  break;
+                }
+              }
+            }
+
+            notifyReactNative({
               type: 'POPUP_CONFIRM',
               action: 'continue',
               imagemSelecionada: lastSelectedImage
             });
-            console.log('Pagina Seguinte');
+            console.log('Pagina Seguinte enviada.');
           });
         }
 
-        // // Abre o popup quando houver um alvo visível e o utilizador tocar/clicar na página
+        // Toque alternativo no fundo do ecrã caso o utilizador falhe o prato
         document.addEventListener('touchend', function (event) {
           if (globalPopupOpen) return;
-          const anyTargetVisible = Object.values(globalTargetStates).some(function(state){
+          const anyTargetVisible = Object.values(globalTargetStates).some(function(state) {
             return state.visible && (Date.now() - state.lastFoundAt) >= 250;
           });
 
-          if(anyTargetVisible){
-            globalPopupOpen = true;
-            openCustomPopup();
-          }
-        });
-      });
-
-      document.addEventListener('touchend', function(event){
-          if(globalPopupOpen) return;
-          const anyTargetVisible = Object.values(globalTargetStates).some(function(state){
-            return state.visible && (Date.now() - state.lastFoundAt) >= 250;
-          });
-          if(anyTargetVisible){
+          if (anyTargetVisible) {
             event.preventDefault();
-            globalPopupOpen = true;
             openCustomPopup();
-            window.setTimeout(function(){ globalPopupOpen = false; }, 250);
           }
         });
       });
@@ -301,10 +292,13 @@
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false">
+      
+      <!-- Câmara com o Cursor de cliques corrigido -->
       <a-camera position="0 0 0" look-controls="enabled: false">
-        <a-cursor raycaster="objects: [clickable-image]" visible="false"></a-camera-cursor>
+        <a-cursor raycaster="objects: [clickable-image]" visible="false"></a-cursor>
       </a-camera>
 
+      <!-- ─── GRUPO 1 ─── -->
       <a-entity mindar-image-target="targetIndex: 0">
         <a-image id="asset-target-0" src="./assets/hotdog.png" position="0 0 0" scale="1 0.5" clickable-image></a-image>
       </a-entity>
@@ -315,6 +309,7 @@
         <a-image id="asset-target-2" src="./assets/cozido.png" position="0 0 0" scale="1 0.5" clickable-image></a-image>
       </a-entity>
 
+      <!-- ─── GRUPO 2 ─── -->
       <a-entity mindar-image-target="targetIndex: 3">
         <a-image id="asset-target-3" src="./assets/presunto.png" position="0 0 0" scale="1 0.5" clickable-image></a-image>
       </a-entity>
@@ -325,6 +320,7 @@
         <a-image id="asset-target-5" src="./assets/rissois.png" position="0 0 0" scale="1 0.5" clickable-image></a-image>
       </a-entity>
 
+      <!-- ─── GRUPO 3 ─── -->
       <a-entity mindar-image-target="targetIndex: 6">
         <a-image id="asset-target-6" src="./assets/queijo.png" position="0 0 0" scale="1 0.5" clickable-image></a-image>
       </a-entity>
@@ -335,6 +331,7 @@
         <a-image id="asset-target-8" src="./assets/broa.png" position="0 0 0" scale="1 0.5" clickable-image></a-image>
       </a-entity>
 
+      <!-- ─── GRUPO 4 ─── -->
       <a-entity mindar-image-target="targetIndex: 9">
         <a-image id="asset-target-9" src="./assets/hamburger.png" position="0 0 0" scale="1 0.5" clickable-image></a-image>
       </a-entity>
@@ -346,6 +343,7 @@
       </a-entity>
     </a-scene>
 
+    <!-- Estrutura do Pop Up Branco de Confirmação -->
     <div id="custom-popup" class="custom-popup">
       <div class="custom-popup-card">
         <p class="custom-popup-text">Tem a certeza de que quer continuar?</p>
