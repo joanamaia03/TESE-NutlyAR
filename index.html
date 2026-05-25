@@ -135,7 +135,9 @@
 
       const openCustomPopup = () => {
         const popup = document.getElementById('custom-popup');
-        if (popup) popup.classList.add('is-open');
+        if (!popup) return;
+        popup.classList.add('is-open');
+        popup.style.display = 'flex';
       };
 
       const closeCustomPopup = () => {
@@ -144,7 +146,9 @@
       };
 
       const triggerCustomPopup = () => {
-        openCustomPopup();
+        window.requestAnimationFrame(() => {
+          openCustomPopup();
+        });
       };
 
       // Função acionada pelo botão de swap em React Native
@@ -206,25 +210,21 @@
             });
 
             this.el.addEventListener('click', function (ev) {
-              if (globalTargetStates[targetIndex].visible) {
-                const src = ev.target.getAttribute('src');
-                const clickedPayload = {
-                  type: 'IMAGE_CLICKED',
-                  targetIndex: targetIndex,
-                  nomeImagem: src || '',
-                  fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
-                };
-                
-                // Comunica imediatamente o clique à app em React Native
-                notifyReactNative(clickedPayload);
-                triggerCustomPopup();
-              }
+              const src = ev.target.getAttribute('src');
+              const clickedPayload = {
+                type: 'IMAGE_CLICKED',
+                targetIndex: targetIndex,
+                nomeImagem: src || '',
+                fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
+              };
+
+              // Comunica imediatamente o clique à app em React Native
+              notifyReactNative(clickedPayload);
+              triggerCustomPopup();
             });
 
             this.el.addEventListener('touchstart', function () {
-              if (globalTargetStates[targetIndex].visible) {
-                triggerCustomPopup();
-              }
+              triggerCustomPopup();
             });
           }
         }
