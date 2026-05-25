@@ -850,14 +850,14 @@ const styles = StyleSheet.create({
   nutritionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#613512',
+    color: '#6B3E1F',
     marginBottom: 6,
     textAlign: 'center',
   },
   nutritionMeal: {
     fontSize: 30,
     fontWeight: '700',
-    color: '#613512',
+    color: '#6B3E1F',
     marginVertical: 10,
   },
   nutritionMeta: {
@@ -869,13 +869,13 @@ const styles = StyleSheet.create({
   nutritionSubTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#613512',
+    color: '#6B3E1F',
     marginTop: 8,
     marginBottom: 6,
   },
   nutritionLine: {
     fontSize: 20,
-    color: '#613512',
+    color: '#6B3E1F',
     lineHeight: 28,
     textAlign: 'center',
   },
