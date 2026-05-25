@@ -65,7 +65,6 @@
       2: { visible: false, lastFoundAt: 0 }
     };
     let globalPopupOpen = false;
-    let globalLastClicked = null;
 
     // ─── MAPEAMENTO DOS PARES DE IMAGENS (PNG FLUTUANTES) ───
     // Define a Fase 1 (Imagens originais) e Fase 2 (Imagens alternativas)
@@ -150,13 +149,6 @@
       if (popup) popup.classList.add('is-open');
     };
 
-    const triggerCustomPopup = () => {
-      if (globalPopupOpen) return;
-      globalPopupOpen = true;
-      openCustomPopup();
-      window.setTimeout(() => { globalPopupOpen = false; }, 250);
-    };
-
     const closeCustomPopup = () => {
       const popup = document.getElementById('custom-popup');
       if (popup) popup.classList.remove('is-open');
@@ -173,23 +165,6 @@
       if (continueBtn) {
         continueBtn.addEventListener('click', () => {
           closeCustomPopup();
-          try {
-            if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-              // if there's no explicit last click, try to use the first visible target as fallback
-              var payloadImage = globalLastClicked;
-              if (!payloadImage) {
-                for (const idx in globalTargetStates) {
-                  if (globalTargetStates[idx].visible) {
-                    payloadImage = getCurrentImageData(parseInt(idx));
-                    break;
-                  }
-                }
-              }
-              window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'POPUP_CONFIRM', action: 'continue', imagemSelecionada: payloadImage || null }));
-            }
-          } catch (e) {
-            console.warn('postMessage failed', e);
-          }
           console.log('Pagina Seguinte');
         });
       }
@@ -197,26 +172,34 @@
       // Listeners globais de clique e toque
       document.addEventListener('click', function (event) {
         if (globalPopupOpen) return;
+        
         const anyTargetVisible = Object.values(globalTargetStates).some(state => 
           state.visible && Date.now() - state.lastFoundAt >= 250
         );
+
         if (anyTargetVisible) {
           globalPopupOpen = true;
           openCustomPopup();
-          window.setTimeout(() => { globalPopupOpen = false; }, 250);
+          window.setTimeout(() => {
+            globalPopupOpen = false;
+          }, 250);
         }
       });
 
       document.addEventListener('touchend', function (event) {
         if (globalPopupOpen) return;
+        
         const anyTargetVisible = Object.values(globalTargetStates).some(state => 
           state.visible && Date.now() - state.lastFoundAt >= 250
         );
+
         if (anyTargetVisible) {
           event.preventDefault();
           globalPopupOpen = true;
           openCustomPopup();
-          window.setTimeout(() => { globalPopupOpen = false; }, 250);
+          window.setTimeout(() => {
+            globalPopupOpen = false;
+          }, 250);
         }
       });
     });
@@ -274,69 +257,6 @@
         }
       }
     });
-
-    // component to turn a glTF model into an image on click, and restore on image click
-    AFRAME.registerComponent('model-click-toggle', {
-      init: function () {
-        const modelEl = this.el;
-        const parent = modelEl.parentNode;
-        // determine target index if available
-        let targetIndex = 0;
-        try{
-          const targetEl = modelEl.closest('[mindar-image-target]');
-          if(targetEl){
-            const t = targetEl.getAttribute('mindar-image-target') || '';
-            const num = t.split(':')[1] || t.split('=')[1];
-            targetIndex = num ? parseInt(num) : 0;
-          }
-        }catch(e){}
-
-        const imageSrc = (window.imagensFase1 && window.imagensFase1[targetIndex]) ? window.imagensFase1[targetIndex] : './assets/hotdog.png';
-
-        function createImageFromModel(){
-          const img = document.createElement('a-image');
-          img.setAttribute('src', imageSrc);
-          // copy transform from model if present
-          const pos = modelEl.getAttribute('position') || '0 0 0';
-          const scl = modelEl.getAttribute('scale') || '1 1 1';
-          img.setAttribute('position', pos);
-          img.setAttribute('scale', scl.indexOf(' ')>-1 ? scl : (scl + ' ' + scl + ' ' + scl));
-          img.setAttribute('class','model-replaced-image');
-          img.addEventListener('click', function(){
-            // remove image and show model again
-            if(img.parentNode) img.parentNode.removeChild(img);
-            modelEl.setAttribute('visible','true');
-            if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelRestored', targetIndex }));
-            triggerCustomPopup();
-          });
-          parent.appendChild(img);
-          if(window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelReplacedWithImage', targetIndex }));
-            try {
-              var clickedPayload = {
-                type: 'IMAGE_CLICKED',
-                targetIndex: targetIndex,
-                nomeImagem: imageSrc,
-                fase: (fasesDosTargets && fasesDosTargets[targetIndex]) ? fasesDosTargets[targetIndex] : 1
-              };
-              globalLastClicked = { targetIndex: clickedPayload.targetIndex, nomeImagem: clickedPayload.nomeImagem, fase: clickedPayload.fase };
-              window.ReactNativeWebView.postMessage(JSON.stringify(clickedPayload));
-              triggerCustomPopup();
-            }catch(e){}
-          }
-        }
-
-        function onActivate(){
-          try{
-            modelEl.setAttribute('visible','false');
-            createImageFromModel();
-          }catch(e){ console.warn('model-click-toggle error', e); }
-        }
-
-        modelEl.addEventListener('click', onActivate);
-        modelEl.addEventListener('touchstart', onActivate);
-      }
-    });
   </script>
   </head>
   <body>
@@ -349,14 +269,13 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity
+        <a-image
           id="asset-target-0"
-          gltf-model="url: ./assets/cachorro.glb"
+          src="./assets/hotdog.png"
           position="0 0 0"
-          scale="0.5 0.5 0.5"
-          clickable-image
-          model-click-toggle>
-        </a-entity>
+          scale="1 0.5"
+          clickable-image>
+        </a-image>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
