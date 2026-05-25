@@ -150,6 +150,13 @@
       if (popup) popup.classList.add('is-open');
     };
 
+    const triggerCustomPopup = () => {
+      if (globalPopupOpen) return;
+      globalPopupOpen = true;
+      openCustomPopup();
+      window.setTimeout(() => { globalPopupOpen = false; }, 250);
+    };
+
     const closeCustomPopup = () => {
       const popup = document.getElementById('custom-popup');
       if (popup) popup.classList.remove('is-open');
@@ -260,6 +267,7 @@
                   window.ReactNativeWebView.postMessage(JSON.stringify(clickedPayload));
                 }
                 postImageStateToReactNative(targetIndex);
+                triggerCustomPopup();
               } catch (e) { console.warn('IMAGE_CLICKED post failed', e); }
             });
           } catch (e) { /* ignore if addEventListener not allowed */ }
@@ -299,6 +307,7 @@
             if(img.parentNode) img.parentNode.removeChild(img);
             modelEl.setAttribute('visible','true');
             if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'modelRestored', targetIndex }));
+            triggerCustomPopup();
           });
           parent.appendChild(img);
           if(window.ReactNativeWebView) {
@@ -312,6 +321,7 @@
               };
               globalLastClicked = { targetIndex: clickedPayload.targetIndex, nomeImagem: clickedPayload.nomeImagem, fase: clickedPayload.fase };
               window.ReactNativeWebView.postMessage(JSON.stringify(clickedPayload));
+              triggerCustomPopup();
             }catch(e){}
           }
         }

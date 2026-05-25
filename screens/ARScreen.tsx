@@ -76,6 +76,7 @@ export default function ARScreen({ navigation, route }: any) {
   const [imagemSelecionada, setImagemSelecionada] = React.useState<any>(null);
   const [historicoRespostas, setHistoricoRespostas] = React.useState<any[]>([]);
   const [popupOverrideMessage, setPopupOverrideMessage] = React.useState<string | null>(null);
+  const [popupMode, setPopupMode] = React.useState<'help' | 'selection' | 'override'>('help');
   const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
   const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
@@ -155,10 +156,12 @@ export default function ARScreen({ navigation, route }: any) {
   useFocusEffect(
     React.useCallback(() => {
       // Apply incoming navigation params when focused (e.g., from Question4)
+      setInfoEnabled(false);
       if (route && route.params) {
         const { popupOverride, enableInfo, perguntaProxima } = route.params as any;
         if (typeof popupOverride === 'string' && popupOverride.length > 0) {
           setPopupOverrideMessage(popupOverride);
+          setPopupMode('override');
           setShowPopup(true);
         }
         if (enableInfo) setInfoEnabled(true);
@@ -219,6 +222,7 @@ export default function ARScreen({ navigation, route }: any) {
   // show popup automatically once camera permission is granted
   React.useEffect(() => {
     if (cameraGranted) {
+      setPopupMode('help');
       setShowPopup(true);
     }
   }, [cameraGranted]);
@@ -263,20 +267,34 @@ export default function ARScreen({ navigation, route }: any) {
   };
 
   const confirmarEscolhaEAvancar = async () => {
-    const isOverrideFlow = Boolean(popupOverrideMessage && !imagemSelecionada);
+    const isSelectionFlow = popupMode === 'selection' && Boolean(imagemSelecionada);
 
-    // Se não há imagem nem override nem imagem ativa, apenas fecha
-    if (!imagemSelecionada && !popupOverrideMessage && !imagemAtiva) {
+    // Ajuda normal do mocho: apenas fecha o popup.
+    if (popupMode === 'help') {
       setShowPopup(false);
+      setPopupMode('help');
+      setImagemSelecionada(null);
+      setPopupOverrideMessage(null);
       return;
     }
 
     // O popup vindo da Question4 só deve desbloquear o botão de informação e
     // manter a câmara ativa; não deve avançar para outro ecrã.
-    if (isOverrideFlow) {
+    if (popupMode === 'override' && !imagemSelecionada) {
       setShowPopup(false);
       setInfoEnabled(true);
+      setPopupMode('help');
       setImagemSelecionada(null);
+      setPopupOverrideMessage(null);
+      return;
+    }
+
+    // Segurança extra: se não for um fluxo de seleção, fecha apenas.
+    if (!isSelectionFlow) {
+      setShowPopup(false);
+      setPopupMode('help');
+      setImagemSelecionada(null);
+      setPopupOverrideMessage(null);
       return;
     }
 
@@ -306,6 +324,7 @@ export default function ARScreen({ navigation, route }: any) {
     setShowPopup(false);
     setImagemSelecionada(null);
     setPopupOverrideMessage(null);
+    setPopupMode('help');
 
     // Navega em segurança para o cenário hipotético
     try {
@@ -422,6 +441,7 @@ export default function ARScreen({ navigation, route }: any) {
 
               if (imgPayload) {
                 setImagemSelecionada(imgPayload);
+                setPopupMode('selection');
               } else {
                 console.warn('IMAGE_CLICKED received without imagem payload', data);
               }
@@ -440,8 +460,10 @@ export default function ARScreen({ navigation, route }: any) {
                     fase: data?.fase,
                   });
                 }
-                // Quando a imagem flutuante aparece, o botão de informação pode ser desbloqueado.
-                setInfoEnabled(true);
+                  // Só desbloqueia o botão de informação quando a fase indicada já o permite.
+                  if (data?.fase === 2) {
+                    setInfoEnabled(true);
+                  }
               }
             }
 
@@ -521,7 +543,7 @@ export default function ARScreen({ navigation, route }: any) {
             {currentNutrition ? (
               <>
                 <Text style={styles.nutritionMeta}>
-                  Energia: {currentNutrition.energiaTotalKcal ?? currentNutrition.energia ?? (currentNutrition.energia100gKcal ? `${currentNutrition.energia100gKcal} kcal/100g` : '—')}
+                  Energia: {currentNutrition.energia ?? currentNutrition.energia ?? (currentNutrition.energia ? `${currentNutrition.energia} kcal/100g` : '—')}
                 </Text>
                 <Text style={styles.nutritionMeta}>Porção: {currentNutrition.porcao ?? '—'}</Text>
               </>
@@ -559,6 +581,7 @@ export default function ARScreen({ navigation, route }: any) {
         style={styles.owlButton}
         onPress={() => {
           setImagemSelecionada(null); // Garante que abre como texto de instrução limpo
+          setPopupMode('help');
           setShowPopup(true);
         }}
         accessibilityLabel="Ajuda"
