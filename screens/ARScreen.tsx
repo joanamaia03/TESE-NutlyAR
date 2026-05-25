@@ -81,6 +81,7 @@ export default function ARScreen({ navigation, route }: any) {
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
   const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
   const processandoCliqueRef = React.useRef<boolean>(false);
+  const overridePopupMessageRef = React.useRef<string | null>(null);
 
   const normalizeAssetName = (value: string) => {
     const fileName = String(value).split('/').pop() || String(value);
@@ -160,6 +161,7 @@ export default function ARScreen({ navigation, route }: any) {
       if (route && route.params) {
         const { popupOverride, enableInfo, perguntaProxima } = route.params as any;
         if (typeof popupOverride === 'string' && popupOverride.length > 0) {
+          overridePopupMessageRef.current = popupOverride;
           setPopupOverrideMessage(popupOverride);
           setPopupMode('override');
           setShowPopup(true);
@@ -196,6 +198,7 @@ export default function ARScreen({ navigation, route }: any) {
 
       return () => {
         active = false;
+        overridePopupMessageRef.current = null;
         (async () => {
           try {
             const nav: any = await import('expo-navigation-bar');
@@ -285,7 +288,6 @@ export default function ARScreen({ navigation, route }: any) {
       setInfoEnabled(true);
       setPopupMode('help');
       setImagemSelecionada(null);
-      setPopupOverrideMessage(null);
       return;
     }
 
@@ -581,7 +583,16 @@ export default function ARScreen({ navigation, route }: any) {
         style={styles.owlButton}
         onPress={() => {
           setImagemSelecionada(null); // Garante que abre como texto de instrução limpo
+          if (overridePopupMessageRef.current) {
+            setPopupOverrideMessage(overridePopupMessageRef.current);
+            setPopupMode('override');
+            setInfoEnabled(true);
+            setShowPopup(true);
+            return;
+          }
+
           setPopupMode('help');
+          setPopupOverrideMessage(null);
           setShowPopup(true);
         }}
         accessibilityLabel="Ajuda"
