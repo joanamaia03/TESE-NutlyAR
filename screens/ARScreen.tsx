@@ -31,16 +31,28 @@ const NUTRITION_DATA: NutritionItem[] = [
   { key: 'hotdog', assetName: 'hotdog.png', energia: '270 kcal/100g', porcao: '206g' },
   { key: 'sardine', assetName: 'sardine.png', energia: '106 kcal/100g', porcao: '383g' },
   { key: 'cozido', assetName: 'cozido.png', energia: '151 kcal/100g', porcao: '265g' },
-  { key: 'lombo', assetName: 'lombo.jpg', energia: '174 kcal/100g', porcao: '317g' },
-  { key: 'panado', assetName: 'panado.jpg', energia: '174 kcal/100g', porcao: '263g' },
-  { key: 'arrozdepolvo', assetName: 'arrozdepolvo.jpg', energia: '127 kcal/100g', porcao: '293g' },
+  { key: 'lombo', assetName: 'lombo.png', energia: '174 kcal/100g', porcao: '317g' },
+  { key: 'panado', assetName: 'panado.png', energia: '174 kcal/100g', porcao: '263g' },
+  { key: 'arrozdepolvo', assetName: 'arrozdepolvo.png', energia: '127 kcal/100g', porcao: '293g' },
   { key: 'presunto', assetName: 'presunto.png', energia: '262 kcal/100g', porcao: '123g' },
   { key: 'lanche', assetName: 'lanche.png', energia: '287 kcal/100g', porcao: '108g' },
   { key: 'rissois', assetName: 'rissois.png', energia: '280 kcal/100g', porcao: '162g' },
   { key: 'hamburger', assetName: 'hamburger.png', energia: '228 kcal/100g', porcao: '144g' },
   { key: 'vaca', assetName: 'vaca.png', energia: '130 kcal/100g', porcao: '198g' },
   { key: 'croquete', assetName: 'croquete.png', energia: '316 kcal/100g', porcao: '135g' },
-  
+  { key: 'queijo', assetName: 'queijo.png', energia: '2.1g/100g', porcao: '40g' },
+  { key: 'azeitonas', assetName: 'azeitonas.png', energia: '5.3g/100g', porcao: '44g' },
+  { key: 'broa', assetName: 'broa.png', energia: '0.7g/100g', porcao: '90g' },
+  { key: 'torrada', assetName: 'torrada.png', energia: '1.1g/100g', porcao: '65g' },
+  { key: 'chourico', assetName: 'chourico.png', energia: '6.6g/100g', porcao: '42g' },
+  { key: 'batatafrita', assetName: 'batatafrita.png', energia: '1.2g/100g', porcao: '45g' },
+  { key: 'hamburger', assetName: 'hamburger.png', energia: '1.0g/100g', porcao: '217g' },
+  { key: 'presunto', assetName: 'presunto.png', energia: '3.4g/100g', porcao: '123g' },
+  { key: 'caldoverde', assetName: 'caldoverde.png', energia: '0.7g/100g', porcao: '237g' },
+  { key: 'sandespanado', assetName: 'sandespanado.png', energia: '1.0g/100g', porcao: '203g' },
+  { key: 'cachorro', assetName: 'cachorro.png', energia: '2.0g/100g', porcao: '206g' },
+  { key: 'sopa', assetName: 'sopa.png', energia: '0.6g/100g', porcao: '253g' },
+
 ];
 
 export default function ARScreen({ navigation, route }: any) {
@@ -77,6 +89,8 @@ export default function ARScreen({ navigation, route }: any) {
       item.assetName === normalized || normalized.includes(item.key)
     ) || null;
   }, [imagemAtiva, imagemSelecionada]);
+
+  const nutritionLabel = currentGroup >= 3 ? 'Sal' : 'Energia';
 
   // ==================== GUARDAR RESPOSTA (Nova estrutura) ====================
   const guardarRespostaAR = React.useCallback(async (payload: any) => {
@@ -391,7 +405,7 @@ export default function ARScreen({ navigation, route }: any) {
           <View style={styles.nutritionCard}>
             {currentNutrition ? (
               <>
-                <Text style={styles.nutritionMeta}>Energia: {currentNutrition.energia}</Text>
+                <Text style={styles.nutritionMeta}>{nutritionLabel}: {currentNutrition.energia}</Text>
                 <Text style={styles.nutritionMeta}>Porção: {currentNutrition.porcao}</Text>
               </>
             ) : (
