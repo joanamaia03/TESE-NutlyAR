@@ -70,6 +70,7 @@
       
       let globalPopupOpen = false;
       let lastSelectedImage = null; // DECLARAÇÃO GLOBAL CORRIGIDA
+      let activeTargetIndex = null;
 
       // 2. Mapeamento da Imagem Base (Fase 1) para todos os grupos
       const imagensFase1 = {
@@ -153,31 +154,42 @@
       }
 
       window.trocarModeloAR = function() {
-        let targetAtivo = null;
-        for (const index in globalTargetStates) {
-          if (globalTargetStates[index].visible) {
-            targetAtivo = parseInt(index);
-            break;
+        const targetAtivo = (activeTargetIndex !== null) ? activeTargetIndex : (() => {
+          for (const index in globalTargetStates) {
+            if (globalTargetStates[index].visible) {
+              return parseInt(index);
+            }
           }
-        }
+          return null;
+        })();
 
-        if (targetAtivo === null) {
-          console.log("WebAR: Nenhum alvo detetado. Botão ignorado.");
+        if (targetAtivo === null || targetAtivo === undefined) {
+          console.log("WebAR: Nenhum alvo ativo. Botão ignorado.");
           return;
         }
 
         const imgTarget = document.getElementById(`asset-target-${targetAtivo}`);
-        if (!imgTarget) return;
-
-        if (fasesDosTargets[targetAtivo] === 1) {
-          imgTarget.setAttribute('src', imagensFase2[targetAtivo]);
-          fasesDosTargets[targetAtivo] = 2;
-          console.log(`WebAR: Alvo ${targetAtivo} alterado para a Fase 2.`);
-        } else {
-          imgTarget.setAttribute('src', imagensFase1[targetAtivo]);
-          fasesDosTargets[targetAtivo] = 1;
-          console.log(`WebAR: Alvo ${targetAtivo} restaurado para a Fase 1.`);
+        if (!imgTarget) {
+          console.log(`WebAR: Imagem do alvo ${targetAtivo} não encontrada.`);
+          return;
         }
+
+        const novaFase = (fasesDosTargets[targetAtivo] === 1) ? 2 : 1;
+        const novoSrc = novaFase === 1 ? imagensFase1[targetAtivo] : imagensFase2[targetAtivo];
+
+        fasesDosTargets[targetAtivo] = novaFase;
+        imgTarget.setAttribute('src', novoSrc);
+
+        // Força o A-Frame a reaplicar a textura depois do src mudar.
+        if (imgTarget.object3DMap && imgTarget.object3DMap.mesh) {
+          imgTarget.object3DMap.mesh.traverse((node) => {
+            if (node && node.material) {
+              node.material.needsUpdate = true;
+            }
+          });
+        }
+
+        console.log(`WebAR: Alvo ${targetAtivo} alterado para a Fase ${novaFase}.`);
 
         notifyReactNative(getCurrentImageData(targetAtivo));
       };
@@ -194,11 +206,15 @@
             targetEl.addEventListener('targetFound', function () {
               globalTargetStates[targetIndex].visible = true;
               globalTargetStates[targetIndex].lastFoundAt = Date.now();
+              activeTargetIndex = targetIndex;
               notifyReactNative(getCurrentImageData(targetIndex));
             });
 
             targetEl.addEventListener('targetLost', function () {
               globalTargetStates[targetIndex].visible = false;
+              if (activeTargetIndex === targetIndex) {
+                activeTargetIndex = null;
+              }
               notifyReactNative({
                 type: 'IMAGE_STATE_CHANGED',
                 visible: false,
@@ -211,6 +227,7 @@
             // Clique direto na imagem tridimensional
             el.addEventListener('click', function () {
               if (globalTargetStates[targetIndex].visible) {
+                activeTargetIndex = targetIndex;
                 console.log(`WebAR: Refeição ${targetIndex} foi clicada.`);
 
                 const dadosResposta = {
