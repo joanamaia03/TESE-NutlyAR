@@ -23,20 +23,11 @@ const IMAGES_BY_GROUP: Record<number, Array<{ id: number; source: any; name: str
     { id: 1, source: require('../assets/sardine.jpg'), name: 'sardine.jpg' },
     { id: 2, source: require('../assets/cozido.jpg'), name: 'cozido.jpg' },
   ],
+
   2: [
-    { id: 3, source: require('../assets/presunto.jpg'), name: 'presunto.jpg' },
-    { id: 4, source: require('../assets/lanche.jpg'), name: 'lanche.jpg' },
-    { id: 5, source: require('../assets/rissois.jpg'), name: 'rissois.jpg' },
-  ],
-  3: [
     { id: 6, source: require('../assets/queijo.jpg'), name: 'queijo.jpg' },
     { id: 7, source: require('../assets/azeitonas.jpg'), name: 'azeitonas.jpg' },
     { id: 8, source: require('../assets/broa.jpg'), name: 'broa.jpg' },
-  ],
-  4: [
-    { id: 9, source: require('../assets/hamburger.jpg'), name: 'hamburger.jpg' },
-    { id: 10, source: require('../assets/presunto.jpg'), name: 'presunto.jpg' },
-    { id: 11, source: require('../assets/caldoverde.jpg'), name: 'caldoverde.jpg' },
   ],
 };
 
@@ -44,6 +35,21 @@ const SWAP_REPLACEMENTS: Record<number, { id: number; source: any; name: string 
   0: { id: 100, source: require('../assets/lombo.jpg'), name: 'lombo.jpg' },
   1: { id: 101, source: require('../assets/panado.jpg'), name: 'panado.jpg' },
   2: { id: 102, source: require('../assets/arrozdepolvo.jpg'), name: 'arrozdepolvo.jpg' },
+  6: { id: 106, source: require('../assets/torrada.jpg'), name: 'torrada.jpg' },
+  7: { id: 107, source: require('../assets/chourico.jpg'), name: 'chourico.jpg' },
+  8: { id: 108, source: require('../assets/batatafrita.jpg'), name: 'batatafrita.jpg' },
+};
+
+const DISH_INFO: Record<string, { title: string; energia: string; porcao: string }> = {
+  'hotdog.jpg': { title: 'Hotdog', energia: '270 kcal/100g', porcao: '206g' },
+  'sardine.jpg': { title: 'Sardinha', energia: '106 kcal/100g', porcao: '383g' },
+  'cozido.jpg': { title: 'Cozido', energia: '151 kcal/100g', porcao: '265g' },
+  'lombo.jpg': { title: 'Lombo', energia: '174 kcal/100g', porcao: '317g' },
+  'panado.jpg': { title: 'Panado', energia: '174 kcal/100g', porcao: '263g' },
+  'arrozdepolvo.jpg': { title: 'Arroz de polvo', energia: '127 kcal/100g', porcao: '293g' },
+  'torrada.jpg': { title: 'Torrada', energia: '1.1g/100g', porcao: '65g' },
+  'chourico.jpg': { title: 'Chouriço', energia: '6.6g/100g', porcao: '42g' },
+  'batatafrita.jpg': { title: 'Batata frita', energia: '1.2g/100g', porcao: '45g' },
 };
 
 export default function ImageQuizzScreen({ navigation, route }: any) {
@@ -57,7 +63,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   const initialRefeicoes = IMAGES_BY_GROUP[perguntaAtual] || IMAGES_BY_GROUP[1];
   const [displayImages, setDisplayImages] = React.useState(initialRefeicoes);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
-  const [infoEnabled, setInfoEnabled] = React.useState(false);
+  const [infoUnlocked, setInfoUnlocked] = React.useState(false);
   const [showSwapControls, setShowSwapControls] = React.useState(false);
   const [showSwapPrompt, setShowSwapPrompt] = React.useState(false);
 
@@ -69,24 +75,42 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   const [showPopup, setShowPopup] = React.useState(false);
   const [popupMode, setPopupMode] = React.useState<'help' | 'selection' | 'override'>('help');
   const [imagemSelecionada, setImagemSelecionada] = React.useState<any>(null);
+  const [popupOverrideMessage, setPopupOverrideMessage] = React.useState<string | null>(null);
+  const [pratoSelecionado, setPratoSelecionado] = React.useState<{ id: number; source: any; name: string } | null>(null);
   const shouldAutoOpenInitialPopupRef = React.useRef(true);
   const owlInitialMessage = 'Qual destas opções considera ter mais energia (calorias), considerando exatamente a quantidade apresentada. Selecione apenas uma das opções clicando na refeição!';
 
   useFocusEffect(
     React.useCallback(() => {
-      // abre o popup inicial uma única vez quando o ecrã ganha foco
+      setImagemSelecionada(null);
+      setPopupOverrideMessage(null);
+      setPopupMode('help');
+      setShowPopup(false);
+      shouldAutoOpenInitialPopupRef.current = true;
+      setInfoUnlocked(route?.params?.enableInfo === true);
+
+      const { popupOverride, perguntaProxima } = route?.params || {};
+      if (perguntaProxima) {
+        setDisplayImages(IMAGES_BY_GROUP[perguntaProxima] || IMAGES_BY_GROUP[1]);
+      }
+
+      if (typeof popupOverride === 'string' && popupOverride.length > 0) {
+        shouldAutoOpenInitialPopupRef.current = false;
+        setPopupOverrideMessage(popupOverride);
+        setPopupMode('override');
+        setShowPopup(true);
+        return;
+      }
+
+      // abre o popup inicial quando não veio override
       if (shouldAutoOpenInitialPopupRef.current) {
         shouldAutoOpenInitialPopupRef.current = false;
         setPopupMode('help');
         setShowPopup(true);
       }
       return () => {};
-    }, [perguntaAtual])
+    }, [route?.params?.enableInfo, route?.params?.popupOverride, route?.params?.perguntaProxima, perguntaAtual])
   );
-
-  React.useEffect(() => {
-    if (route?.params?.enableInfo === true) setInfoEnabled(true);
-  }, [route]);
 
   const enviarOrdemTrocarImagem = () => {
     if (showSwapControls) {
@@ -211,7 +235,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   };
 
   const confirmarEscolhaEAvancar = async () => {
-    if (popupMode === 'help') {
+    if (popupMode === 'help' || (popupMode === 'override' && !imagemSelecionada)) {
       setShowPopup(false);
       setPopupMode('help');
       return;
@@ -219,6 +243,10 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
 
     await seleccionarAndClose();
   };
+
+  const owlPopupMessage = popupMode === 'override' && popupOverrideMessage
+    ? popupOverrideMessage
+    : owlInitialMessage;
 
   const renderBoldText = (text: string) => {
     if (!text) return null;
@@ -237,7 +265,21 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   const abrirPopupDoMocho = () => {
     setShowSwapControls(false);
     setImagemSelecionada(null);
-    setPopupMode('help');
+    setPopupMode(popupOverrideMessage ? 'override' : 'help');
+    setShowPopup(true);
+  };
+
+  const abrirInformacaoDoPrato = () => {
+    setShowNutritionModal(true);
+  };
+
+  const selectedDishInfo = DISH_INFO[pratoSelecionado?.name ?? displayImages[0]?.name] ?? null;
+
+  const confirmarImagemSelecionada = () => {
+    if (!pratoSelecionado) return;
+
+    setImagemSelecionada(pratoSelecionado);
+    setPopupMode('selection');
     setShowPopup(true);
   };
 
@@ -262,14 +304,12 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
             <TouchableOpacity
               style={[
                 styles.imageCardButton,
-                imagemSelecionada && imagemSelecionada.id === item.id ? styles.selectedImageCard : null,
+                pratoSelecionado && pratoSelecionado.id === item.id ? styles.selectedImageCard : null,
               ]}
               activeOpacity={0.85}
               onPress={() => {
                 if (showSwapControls) return;
-                setImagemSelecionada(item);
-                setPopupMode('selection');
-                setShowPopup(true);
+                setPratoSelecionado(item);
               }}
             >
               <Image source={item.source} style={styles.mealImage} resizeMode="cover" />
@@ -284,6 +324,27 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
         ))}
         
       </View>
+
+      {pratoSelecionado && !showSwapPrompt && (
+        <TouchableOpacity
+          onPress={confirmarImagemSelecionada}
+          activeOpacity={0.9}
+          style={{
+            position: 'absolute',
+            alignSelf: 'center',
+            bottom: 80,
+            width: 88,
+            height: 42,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#784115',
+            borderRadius: 14,
+            zIndex: 1000,
+          }}
+        >
+          <Icon name="check" size={28} color="#FFF" />
+        </TouchableOpacity>
+      )}
 
       {/* Faixa inferior para escolher a imagem a alterar */}
       {showSwapPrompt && (
@@ -333,12 +394,12 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
 
                       setImagemSelecionada(null);
                       setShowPopup(false);
-                      navigation.navigate('Question1Screen', { sessionId: sessionDocRef.id });
+                      navigation.navigate('Image1Screen', { sessionId: sessionDocRef.id });
                     } catch (e) {
                       console.error('Erro ao criar sessão de quiz:', e);
                       setImagemSelecionada(null);
                       setShowPopup(false);
-                      navigation.navigate('Question1Screen');
+                      navigation.navigate('Image1Screen');
                     }
                   }}
                 >
@@ -365,10 +426,12 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
               <View style={styles.speechBubbleTriangle} />
 
               <View style={styles.speechBubble}>
-                <Text style={styles.instructionText}>{renderBoldText(owlInitialMessage)}</Text>
-                <Text style={styles.subInstructionText}>
-                  Caso não conheça ou não goste da refeição inidicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito
-                </Text>
+                <Text style={styles.instructionText}>{renderBoldText(owlPopupMessage)}</Text>
+                {popupMode !== 'override' && (
+                  <Text style={styles.subInstructionText}>
+                    Caso não conheça ou não goste da refeição inidicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito
+                  </Text>
+                )}
               </View>
 
               <TouchableOpacity
@@ -384,11 +447,19 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
 
       {/* Nutrition Modal */}
       <Modal visible={showNutritionModal} transparent animationType="slide" onRequestClose={() => setShowNutritionModal(false)}>
-        <View style={styles.modalOverlayBottom}>
-          <View style={styles.modalCardBottom}>
-            <Text style={{ color: '#613512', fontSize: 16, textAlign: 'center' }}>Seleciona uma imagem para ver informação nutricional.</Text>
-            <TouchableOpacity style={{ marginTop: 20 }} onPress={() => setShowNutritionModal(false)}>
-              <Text style={{ color: '#784115', fontWeight: '700' }}>Fechar</Text>
+        <View style={styles.nutritionOverlay}>
+          <View style={styles.nutritionCard}>
+            {selectedDishInfo ? (
+              <>
+                <Text style={styles.nutritionTitle}>{selectedDishInfo.title}</Text>
+                <Text style={styles.nutritionLine}>Energia: {selectedDishInfo.energia}</Text>
+                <Text style={styles.nutritionLine}>Porção: {selectedDishInfo.porcao}</Text>
+              </>
+            ) : (
+              <Text style={{ color: '#613512', fontSize: 16, textAlign: 'center' }}>Seleciona uma imagem primeiro para ver a informação desse prato.</Text>
+            )}
+            <TouchableOpacity style={styles.nutritionCloseButton} onPress={() => setShowNutritionModal(false)}>
+              <Text style={styles.nutritionCloseText}>Fechar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -399,8 +470,8 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
             <Icon name="home" size={32} color="#613512" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowNutritionModal(true)} disabled={!infoEnabled}>
-            <Icon name="information" size={32} color={infoEnabled ? '#613512' : '#C7B8AA'} />
+        <TouchableOpacity onPress={abrirInformacaoDoPrato} disabled={!infoUnlocked}>
+          <Icon name="information" size={32} color={infoUnlocked ? '#613512' : '#C7B8AA'} />
         </TouchableOpacity>
             <TouchableOpacity onPress={enviarOrdemTrocarImagem}>
                 <View style={styles.iconStack}>
@@ -677,6 +748,50 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: '700',
     fontSize: 16,
+  },
+  nutritionTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#613512',
+    textAlign: 'center',
+    marginBottom: 14,
+  },
+  nutritionLine: {
+    fontSize: 20,
+    color: '#7B5A43',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  nutritionOverlay: {
+    flex: 1,
+    //backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    justifyContent: 'flex-end',            
+    alignItems: 'center',
+  },
+  nutritionCard: {
+    backgroundColor: '#FBE1CE',
+    width: '100%',                         
+    borderTopLeftRadius: 24,               
+    borderTopRightRadius: 24,             
+    paddingHorizontal: 30,
+    paddingVertical: 36,
+    minHeight: 160,
+    alignItems: 'center',
+    paddingBottom: Platform.OS === 'ios' ? 50 : 36,
+  },
+  nutritionCloseButton: {
+    marginTop: 18,
+    backgroundColor: '#784115',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 14,
+    minWidth: 120,
+    alignItems: 'center',
+  },
+  nutritionCloseText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '700',
   },
   bottomNav: {
     position: 'absolute',

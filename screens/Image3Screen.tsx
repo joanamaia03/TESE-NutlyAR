@@ -112,7 +112,7 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
       Alert.alert('Erro', 'Não foi possível guardar as respostas.');
     }
 
-    navigation.navigate('Question4Screen', {
+    navigation.navigate('Image4Screen', {
       perguntaAtual,
       groupNumber: currentGroup,
       sessionId: route.params?.sessionId,

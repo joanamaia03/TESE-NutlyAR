@@ -55,7 +55,7 @@ export default function ImagineScreen({ route, navigation }: any) {
       console.error(error);
     }
 
-    navigation.navigate('ARScreen', {
+    navigation.navigate('ImageQuizzScreen', {
       // Esta fase continua a pertencer ao grupo 1 — manter breadcrumb no passo 1
       perguntaProxima: 1,
       enableInfo: true,
@@ -108,8 +108,8 @@ export default function ImagineScreen({ route, navigation }: any) {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.nextButton} onPress={handleSeguinte} activeOpacity={0.8}>
-            <Text style={styles.nextButtonText}>Seguinte</Text>
+          <TouchableOpacity style={styles.nxtButton} onPress={handleSeguinte} activeOpacity={0.8}>
+            <Text style={styles.nxtButtonText}>Seguinte</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAF5F0',
     paddingTop: 10,
   },
-  nextButton: {
+  nxtButton: {
     backgroundColor: '#784115',
     width: '60%',
     maxWidth: 190,
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
   },
-  nextButtonText: {
+  nxtButtonText: {
     color: '#FFF',
     fontSize: 22,
     fontWeight: 'bold',

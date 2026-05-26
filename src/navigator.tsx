@@ -13,6 +13,10 @@ import Question4Screen from '../screens/Question4Screen';
 import Transition1Screen from '../screens/Transition1Screen';
 import ImagesScreen from '../screens/ImagesScreen';
 import ImageQuizzScreen from '../screens/ImageQuizzScreen';
+import Image1Screen from '../screens/Image1Screen';
+import Image2Screen from '../screens/Image2Screen';
+import Image3Screen from '../screens/Image3Screen';
+import Image4Screen from '../screens/Image4Screen';
 import FinishScreen from '../screens/FinishScreen';
 
 const Stack = createStackNavigator();
@@ -34,6 +38,10 @@ export default function AppNavigator() {
       <Stack.Screen name="Transition1Screen" component={Transition1Screen} />
       <Stack.Screen name="ImagesScreen" component={ImagesScreen} />
       <Stack.Screen name="ImageQuizzScreen" component={ImageQuizzScreen} />
+      <Stack.Screen name="Image1Screen" component={Image1Screen} />
+      <Stack.Screen name="Image2Screen" component={Image2Screen} />
+      <Stack.Screen name="Image3Screen" component={Image3Screen} />
+      <Stack.Screen name="Image4Screen" component={Image4Screen} />
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="FinishScreen" component={FinishScreen} />
     </Stack.Navigator>
