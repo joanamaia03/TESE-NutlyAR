@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { db } from '../src/firebase';
+import { auth, db } from '../src/firebase';
 import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 export default function ConfidenceScreen({ route, navigation }: any) {
@@ -42,7 +42,8 @@ export default function ConfidenceScreen({ route, navigation }: any) {
         await updateDoc(qRef, { answers: arrayUnion(answerData) });
         navigation.navigate('Question2Screen', { perguntaAtual, groupNumber: currentGroup, sessionId: sessionIdParam });
       } else {
-        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { createdAt: serverTimestamp(), answers: [answerData] });
+        const userId = auth.currentUser?.uid;
+        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { userId, createdAt: serverTimestamp(), answers: [answerData] });
         navigation.navigate('Question2Screen', { perguntaAtual, groupNumber: currentGroup, sessionId: newDoc.id });
       }
     } catch (error) {

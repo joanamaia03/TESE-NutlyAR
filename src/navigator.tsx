@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
 import { StartPage } from '../screens/Start Screen';
 import HomeScreen from '../screens/HomeScreen';
@@ -15,7 +15,7 @@ import ImagesScreen from '../screens/ImagesScreen';
 import ImageQuizzScreen from '../screens/ImageQuizzScreen';
 import FinishScreen from '../screens/FinishScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 export default function AppNavigator() {
   return (

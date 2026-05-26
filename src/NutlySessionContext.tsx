@@ -3,13 +3,14 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { nutlySessionService } from './nutlySessionService';
 import { NutlySession } from './types/nutly';
 import { auth } from './firebase';
+import { signInAnonymously } from 'firebase/auth';
 
 type NutlySessionContextType = {
   sessionDocId: string | null;
   currentGroup: number;
   isLoading: boolean;
   
-  startNewSession: () => Promise<void>;
+  startNewSession: () => Promise<string>;
   setCurrentGroup: (group: number) => void;
   saveAnswer: (groupNumber: number, answer: any) => Promise<void>;
   completeGroup: (groupNumber: number, score?: number) => Promise<void>;
@@ -25,16 +26,22 @@ export const NutlySessionProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Inicia uma nova sessão automaticamente quando o utilizador entra
-  const startNewSession = async () => {
-    if (sessionDocId) return; // Já tem sessão ativa
+  const startNewSession = async (): Promise<string> => {
+    if (sessionDocId) return sessionDocId; // Já tem sessão ativa
 
     setIsLoading(true);
     try {
+      if (!auth.currentUser) {
+        await signInAnonymously(auth);
+      }
+
       const newSessionId = await nutlySessionService.createSession();
       setSessionDocId(newSessionId);
       console.log('Nova sessão Nutly criada:', newSessionId);
+      return newSessionId;
     } catch (error) {
       console.error('Erro ao criar sessão:', error);
+      return '';
     } finally {
       setIsLoading(false);
     }
@@ -45,14 +52,16 @@ export const NutlySessionProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const saveAnswer = async (groupNumber: number, answer: any) => {
-    if (!sessionDocId) {
+    let activeSessionId = sessionDocId;
+
+    if (!activeSessionId) {
       console.warn('Não existe sessão ativa. A criar uma...');
-      await startNewSession();
-      if (!sessionDocId) return;
+      activeSessionId = await startNewSession();
+      if (!activeSessionId) return;
     }
 
     try {
-      await nutlySessionService.saveAnswer(sessionDocId, groupNumber, answer);
+      await nutlySessionService.saveAnswer(activeSessionId, groupNumber, answer);
     } catch (error) {
       console.error('Erro ao guardar resposta:', error);
     }

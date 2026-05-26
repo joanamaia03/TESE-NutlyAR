@@ -72,7 +72,7 @@ export default function ARScreen({ navigation, route }: any) {
   const [popupMode, setPopupMode] = React.useState<'help' | 'selection' | 'override'>('help');
   const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
-  const [showWebView, setShowWebView] = React.useState(true);
+  //const [showWebView, setShowWebView] = React.useState(true);
   const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
 
   const processandoCliqueRef = React.useRef<boolean>(false);
