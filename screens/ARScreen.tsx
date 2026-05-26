@@ -59,6 +59,7 @@ export default function ARScreen({ navigation, route }: any) {
   const { saveAnswer, currentGroup, nextGroup } = useNutlySession();
   const isFinalGroupStep = route?.params?.finalGroupStep === true;
   const breadcrumbStep = route?.params?.groupNumber ?? currentGroup ?? 1;
+  const activeGroup = route?.params?.groupNumber ?? currentGroup ?? 1;
 
   const [cameraGranted, setCameraGranted] = React.useState<boolean | null>(null);
   const [showPopup, setShowPopup] = React.useState(false);
@@ -70,11 +71,19 @@ export default function ARScreen({ navigation, route }: any) {
   const [popupMode, setPopupMode] = React.useState<'help' | 'selection' | 'override'>('help');
   const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
-  //const [showWebView, setShowWebView] = React.useState(true);
+  const [showWebView, setShowWebView] = React.useState(true);
   const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
 
   const processandoCliqueRef = React.useRef<boolean>(false);
   const overridePopupMessageRef = React.useRef<string | null>(null);
+  const shouldAutoOpenInitialPopupRef = React.useRef(true);
+  const isSaltGroup = activeGroup >= 3;
+  const owlInitialMessage = isSaltGroup
+    ? 'Qual destas opções considera ter **mais sal**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!'
+    : 'Qual destas opções considera ter **mais energia (calorias)**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!';
+  const owlOverrideMessage = isSaltGroup
+    ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.'
+    : popupOverrideMessage;
   
 
   // ==================== NORMALIZE & NUTRITION ====================
@@ -90,7 +99,7 @@ export default function ARScreen({ navigation, route }: any) {
     ) || null;
   }, [imagemAtiva, imagemSelecionada]);
 
-  const nutritionLabel = currentGroup >= 3 ? 'Sal' : 'Energia';
+  const nutritionLabel = activeGroup >= 3 ? 'Sal' : 'Energia';
 
   // ==================== GUARDAR RESPOSTA (Nova estrutura) ====================
   const guardarRespostaAR = React.useCallback(async (payload: any) => {
@@ -152,6 +161,10 @@ export default function ARScreen({ navigation, route }: any) {
       setInfoEnabled(false);
       setImagemAtiva(null);
       setImagemSelecionada(null);
+      setPopupOverrideMessage(null);
+      overridePopupMessageRef.current = null;
+      setPopupMode('help');
+      shouldAutoOpenInitialPopupRef.current = true;
 
       if (route?.params) {
         const { popupOverride, enableInfo, perguntaProxima } = route.params;
@@ -159,6 +172,7 @@ export default function ARScreen({ navigation, route }: any) {
        if (perguntaProxima) setPerguntaAtual(perguntaProxima);
         
         if (typeof popupOverride === 'string' && popupOverride.length > 0) {
+          shouldAutoOpenInitialPopupRef.current = false;
           overridePopupMessageRef.current = popupOverride;
           setPopupOverrideMessage(popupOverride);
           setPopupMode('override');
@@ -216,7 +230,7 @@ export default function ARScreen({ navigation, route }: any) {
   );
 
   React.useEffect(() => {
-    if (cameraGranted) {
+    if (cameraGranted && shouldAutoOpenInitialPopupRef.current) {
       setPopupMode('help');
       setShowPopup(true);
     }
@@ -333,6 +347,22 @@ export default function ARScreen({ navigation, route }: any) {
       return <Text key={i}>{part}</Text>;
     });
   };
+
+  const abrirPopupDoMocho = () => {
+    if (popupMode === 'selection') {
+      setShowPopup(true);
+      return;
+    }
+
+    if (popupOverrideMessage) {
+      setPopupMode('override');
+    } else {
+      setPopupMode('help');
+    }
+
+    setShowPopup(true);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.breadcrumbContainer}>
@@ -374,14 +404,12 @@ export default function ARScreen({ navigation, route }: any) {
                 <Text style={styles.instructionText}>
                   Selecionou a refeição. Tem a certeza de que quer <Text style={styles.boldText}>confirmar esta opção</Text> para a pergunta {perguntaAtual}?
                 </Text>
-              ) : popupOverrideMessage ? (
-                <Text style={styles.overrideInstructionText}>{renderBoldText(popupOverrideMessage)}</Text>
+              ) : popupMode === 'override' && owlOverrideMessage ? (
+                <Text style={styles.overrideInstructionText}>{renderBoldText(owlOverrideMessage)}</Text>
               ) : (
                 // === POPUP INICIAL DO MOCHO ===
                 <>
-                  <Text style={styles.instructionText}>
-                    Qual destas opções considera ter <Text style={styles.boldText}>mais energia (calorias)</Text>, considerando exatamente a quantidade apresentada.  Selecione <Text style={styles.boldText}>apenas uma</Text> das opções clicando na refeição! 
-                  </Text>
+                  <Text style={styles.instructionText}>{renderBoldText(owlInitialMessage)}</Text>
                   <Text style={styles.subInstructionText}>
                     Caso não conheça ou não goste da refeição inidicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito
                   </Text>
@@ -435,7 +463,7 @@ export default function ARScreen({ navigation, route }: any) {
       </View>
 
       {/* Owl Help Button */}
-      <TouchableOpacity style={styles.owlButton} onPress={() => setShowPopup(true)}>
+      <TouchableOpacity style={styles.owlButton} onPress={abrirPopupDoMocho}>
         <Image source={require('../assets/Owl2.png')} style={styles.owlButtonImage} resizeMode="contain" />
       </TouchableOpacity>
 
