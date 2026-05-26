@@ -15,7 +15,8 @@ import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import ProgressBreadcrumb from './ProgressBar';
-import { auth } from '../src/firebase';
+import { auth, db } from '../src/firebase';
+import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { useNutlySession } from '../src/NutlySessionContext';  
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10&group=';
@@ -50,7 +51,7 @@ const NUTRITION_DATA: NutritionItem[] = [
   { key: 'presunto', assetName: 'presunto.png', energia: '3.4g/100g', porcao: '123g' },
   { key: 'caldoverde', assetName: 'caldoverde.png', energia: '0.7g/100g', porcao: '237g' },
   { key: 'sandespanado', assetName: 'sandespanado.png', energia: '1.0g/100g', porcao: '203g' },
-  { key: 'cachorro', assetName: 'cachorro.png', energia: '2.0g/100g', porcao: '206g' },
+  { key: 'hotdog', assetName: 'hotdog.png', energia: '2.0g/100g', porcao: '206g' },
   { key: 'sopa', assetName: 'sopa.png', energia: '0.6g/100g', porcao: '253g' },
 
 ];
@@ -118,6 +119,16 @@ export default function ARScreen({ navigation, route }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
+      const { sessionId } = route.params || {};
+      if (sessionId) {
+        try {
+          await updateDoc(doc(db, 'quiz_sessions', sessionId), {
+            answers: arrayUnion(answerData),
+          });
+        } catch (e) {
+          console.warn('Erro ao gravar em quiz_sessions (AR):', e);
+        }
+      }
       setTimeout(() => setDebugMsg(null), 1800);
     } catch (error) {
       console.error(error);
@@ -640,7 +651,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     height: 75,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#ffffff',
     borderTopWidth: 1,
     borderColor: '#EBD9C6',
     paddingBottom: 10,

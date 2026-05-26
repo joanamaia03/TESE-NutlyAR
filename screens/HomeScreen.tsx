@@ -386,7 +386,7 @@ export default function HomeScreen({ navigation }: any) {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuButton} onPress={() => navigation.navigate('ImagesScreen')}>
+        <TouchableOpacity style={styles.menuButton} onPress={() => navigation.navigate('ImageQuizzScreen')}>
           <View style={styles.iconBox}>
             <Icon name="image-outline" size={100} color="#FFF" />
           </View>
