@@ -10,8 +10,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { db } from '../src/firebase';
-import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 export default function ConfidenceScreen({ route, navigation }: any) {
   const { saveAnswer, currentGroup } = useNutlySession();
@@ -35,19 +33,11 @@ export default function ConfidenceScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-
-      const sessionIdParam = route.params?.sessionId;
-      if (sessionIdParam) {
-        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
-        await updateDoc(qRef, { answers: arrayUnion(answerData) });
-        navigation.navigate('Question2Screen', { perguntaAtual, groupNumber: currentGroup, sessionId: sessionIdParam });
-      } else {
-        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { createdAt: serverTimestamp(), answers: [answerData] });
-        navigation.navigate('Question2Screen', { perguntaAtual, groupNumber: currentGroup, sessionId: newDoc.id });
-      }
     } catch (error) {
       console.error("Erro ao guardar confiança:", error);
     }
+
+    navigation.navigate('Image2Screen', { perguntaAtual, groupNumber: currentGroup });
   };
 
   return (

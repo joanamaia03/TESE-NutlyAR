@@ -14,10 +14,8 @@ import ProgressBreadcrumb from './ProgressBar';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { auth, db } from '../src/firebase';
 import { doc, setDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useNutlySession } from '../src/NutlySessionContext';
 
-// IMAGES_BY_GROUP: placeholder-based mapping to avoid bundler errors when image
-// assets are missing. Replace `placeholder` with real requires when images
-// are added to `assets/`.
 const PLACEHOLDER = require('../assets/NutlyAR.png');
 const IMAGES_BY_GROUP: Record<number, Array<{ id: number; source: any; name: string }>> = {
   1: [
@@ -48,8 +46,9 @@ const SWAP_REPLACEMENTS: Record<number, { id: number; source: any; name: string 
   2: { id: 102, source: require('../assets/arrozdepolvo.jpg'), name: 'arrozdepolvo.jpg' },
 };
 
-export default function Question1Screen({ navigation, route }: any) {
+export default function ImageQuizzScreen({ navigation, route }: any) {
   // Recupera as variáveis do fluxo vindas do ARScreen
+  const { saveAnswer, currentGroup } = useNutlySession();
   const params = route.params || {};
   const perguntaAtual = params.perguntaAtual || 1; 
   const historicoRespostas = params.historicoRespostas || [];
@@ -169,38 +168,25 @@ export default function Question1Screen({ navigation, route }: any) {
     const user = auth.currentUser;
     if (!user) return;
 
-    const nomeDoGrupo = `grupo_${perguntaAtual}`;
-
-    // Objeto com a resposta desta pergunta específica
-    const dadosRespostaDefinitiva = {
-      targetIndexEscolhido: idRefeicao,
-      nomeImagemEscolhida: nomeImagem,
-      timestamp: new Date().toISOString(),
+    // === NOVA LÓGICA DE GUARDA POR GRUPOS ===
+    const answerData = {
+      questionId: `g${currentGroup}_q${perguntaAtual}_imagem`,
+      groupNumber: currentGroup,
+      selectedImage: nomeImagem,
+      targetIndex: idRefeicao,
+      answeredAt: new Date(),
     };
 
     try {
-      const qRef = doc(db, 'question', user.uid);
-      
-      // Gravação inteligente com merge para guardar as perguntas textuais por grupo
-      await setDoc(
-        qRef,
-        {
-          respostas_por_grupo: {
-            [nomeDoGrupo]: {
-              pergunta_1_refeicao_escolhida: dadosRespostaDefinitiva
-            }
-          }
-        },
-        { merge: true }
-      );
+      // Guarda usando a nova estrutura por grupos
+      await saveAnswer(currentGroup, answerData);
 
-      // Atualiza o histórico local da sessão da app
+      // Atualiza o histórico local (mantido como tinhas)
       const novoHistorico = [
         ...historicoRespostas,
         { pergunta: perguntaAtual, ecrã: 'ImageQuizzScreen', escolha: nomeImagem }
       ];
 
-      // Avança para o ecrã do cenário hipotético (ImagineScreen) passando os dados acumulados
       navigation.navigate('ImagineScreen', {
         perguntaAtual: perguntaAtual,
         historicoRespostas: novoHistorico,
@@ -210,7 +196,7 @@ export default function Question1Screen({ navigation, route }: any) {
       console.error('Erro ao guardar a seleção da refeição:', error);
     }
   };
-
+  
   const seleccionarAndClose = async () => {
     if (!imagemSelecionada) return;
     try {

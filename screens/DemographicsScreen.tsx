@@ -35,11 +35,48 @@ export default function SocioDemographicScreen({ navigation }: any) {
       setMunicipiosAnteriores('');
     }
   }, [residiuSempre]);
+  // Validação dos campos obrigatórios: devolve uma lista com os nomes das perguntas em falta
+  const validarCamposObrigatorios = () => {
+    const faltam: string[] = [];
+
+    if (!genero) faltam.push('Género');
+    if (genero === 'outro' && !generoOutro) faltam.push('Especificar género');
+
+    if (!anoNascimento) faltam.push('Ano de Nascimento');
+    if (!idade) faltam.push('Idade');
+
+    if (!escolaridade) faltam.push('Grau de Escolaridade');
+    if (escolaridade === 'outro' && !escolaridadeOutro) faltam.push('Especificar grau de escolaridade');
+
+    if (!municipio) faltam.push('Município de Residência');
+
+    if (!residiuSempre) faltam.push('Residiu sempre neste município?');
+    if (residiuSempre === 'nao' && !municipiosAnteriores) faltam.push('Municípios anteriores');
+
+    if (!condicaoMedica) faltam.push('Condição Médica');
+    if (condicaoMedica === 'outro' && !condicaoMedicaOutro) faltam.push('Especificar condição médica');
+
+    if (!padraoAlimentar) faltam.push('Padrão Alimentar');
+    if (padraoAlimentar === 'outro' && !padraoAlimentarOutro) faltam.push('Especificar padrão alimentar');
+
+    return faltam;
+  };
   const handleGuardar = async () => {
     const user = auth.currentUser;
 
     if (!user) {
       Alert.alert("Erro", "Precisas de estar com a sessão iniciada!");
+      return;
+    }
+
+    // Validação: não permite avançar se houver perguntas em falta
+    const faltam = validarCamposObrigatorios();
+    if (faltam.length > 0) {
+      Alert.alert(
+        'Preenchimento incompleto',
+        'Por favor responde às seguintes perguntas antes de avançar:\n' + faltam.join('\n'),
+        [{ text: 'OK' }]
+      );
       return;
     }
 

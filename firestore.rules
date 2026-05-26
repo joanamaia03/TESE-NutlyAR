@@ -4,5 +4,33 @@ service cloud.firestore {
     match /usuarios/{userId} {
       allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
     }
+
+    // Nutly session: only the authenticated owner can create/read/update/delete
+    match /nutly_sessions/{sessionId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Quiz sessions: allow authenticated users to create and update their quiz session entries
+    match /quiz_sessions/{quizSessionId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if request.auth != null && (
+        // allow if owner field matches or if owner not set, require authentication
+        (resource.data.userId == request.auth.uid) || (resource.data.userId == null)
+      );
+    }
+
+    // Support collections used by demographic flow and ImageQuizzScreen
+    match /utilizadores/{userId} {
+      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /demographics/{userId} {
+      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /question/{userId} {
+      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
   }
 }

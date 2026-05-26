@@ -13,14 +13,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { db } from '../src/firebase';
-import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 const opcoes = ['Sim', 'Não'];
 
-export default function ImagineScreen({ route, navigation }: any) {
+export default function Image4Screen({ route, navigation }: any) {
   const { saveAnswer, currentGroup } = useNutlySession();
-  const { perguntaAtual = 4, groupNumber } = route.params || {};
+  const { perguntaAtual = 4, groupNumber, sessionId } = route.params || {};
   const breadcrumbStep = groupNumber ?? currentGroup ?? 1;
 
   const [opcaoSelecionada, setOpcaoSelecionada] = useState<string | null>(null);
@@ -41,27 +39,17 @@ export default function ImagineScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-
-      const sessionIdParam = route.params?.sessionId;
-      if (sessionIdParam) {
-        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
-        await updateDoc(qRef, { answers: arrayUnion(answerData) });
-      } else {
-        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { createdAt: serverTimestamp(), answers: [answerData] });
-        // pass new session id forward
-        route.params = { ...(route.params || {}), sessionId: newDoc.id };
-      }
     } catch (error) {
-      console.error(error);
+      console.error('Erro ao guardar resposta Image4:', error);
     }
 
-    navigation.navigate('ARScreen', {
-      // Esta fase continua a pertencer ao grupo 1 — manter breadcrumb no passo 1
-      perguntaProxima: 1,
+    navigation.replace('ImageQuizzScreen', {
+      perguntaAtual: 1,
+      groupNumber: currentGroup,
+      sessionId,
       enableInfo: true,
-      finalGroupStep: true,
-      popupOverride: 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.',
-      sessionId: route.params?.sessionId,
+      popupOverride:
+        'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.',
     });
   };
 
@@ -103,8 +91,6 @@ export default function ImagineScreen({ route, navigation }: any) {
               textAlignVertical="top"
             />
           </View>
-
-          
         </ScrollView>
 
         <View style={styles.footer}>
