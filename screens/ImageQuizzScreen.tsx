@@ -16,7 +16,6 @@ import { auth, db } from '../src/firebase';
 import { doc, setDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useNutlySession } from '../src/NutlySessionContext';
 
-const PLACEHOLDER = require('../assets/NutlyAR.png');
 const IMAGES_BY_GROUP: Record<number, Array<{ id: number; source: any; name: string }>> = {
   1: [
     { id: 0, source: require('../assets/hotdog.jpg'), name: 'hotdog.jpg' },
@@ -40,36 +39,48 @@ const SWAP_REPLACEMENTS: Record<number, { id: number; source: any; name: string 
   8: { id: 108, source: require('../assets/batatafrita.jpg'), name: 'batatafrita.jpg' },
 };
 
-const DISH_INFO: Record<string, { title: string; energia: string; porcao: string }> = {
-  'hotdog.jpg': { title: 'Hotdog', energia: '270 kcal/100g', porcao: '206g' },
-  'sardine.jpg': { title: 'Sardinha', energia: '106 kcal/100g', porcao: '383g' },
-  'cozido.jpg': { title: 'Cozido', energia: '151 kcal/100g', porcao: '265g' },
-  'lombo.jpg': { title: 'Lombo', energia: '174 kcal/100g', porcao: '317g' },
-  'panado.jpg': { title: 'Panado', energia: '174 kcal/100g', porcao: '263g' },
-  'arrozdepolvo.jpg': { title: 'Arroz de polvo', energia: '127 kcal/100g', porcao: '293g' },
-  'torrada.jpg': { title: 'Torrada', energia: '1.1g/100g', porcao: '65g' },
-  'chourico.jpg': { title: 'Chouriço', energia: '6.6g/100g', porcao: '42g' },
-  'batatafrita.jpg': { title: 'Batata frita', energia: '1.2g/100g', porcao: '45g' },
+const DISH_INFO: Record<string, { energia: string; sal?: string ; porcao: string; }> = {
+  'hotdog.jpg': { energia: '270 kcal/100g', porcao: '206g' },
+  'sardine.jpg': { energia: '106 kcal/100g', porcao: '383g' },
+  'cozido.jpg': { energia: '151 kcal/100g', porcao: '265g' },
+  'lombo.jpg': { energia: '174 kcal/100g', porcao: '317g' },
+  'panado.jpg': { energia: '174 kcal/100g', porcao: '263g' },
+  'arrozdepolvo.jpg': { energia: '127 kcal/100g', porcao: '293g' },
+  'queijo.jpg': { energia: '2.1g/100g', sal: '2.1g/100g', porcao: '40g' },
+  'azeitonas.jpg': { energia: '5.3g/100g', sal: '5.3g/100g' , porcao: '44g'},
+  'broa.jpg': { energia: '0.7g/100g', sal: '0.7g/100g' , porcao: '90g' },
+  'torrada.jpg': { energia: '1.1g/100g', sal: '1.1g/100g', porcao: '65g' },
+  'chourico.jpg': { energia: '6.6g/100g', sal: '6.6g/100g', porcao: '42g'},
+  'batatafrita.jpg': { energia: '1.2g/100g', sal: '1.2g/100g', porcao: '45g' },
 };
 
 export default function ImageQuizzScreen({ navigation, route }: any) {
   // Recupera as variáveis do fluxo vindas do ARScreen
-  const { saveAnswer, currentGroup } = useNutlySession();
+  const { saveAnswer, currentGroup} = useNutlySession();
   const params = route.params || {};
   const perguntaAtual = params.perguntaAtual || 1; 
-  const historicoRespostas = params.historicoRespostas || [];
+  
+  const currentGroupToShow = params.groupNumber ?? currentGroup ?? 1;
 
-  // Filtra as 3 refeições que devem aparecer no ecrã com base no Grupo atual
-  const initialRefeicoes = IMAGES_BY_GROUP[perguntaAtual] || IMAGES_BY_GROUP[1];
-  const [displayImages, setDisplayImages] = React.useState(initialRefeicoes);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
   const [infoUnlocked, setInfoUnlocked] = React.useState(false);
   const [showSwapControls, setShowSwapControls] = React.useState(false);
   const [showSwapPrompt, setShowSwapPrompt] = React.useState(false);
 
+  const [displayImages, setDisplayImages] = React.useState(
+    IMAGES_BY_GROUP[currentGroupToShow] || IMAGES_BY_GROUP[1]
+  );
+
   React.useEffect(() => {
-    setDisplayImages(IMAGES_BY_GROUP[perguntaAtual] || IMAGES_BY_GROUP[1]);
-  }, [perguntaAtual]);
+    const groupToLoad = params.groupNumber ?? currentGroup ?? 1;
+    console.log(`Carregando imagens do Grupo ${groupToLoad}`);
+
+    const newImages = IMAGES_BY_GROUP[groupToLoad] || IMAGES_BY_GROUP[1];
+    setDisplayImages(newImages);           // ← Força as imagens originais
+    setPratoSelecionado(null);             // Limpa seleção
+    setShowSwapControls(false);            // Desativa swap
+    setShowSwapPrompt(false);
+  }, [params.groupNumber, currentGroup]);
 
   // Popup da coruja (inicial + seleção)
   const [showPopup, setShowPopup] = React.useState(false);
@@ -78,8 +89,13 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   const [popupOverrideMessage, setPopupOverrideMessage] = React.useState<string | null>(null);
   const [pratoSelecionado, setPratoSelecionado] = React.useState<{ id: number; source: any; name: string } | null>(null);
   const shouldAutoOpenInitialPopupRef = React.useRef(true);
-  const owlInitialMessage = 'Qual destas opções considera ter mais energia (calorias), considerando exatamente a quantidade apresentada. Selecione apenas uma das opções clicando na refeição!';
-
+  const isSaltGroup = Number(currentGroupToShow ?? 1) === 2;
+  const owlInitialMessage = isSaltGroup
+    ? 'Qual destas opções considera ter **mais sal**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!'
+    : 'Qual destas opções considera ter **mais energia (calorias)**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!';
+  const owlOverrideMessage = isSaltGroup
+    ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.'
+    : popupOverrideMessage;
   useFocusEffect(
     React.useCallback(() => {
       setImagemSelecionada(null);
@@ -88,6 +104,30 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
       setShowPopup(false);
       shouldAutoOpenInitialPopupRef.current = true;
       setInfoUnlocked(route?.params?.enableInfo === true);
+
+      // Detecta se chegámos aqui depois da última pergunta do grupo
+      const isFinalGroupStep = route?.params?.finalGroupStep === true;
+      if (isFinalGroupStep) {
+        // Do not auto-advance here. We want the user to answer the image question
+        // on this screen (with popup override and info enabled) and only after
+        // they confirm the image selection advance to Transition2.
+        setInfoUnlocked(true);
+        const { popupOverride } = route?.params || {};
+        if (typeof popupOverride === 'string' && popupOverride.length > 0) {
+          shouldAutoOpenInitialPopupRef.current = false;
+          setPopupOverrideMessage(popupOverride);
+          setPopupMode('override');
+          setShowPopup(true);
+        } else {
+          shouldAutoOpenInitialPopupRef.current = true;
+        }
+        // ensure images for the asked question are loaded
+        const { perguntaProxima } = route?.params || {};
+        if (perguntaProxima) {
+          setDisplayImages(IMAGES_BY_GROUP[perguntaProxima] || IMAGES_BY_GROUP[1]);
+        }
+        return;
+      }
 
       const { popupOverride, perguntaProxima } = route?.params || {};
       if (perguntaProxima) {
@@ -154,7 +194,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     setDisplayImages((prev) => {
       if (!prev || prev.length === 0) return prev;
 
-      const originalItem = initialRefeicoes[index];
+      const originalItem = IMAGES_BY_GROUP[currentGroupToShow]?.[index] || IMAGES_BY_GROUP[1]?.[index];
       if (!originalItem) return prev;
 
       const next = [...prev];
@@ -204,21 +244,18 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     try {
       // Guarda usando a nova estrutura por grupos
       await saveAnswer(currentGroup, answerData);
-
-      // Atualiza o histórico local (mantido como tinhas)
-      const novoHistorico = [
-        ...historicoRespostas,
-        { pergunta: perguntaAtual, ecrã: 'ImageQuizzScreen', escolha: nomeImagem }
-      ];
-
-      navigation.navigate('ImagineScreen', {
-        perguntaAtual: perguntaAtual,
-        historicoRespostas: novoHistorico,
-      });
-
     } catch (error) {
       console.error('Erro ao guardar a seleção da refeição:', error);
     }
+
+    if (currentGroup < 2) {
+        navigation.navigate('Transition1Screen', {
+          groupNumber: currentGroup,
+        });
+      } else {
+        navigation.navigate('FinishScreen');
+      }
+      return;
   };
   
   const seleccionarAndClose = async () => {
@@ -244,8 +281,8 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     await seleccionarAndClose();
   };
 
-  const owlPopupMessage = popupMode === 'override' && popupOverrideMessage
-    ? popupOverrideMessage
+  const owlPopupMessage = popupMode === 'override'
+    ? (owlOverrideMessage || owlInitialMessage)
     : owlInitialMessage;
 
   const renderBoldText = (text: string) => {
@@ -274,6 +311,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   };
 
   const selectedDishInfo = DISH_INFO[pratoSelecionado?.name ?? displayImages[0]?.name] ?? null;
+  const showSalt = Number(currentGroupToShow ?? 1) === 2;
 
   const confirmarImagemSelecionada = () => {
     if (!pratoSelecionado) return;
@@ -287,7 +325,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     <SafeAreaView style={styles.safeArea}>
       {/* Container Superior para o Breadcrumb idêntico ao da imagem */}
       <View style={styles.breadcrumbWrapper}>
-        <ProgressBreadcrumb currentStep={perguntaAtual} />
+        <ProgressBreadcrumb currentStep={route?.params?.groupNumber ?? currentGroup} />
       </View>
 
       <View style={styles.scrollContainer}>
@@ -392,9 +430,25 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
                         createdAt: serverTimestamp(),
                       });
 
+                      const wasFinalGroupStep = route?.params?.finalGroupStep === true;
+
                       setImagemSelecionada(null);
                       setShowPopup(false);
-                      navigation.navigate('Image1Screen', { sessionId: sessionDocRef.id });
+
+                      if (wasFinalGroupStep) {
+                        // If this was the final step for the group and we've reached
+                        // the configured last group (group 2), go straight to FinishScreen.
+                        if (Number(currentGroup ?? 1) >= 2) {
+                          navigation.navigate('FinishScreen');
+                        } else {
+                          // Otherwise show the transition screen for the group that
+                          // just finished. The transition screen will call nextGroup()
+                          // when the user advances.
+                          navigation.navigate('Transition2Screen', { groupNumber: currentGroup });
+                        }
+                      } else {
+                        navigation.navigate('Image1Screen', { sessionId: sessionDocRef.id });
+                      }
                     } catch (e) {
                       console.error('Erro ao criar sessão de quiz:', e);
                       setImagemSelecionada(null);
@@ -451,8 +505,11 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
           <View style={styles.nutritionCard}>
             {selectedDishInfo ? (
               <>
-                <Text style={styles.nutritionTitle}>{selectedDishInfo.title}</Text>
-                <Text style={styles.nutritionLine}>Energia: {selectedDishInfo.energia}</Text>
+                {showSalt ? (
+                  <Text style={styles.nutritionLine}>Sal: {selectedDishInfo.sal ?? '-'}</Text>
+                ) : (
+                  <Text style={styles.nutritionLine}>Energia: {selectedDishInfo.energia}</Text>
+                )}
                 <Text style={styles.nutritionLine}>Porção: {selectedDishInfo.porcao}</Text>
               </>
             ) : (

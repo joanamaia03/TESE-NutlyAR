@@ -11,6 +11,7 @@ import Question2Screen from '../screens/Question2screen';
 import Question3Screen from '../screens/Question3Screen';
 import Question4Screen from '../screens/Question4Screen';
 import Transition1Screen from '../screens/Transition1Screen';
+import Transition2Screen from '../screens/Transition2Screen';
 import ImagesScreen from '../screens/ImagesScreen';
 import ImageQuizzScreen from '../screens/ImageQuizzScreen';
 import Image1Screen from '../screens/Image1Screen';
@@ -36,6 +37,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Question4Screen" component={Question4Screen} />
       <Stack.Screen name="ImagineScreen" component={Question4Screen} />
       <Stack.Screen name="Transition1Screen" component={Transition1Screen} />
+      <Stack.Screen name="Transition2Screen" component={Transition2Screen} />
       <Stack.Screen name="ImagesScreen" component={ImagesScreen} />
       <Stack.Screen name="ImageQuizzScreen" component={ImageQuizzScreen} />
       <Stack.Screen name="Image1Screen" component={Image1Screen} />
