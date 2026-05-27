@@ -13,7 +13,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import ProgressBreadcrumb from './ProgressBar';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { auth, db } from '../src/firebase';
-import { doc, setDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useNutlySession } from '../src/NutlySessionContext';
 
 const IMAGES_BY_GROUP: Record<number, Array<{ id: number; source: any; name: string }>> = {
@@ -30,6 +30,19 @@ const IMAGES_BY_GROUP: Record<number, Array<{ id: number; source: any; name: str
   ],
 };
 
+const VEGETARIAN_IMAGES_BY_GROUP: Record<number, Array<{ id: number; source: any; name: string }>> = {
+  1: [
+    { id: 0, source: require('../assets/jardineira.png'), name: 'jardineira.png' },
+    { id: 1, source: require('../assets/almondegas.png'), name: 'almondegas.png' },
+    { id: 2, source: require('../assets/peixinhos.png'), name: 'peixinhos.png' },
+  ],
+  2: [
+    { id: 6, source: require('../assets/queijo.jpg'), name: 'queijo.jpg' },
+    { id: 7, source: require('../assets/azeitonas.jpg'), name: 'azeitonas.jpg' },
+    { id: 8, source: require('../assets/broa.jpg'), name: 'broa.jpg' },
+  ],
+};
+
 const SWAP_REPLACEMENTS: Record<number, { id: number; source: any; name: string }> = {
   0: { id: 100, source: require('../assets/lombo.jpg'), name: 'lombo.jpg' },
   1: { id: 101, source: require('../assets/panado.jpg'), name: 'panado.jpg' },
@@ -39,7 +52,16 @@ const SWAP_REPLACEMENTS: Record<number, { id: number; source: any; name: string 
   8: { id: 108, source: require('../assets/batatafrita.jpg'), name: 'batatafrita.jpg' },
 };
 
-const DISH_INFO: Record<string, { energia: string; sal?: string ; porcao: string; }> = {
+const VEGETARIAN_SWAP_REPLACEMENTS: Record<number, { id: number; source: any; name: string }> = {
+  0: { id: 200, source: require('../assets/azeitonas.jpg'), name: 'azeitonas.jpg' },
+  1: { id: 201, source: require('../assets/broa.jpg'), name: 'broa.jpg' },
+  2: { id: 202, source: require('../assets/torrada.jpg'), name: 'torrada.jpg' },
+  6: { id: 206, source: require('../assets/torrada.jpg'), name: 'torrada.jpg' },
+  7: { id: 207, source: require('../assets/sopa.jpg'), name: 'sopa.jpg' },
+  8: { id: 208, source: require('../assets/caldoverde.jpg'), name: 'caldoverde.jpg' },
+};
+
+const DISH_INFO: Record<string, { energia: string; sal?: string; porcao: string; }> = {
   'hotdog.jpg': { energia: '270 kcal/100g', porcao: '206g' },
   'sardine.jpg': { energia: '106 kcal/100g', porcao: '383g' },
   'cozido.jpg': { energia: '151 kcal/100g', porcao: '265g' },
@@ -47,11 +69,14 @@ const DISH_INFO: Record<string, { energia: string; sal?: string ; porcao: string
   'panado.jpg': { energia: '174 kcal/100g', porcao: '263g' },
   'arrozdepolvo.jpg': { energia: '127 kcal/100g', porcao: '293g' },
   'queijo.jpg': { energia: '2.1g/100g', sal: '2.1g/100g', porcao: '40g' },
-  'azeitonas.jpg': { energia: '5.3g/100g', sal: '5.3g/100g' , porcao: '44g'},
-  'broa.jpg': { energia: '0.7g/100g', sal: '0.7g/100g' , porcao: '90g' },
+  'azeitonas.jpg': { energia: '5.3g/100g', sal: '5.3g/100g', porcao: '44g'},
+  'broa.jpg': { energia: '0.7g/100g', sal: '0.7g/100g', porcao: '90g' },
   'torrada.jpg': { energia: '1.1g/100g', sal: '1.1g/100g', porcao: '65g' },
   'chourico.jpg': { energia: '6.6g/100g', sal: '6.6g/100g', porcao: '42g'},
   'batatafrita.jpg': { energia: '1.2g/100g', sal: '1.2g/100g', porcao: '45g' },
+  'jardineira.png': { energia: '111 kcal/100g', porcao: '260g' },
+  'almondegas.png': { energia: '131 kcal/100g', porcao: '295g' },
+  'peixinhos.png': { energia: '151 kcal/100g', porcao: '265g' },
 };
 
 export default function ImageQuizzScreen({ navigation, route }: any) {
@@ -62,6 +87,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   
   const currentGroupToShow = params.groupNumber ?? currentGroup ?? 1;
   const [screenRefreshing, setScreenRefreshing] = React.useState(false);
+  const [isVegetarianDiet, setIsVegetarianDiet] = React.useState(false);
 
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
   const [infoUnlocked, setInfoUnlocked] = React.useState(false);
@@ -71,6 +97,16 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   const [displayImages, setDisplayImages] = React.useState(() => {
     return IMAGES_BY_GROUP[params.groupNumber ?? currentGroup ?? 1] || IMAGES_BY_GROUP[1];
   });
+
+  const activeImagesByGroup = React.useMemo(
+    () => (isVegetarianDiet ? VEGETARIAN_IMAGES_BY_GROUP : IMAGES_BY_GROUP),
+    [isVegetarianDiet]
+  );
+
+  const activeSwapReplacements = React.useMemo(
+    () => (isVegetarianDiet ? VEGETARIAN_SWAP_REPLACEMENTS : SWAP_REPLACEMENTS),
+    [isVegetarianDiet]
+  );
 
   // Popup da coruja (inicial + seleção)
   const [showPopup, setShowPopup] = React.useState(false);
@@ -88,68 +124,79 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     : popupOverrideMessage;
   useFocusEffect(
     React.useCallback(() => {
-      setScreenRefreshing(true);
-      // 1. Força o carregamento correto das imagens do grupo atual ao ganhar foco
-      const groupToLoad = route?.params?.groupNumber ?? currentGroup ?? 1;
-      console.log(`Foco Ativo: A garantir imagens do Grupo ${groupToLoad}`);
-      
-      const newImages = IMAGES_BY_GROUP[groupToLoad] || IMAGES_BY_GROUP[1];
-      setDisplayImages(newImages);
-      
-      // Reset de controlos locais de seleção
-      setPratoSelecionado(null);
-      setImagemSelecionada(null);
-      setShowSwapControls(false);
-      setShowSwapPrompt(false);
-      setPopupOverrideMessage(null);
-      setPopupMode('help');
-      setShowPopup(false);
-      shouldAutoOpenInitialPopupRef.current = true;
-      setInfoUnlocked(route?.params?.enableInfo === true);
+      let isActive = true;
 
-      // Detecta se chegámos aqui depois da última pergunta do grupo
-      const isFinalGroupStep = route?.params?.finalGroupStep === true;
-      if (isFinalGroupStep) {
-        setInfoUnlocked(true);
+      const refreshScreen = async () => {
+        const groupToLoad = route?.params?.groupNumber ?? currentGroup ?? 1;
+        let vegetarian = false;
+
+        try {
+          const user = auth.currentUser;
+          if (user) {
+            const userSnap = await getDoc(doc(db, 'utilizadores', user.uid));
+            const padrao = String(userSnap.data()?.dadosSociodemograficos?.padraoAlimentar || '').toLowerCase();
+            vegetarian = padrao === 'vegan' || padrao.includes('veget');
+          }
+        } catch (error) {
+          console.warn('Falha ao ler o padrão alimentar; a usar imagens padrão.', error);
+        }
+
+        if (!isActive) return;
+
+        setIsVegetarianDiet(vegetarian);
+        setScreenRefreshing(true);
+
+        const imageSet = vegetarian ? VEGETARIAN_IMAGES_BY_GROUP : IMAGES_BY_GROUP;
+        console.log(`Foco Ativo: Grupo ${groupToLoad} | vegetariano=${vegetarian}`);
+
+        setDisplayImages(imageSet[groupToLoad] || imageSet[1]);
+        setPratoSelecionado(null);
+        setImagemSelecionada(null);
+        setShowSwapControls(false);
+        setShowSwapPrompt(false);
+        setPopupOverrideMessage(null);
+        setPopupMode('help');
+        setShowPopup(false);
+        shouldAutoOpenInitialPopupRef.current = true;
+        setInfoUnlocked(route?.params?.enableInfo === true);
+
+        const isFinalGroupStep = route?.params?.finalGroupStep === true;
+        if (isFinalGroupStep) {
+          setInfoUnlocked(true);
+          const { popupOverride } = route?.params || {};
+          if (typeof popupOverride === 'string' && popupOverride.length > 0) {
+            shouldAutoOpenInitialPopupRef.current = false;
+            setPopupOverrideMessage(popupOverride);
+            setPopupMode('override');
+            setShowPopup(true);
+          }
+
+          setScreenRefreshing(false);
+          return;
+        }
+
         const { popupOverride } = route?.params || {};
+
         if (typeof popupOverride === 'string' && popupOverride.length > 0) {
           shouldAutoOpenInitialPopupRef.current = false;
           setPopupOverrideMessage(popupOverride);
           setPopupMode('override');
           setShowPopup(true);
-        } else {
-          shouldAutoOpenInitialPopupRef.current = true;
+        } else if (shouldAutoOpenInitialPopupRef.current) {
+          shouldAutoOpenInitialPopupRef.current = false;
+          setPopupMode('help');
+          setShowPopup(true);
         }
-        
-        const { perguntaProxima } = route?.params || {};
-        if (perguntaProxima) {
-          setDisplayImages(IMAGES_BY_GROUP[perguntaProxima] || IMAGES_BY_GROUP[1]);
-        }
-        return;
-      }
 
-      const { popupOverride, perguntaProxima } = route?.params || {};
-      if (perguntaProxima) {
-        setDisplayImages(IMAGES_BY_GROUP[perguntaProxima] || IMAGES_BY_GROUP[1]);
-      }
+        setScreenRefreshing(false);
+      };
 
-      if (typeof popupOverride === 'string' && popupOverride.length > 0) {
-        shouldAutoOpenInitialPopupRef.current = false;
-        setPopupOverrideMessage(popupOverride);
-        setPopupMode('override');
-        setShowPopup(true);
-        return;
-      }
+      refreshScreen();
 
-      // abre o popup inicial quando não veio override
-      if (shouldAutoOpenInitialPopupRef.current) {
-        shouldAutoOpenInitialPopupRef.current = false;
-        setPopupMode('help');
-        setShowPopup(true);
-      }
-      setTimeout(() => setScreenRefreshing(false), 50);
-      return () => {};
-    }, [route?.params?.enableInfo, route?.params?.popupOverride, route?.params?.perguntaProxima, perguntaAtual])
+      return () => {
+        isActive = false;
+      };
+    }, [route?.params?.enableInfo, route?.params?.popupOverride, route?.params?.perguntaProxima, route?.params?.finalGroupStep, route?.params?.groupNumber, currentGroup, perguntaAtual])
   );
 
   const enviarOrdemTrocarImagem = () => {
@@ -180,7 +227,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
       const currentItem = prev[index];
       if (!currentItem) return prev;
 
-      const nextItem = SWAP_REPLACEMENTS[currentItem.id];
+      const nextItem = activeSwapReplacements[currentItem.id];
       if (!nextItem) return prev;
 
       const next = [...prev];
@@ -194,7 +241,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     setDisplayImages((prev) => {
       if (!prev || prev.length === 0) return prev;
 
-      const originalGroupList = IMAGES_BY_GROUP[currentGroupToShow] || IMAGES_BY_GROUP[1];
+      const originalGroupList = activeImagesByGroup[currentGroupToShow] || activeImagesByGroup[1];
       const originalItem = originalGroupList[index];
       if (!originalItem) return prev;
 
