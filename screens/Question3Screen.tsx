@@ -13,8 +13,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { auth, db } from '../src/firebase';
-import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 type FactorItem = {
   id: number;
@@ -99,22 +97,11 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-      const sessionIdParam = route.params?.sessionId;
-      let nextSessionId = sessionIdParam ?? '';
-      if (sessionIdParam) {
-        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
-        await updateDoc(qRef, { answers: arrayUnion(answerData) });
-      } else {
-        const userId = auth.currentUser?.uid;
-        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { userId, createdAt: serverTimestamp(), answers: [answerData] });
-        nextSessionId = newDoc.id;
-      }
       console.log(`✅ Fatores guardados no grupo ${currentGroup}`);
 
       navigation.navigate('Question4Screen', {
         perguntaAtual,
         groupNumber: currentGroup,
-        sessionId: nextSessionId,
       });
     } catch (error) {
       console.error('Erro ao guardar fatores:', error);

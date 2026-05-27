@@ -15,8 +15,6 @@ import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import ProgressBreadcrumb from './ProgressBar';
-import { auth, db } from '../src/firebase';
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { useNutlySession } from '../src/NutlySessionContext';  
 
 const WEB_AR_URL = 'https://joanamaia03.github.io/TESE-NutlyAR/index.html?v=10&group=';
@@ -119,16 +117,6 @@ export default function ARScreen({ navigation, route }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-      const { sessionId } = route.params || {};
-      if (sessionId) {
-        try {
-          await updateDoc(doc(db, 'quiz_sessions', sessionId), {
-            answers: arrayUnion(answerData),
-          });
-        } catch (e) {
-          console.warn('Erro ao gravar em quiz_sessions (AR):', e);
-        }
-      }
       setTimeout(() => setDebugMsg(null), 1800);
     } catch (error) {
       console.error(error);
@@ -144,7 +132,7 @@ export default function ARScreen({ navigation, route }: any) {
           groupNumber: currentGroup,
         });
       } else {
-        navigation.navigate('FinishScreen');
+        navigation.navigate('ScoreScreen');
       }
       return;
     }
@@ -157,7 +145,7 @@ export default function ARScreen({ navigation, route }: any) {
         groupNumber: currentGroup,
       });
     } else if (isLastQuestionOfGroup) {
-      navigation.navigate('FinishScreen');
+      navigation.navigate('ScoreScreen');
     } else {
       navigation.navigate('Question1Screen', {
         perguntaAtual: perguntaAtual,
@@ -286,13 +274,14 @@ export default function ARScreen({ navigation, route }: any) {
 
   // ==================== CONFIRMAR ESCOLHA ====================
   const confirmarEscolhaEAvancar = async () => {
-    processandoCliqueRef.current = true;
-  
-    await guardarRespostaAR(imagemSelecionada || imagemAtiva);
-  
-    processandoCliqueRef.current = false;
-
     if (popupMode === 'help') {
+      setShowPopup(false);
+      setPopupMode('help');
+      return;
+    }
+
+    const imagemParaGuardar = imagemSelecionada || imagemAtiva;
+    if (!imagemParaGuardar) {
       setShowPopup(false);
       setPopupMode('help');
       return;
@@ -306,7 +295,7 @@ export default function ARScreen({ navigation, route }: any) {
     }
 
     processandoCliqueRef.current = true;
-    await guardarRespostaAR(imagemSelecionada || imagemAtiva);
+    await guardarRespostaAR(imagemParaGuardar);
     processandoCliqueRef.current = false;
 
     setShowPopup(false);

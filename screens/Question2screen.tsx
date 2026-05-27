@@ -12,8 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { auth, db } from '../src/firebase';
-import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 export default function ReasonScreen({ route, navigation }: any) {
   const { saveAnswer, currentGroup } = useNutlySession();
@@ -40,17 +38,7 @@ export default function ReasonScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-
-      const sessionIdParam = route.params?.sessionId;
-      if (sessionIdParam) {
-        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
-        await updateDoc(qRef, { answers: arrayUnion(answerData) });
-        navigation.navigate('Question3Screen', { perguntaAtual, groupNumber: currentGroup, sessionId: sessionIdParam });
-      } else {
-        const userId = auth.currentUser?.uid;
-        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { userId, createdAt: serverTimestamp(), answers: [answerData] });
-        navigation.navigate('Question3Screen', { perguntaAtual, groupNumber: currentGroup, sessionId: newDoc.id });
-      }
+      navigation.navigate('Question3Screen', { perguntaAtual, groupNumber: currentGroup });
     } catch (error) {
       console.error("Erro ao guardar motivos:", error);
     }

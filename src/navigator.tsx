@@ -19,6 +19,9 @@ import Image2Screen from '../screens/Image2Screen';
 import Image3Screen from '../screens/Image3Screen';
 import Image4Screen from '../screens/Image4Screen';
 import FinishScreen from '../screens/FinishScreen';
+import ScoreScreen from '../screens/ScoreScreen';
+import CertificadosScreen from '../screens/CertificadosScreen';
+import ReflexãoScreen from '../screens/ReflexãoScreen';
 
 const Stack = createStackNavigator();
 
@@ -46,6 +49,9 @@ export default function AppNavigator() {
       <Stack.Screen name="Image4Screen" component={Image4Screen} />
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="FinishScreen" component={FinishScreen} />
+      <Stack.Screen name="ScoreScreen" component={ScoreScreen} />
+      <Stack.Screen name="CertificadosScreen" component={CertificadosScreen} />
+      <Stack.Screen name="ReflexãoScreen" component={ReflexãoScreen} />
     </Stack.Navigator>
   );
 }

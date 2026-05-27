@@ -13,8 +13,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { auth, db } from '../src/firebase';
-import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 const opcoes = ['Sim', 'Não'];
 
@@ -41,17 +39,6 @@ export default function ImagineScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-
-      const sessionIdParam = route.params?.sessionId;
-      if (sessionIdParam) {
-        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
-        await updateDoc(qRef, { answers: arrayUnion(answerData) });
-      } else {
-        const userId = auth.currentUser?.uid;
-        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { userId, createdAt: serverTimestamp(), answers: [answerData] });
-        // pass new session id forward
-        route.params = { ...(route.params || {}), sessionId: newDoc.id };
-      }
     } catch (error) {
       console.error(error);
     }

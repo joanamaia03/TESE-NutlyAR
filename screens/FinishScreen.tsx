@@ -1,17 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FinishScreen({ navigation }: any) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Obrigado pela sua participação!</Text>
-        <Text style={styles.subtitle}>As suas respostas foram registadas com sucesso.</Text>
-
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.buttonText}>Voltar à Home</Text>
-        </TouchableOpacity>
+        <Text style={styles.title}>Muito obrigada{"\n"}pela sua{"\n"}participação!</Text>
+        <Image source={require('../assets/Owl.png')} style={styles.owl} resizeMode="contain" />
       </View>
     </SafeAreaView>
   );
@@ -29,27 +25,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: 40,
+    fontWeight: '800',
     color: '#613512',
     textAlign: 'center',
-    marginBottom: 12,
+    lineHeight: 48,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#6B3E1F',
-    textAlign: 'center',
-    marginBottom: 28,
+  owl: {
+    width: 160,
+    height: 160,
+    marginBottom: 10,
+    marginTop: 20,
   },
-  button: {
-    backgroundColor: '#784115',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 16,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '700',
-  },
+  
 });

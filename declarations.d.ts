@@ -5,3 +5,4 @@ declare module 'expo-navigation-bar' {
 	export function setBehaviorAsync(value: string): Promise<void>;
 	export function setBackgroundColorAsync(color: string, animated?: boolean): Promise<void>;
 }
+	declare module 'expo-media-library';
