@@ -10,9 +10,8 @@ export default function ProgressBreadcrumb({ currentStep }: ProgressBreadcrumbPr
   const scrollRef = React.useRef<ScrollView | null>(null);
 
   const CIRCLE_SIZE = 42; // usar o tamanho máximo (círculo ativo maior) para cálculos de scroll
-  const LINE_WIDTH = 8;
-  const MARGIN_HORIZONTAL = 4;
-  const ELEMENT_WIDTH = CIRCLE_SIZE + LINE_WIDTH + MARGIN_HORIZONTAL * 2;
+  const MARGIN_HORIZONTAL = 6;
+  const ELEMENT_WIDTH = CIRCLE_SIZE + MARGIN_HORIZONTAL * 2;
 
   const screenWidth = Dimensions.get('window').width;
   const containerWidth = screenWidth * 0.92; // keep same % as styles
@@ -48,11 +47,6 @@ export default function ProgressBreadcrumb({ currentStep }: ProgressBreadcrumbPr
               <View style={[styles.circle, isActive ? styles.activeCircle : styles.inactiveCircle]}>
                 <Text style={[styles.stepText, isActive && styles.activeStepText]}>{step}</Text>
               </View>
-
-              {/* Linha Conectora (não renderiza após o último passo) */}
-              {index < steps.length - 1 && (
-                <View style={styles.line} />
-              )}
             </React.Fragment>
           );
         })}
@@ -80,6 +74,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
+    marginHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
     // Pequena sombra para dar profundidade idêntica ao design
@@ -107,11 +102,5 @@ const styles = StyleSheet.create({
   },
   activeStepText: {
     fontSize: 16,
-  },
-  line: {
-    width: 8, // Comprimento da linha entre círculos (reduzido)
-    height: 2,
-    backgroundColor: '#733D14', // A linha mantém o tom castanho que une o fluxo
-    marginHorizontal: 4,
   },
 });

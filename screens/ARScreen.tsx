@@ -72,6 +72,7 @@ export default function ARScreen({ navigation, route }: any) {
   const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
   const [webViewInstanceKey, setWebViewInstanceKey] = React.useState(0);
+  const [showSwapControls, setShowSwapControls] = React.useState(false);
   //const [showWebView, setShowWebView] = React.useState(true);
   const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
 
@@ -184,6 +185,7 @@ export default function ARScreen({ navigation, route }: any) {
       setPopupOverrideMessage(null);
       overridePopupMessageRef.current = null;
       setPopupMode('help');
+      setShowSwapControls(false);
       shouldAutoOpenInitialPopupRef.current = true;
 
       if (route?.params) {
@@ -349,6 +351,14 @@ export default function ARScreen({ navigation, route }: any) {
     }
   };
 
+  const alternarSwapControls = () => {
+    setShowSwapControls((prev) => !prev);
+  };
+
+  const trocarImagemComSeta = () => {
+    enviarOrdemTrocarImagem();
+  };
+
   const consoleBridge = `(function(){
     try{
       function send(obj){ try{ window.ReactNativeWebView.postMessage(JSON.stringify(obj)); }catch(e){} }
@@ -448,9 +458,16 @@ export default function ARScreen({ navigation, route }: any) {
                 // === POPUP INICIAL DO MOCHO ===
                 <>
                   <Text style={styles.instructionText}>{renderBoldText(owlInitialMessage)}</Text>
-                  <Text style={styles.subInstructionText}>
-                    Caso não conheça ou não goste da refeição inidicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito
-                  </Text>
+                  <View style={styles.subInstructionRow}>
+                    <Text style={styles.subInstructionText}>
+                      Pode trocar de refeição neste butão
+                    </Text>
+                    <Image
+                      source={require('../assets/troca_imagem.png')}
+                      style={styles.subInstructionIcon}
+                      resizeMode="contain"
+                    />
+                  </View>
                 </>
               )}
             </View>
@@ -484,20 +501,53 @@ export default function ARScreen({ navigation, route }: any) {
         </View>
       </Modal>
 
+      {showSwapControls && (
+        <View style={styles.swapControlsOverlay} pointerEvents="box-none">
+          <View style={styles.swapControlsCard}>
+            <TouchableOpacity style={styles.swapArrowButton} onPress={trocarImagemComSeta} activeOpacity={0.8}>
+              <Icon name="chevron-left" size={34} color="#613512" />
+            </TouchableOpacity>
+
+            <View style={styles.swapImageWrap}>
+              <Image
+                source={require('../assets/troca_imagem.png')}
+                style={styles.swapImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.swapImageLabel}>Trocar imagem</Text>
+            </View>
+
+            <TouchableOpacity style={styles.swapArrowButton} onPress={trocarImagemComSeta} activeOpacity={0.8}>
+              <Icon name="chevron-right" size={34} color="#613512" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="home" size={32} color="#613512" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowNutritionModal(true)} disabled={!infoEnabled}>
-          <Icon name="information" size={32} color={infoEnabled ? '#613512' : '#C7B8AA'} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={enviarOrdemTrocarImagem}>
-          <View style={styles.iconStack}>
-            <Icon name="image" size={36} color="#e2ac77" style={styles.underIcon} />
-            <Icon name="swap-horizontal" size={32} color="#613512" style={styles.topIcon} />
-          </View>
-        </TouchableOpacity>
+        <View style={styles.navInner}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.navButton}>
+            <Icon name="home-outline" size={32} color="#613512" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowNutritionModal(true)} disabled={!infoEnabled} style={styles.navButton}>
+            <View style={styles.infoButtonWrap}>
+              <Icon name="information" size={32} color={infoEnabled ? '#613512' : '#C7B8AA'} />
+              {!infoEnabled && (
+                <Icon name="lock" size={22} color="#613512" style={styles.infoLockIcon} />
+              )}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={alternarSwapControls} style={styles.navButton}>
+            <View style={styles.iconStack}>
+              <Image
+                source={require('../assets/troca_imagem.png')}
+                style={[styles.topIcon, { width: 32, height: 32, position: 'relative', marginTop: 6 }]}
+                resizeMode="contain"
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Owl Help Button */}
@@ -616,11 +666,22 @@ const styles = StyleSheet.create({
     color: '#9C5325', 
   },
   subInstructionText: {
-    fontSize: 14,
-    color: '#8A705A',
+    fontSize: 15,
+    color: '#9C5325',
     textAlign: 'center',
-    marginTop: 12,
-    alignSelf: 'stretch',
+    fontWeight: 'bold',
+  },
+  subInstructionRow: {
+    marginTop: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  subInstructionIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 2,
   },
   instructionText: {
     fontSize: 16,
@@ -675,19 +736,43 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
-    height: 75,
+    height: 55,
     backgroundColor: '#ffffff',
     borderTopWidth: 1,
     borderColor: '#EBD9C6',
-    paddingBottom: 10,
+    paddingVertical: 10,
+  },
+  navInner: {
+    width: 370,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   iconStack: {
     width: 48,
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  navButton: {
+    width: 72,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+  },
+  infoButtonWrap: {
+    width: 32,
+    height: 32,
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  infoLockIcon: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
   },
   underIcon: {
     position: 'absolute',
@@ -704,10 +789,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: Platform.OS === 'android' ? 50 : 100,
     alignSelf: 'center',
-    backgroundColor: 'rgba(255, 248, 241, 0.95)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
     zIndex: 60,
     elevation: 10,
   },
@@ -725,7 +806,7 @@ const styles = StyleSheet.create({
   owlButton: {
     position: 'absolute',
     right: 5,
-    bottom: 65,
+    bottom: 45,
     width: 110,
     height: 110,
     zIndex: 80,
@@ -753,6 +834,55 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+  },
+  swapControlsOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 126,
+    alignItems: 'center',
+    zIndex: 120,
+    elevation: 20,
+  },
+  swapControlsCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(251, 225, 206, 0.96)',
+    borderRadius: 18,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#E8CBB6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.14,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  swapArrowButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    backgroundColor: '#FFF',
+    marginHorizontal: 6,
+  },
+  swapImageWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 92,
+  },
+  swapImage: {
+    width: 38,
+    height: 38,
+    marginBottom: 2,
+  },
+  swapImageLabel: {
+    fontSize: 11,
+    color: '#613512',
+    fontWeight: '700',
+    textAlign: 'center',
   },
   nutritionCard: {
     backgroundColor: '#FBE1CE',

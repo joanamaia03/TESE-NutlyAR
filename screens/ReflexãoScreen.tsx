@@ -132,7 +132,7 @@ export default function ReflexaoFinalScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0', // Fundo creme suave padrão da tua app
+    backgroundColor: '#FAF5F0', 
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
   scrollContent: {
@@ -145,19 +145,19 @@ const styles = StyleSheet.create({
   mainTitle: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#613512', // Castanho escuro oficial do cabeçalho
+    color: '#613512', 
     marginTop: 50,
     marginBottom: 50,
     textAlign: 'center',
   },
   instructions: {
-    fontSize: 15,
+    fontSize: 18,
     color: '#613512',
     textAlign: 'left',
     alignSelf: 'stretch',
     marginHorizontal: 12,
     marginBottom: 18,
-    lineHeight: 20,
+    lineHeight: 24,
   },
   inputSection: {
     width: '100%',
@@ -170,10 +170,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     minHeight: 280,
-    backgroundColor: '#FAF5F0', // Fundo interno transparente/creme suave
+    backgroundColor: '#FAF5F0', 
     borderWidth: 1.5,
-    borderColor: '#613512', // Contorno castanho fino idêntico ao do mockup
-    borderRadius: 24, // Cantos suavizados e arredondados
+    borderColor: '#E28A47', 
+    borderRadius: 24, 
     padding: 20,
     fontSize: 16,
     color: '#613512',
