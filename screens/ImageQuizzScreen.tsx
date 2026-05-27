@@ -528,12 +528,17 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
               <View style={styles.speechBubbleTriangle} />
 
               <View style={styles.speechBubble}>
-                <Text style={styles.instructionText}>{renderBoldText(owlPopupMessage)}</Text>
-                {popupMode !== 'override' && (
-                  <Text style={styles.subInstructionText}>
-                    Caso não conheça ou não goste da refeição inidicada, pode trocar de imagem após clicar na mesma e desbloquear o botão no canto inferior direito
-                  </Text>
-                )}
+                <Text style={styles.instructionText}>{renderBoldText(owlInitialMessage)}</Text>
+                  <View style={styles.subInstructionRow}>
+                    <Text style={styles.subInstructionText}>
+                      Pode trocar de refeição neste butão
+                    </Text>
+                    <Image
+                      source={require('../assets/troca_imagem.png')}
+                      style={styles.subInstructionIcon}
+                      resizeMode="contain"
+                    />
+                  </View>
               </View>
 
               <TouchableOpacity
@@ -570,21 +575,33 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
         </View>
       </Modal>
 
-      {/* Menubar Inferior unificada da tua App */}
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Icon name="home" size={32} color="#613512" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={abrirInformacaoDoPrato} disabled={!infoUnlocked}>
-          <Icon name="information" size={32} color={infoUnlocked ? '#613512' : '#C7B8AA'} />
-        </TouchableOpacity>
-            <TouchableOpacity onPress={enviarOrdemTrocarImagem}>
-                <View style={styles.iconStack}>
-                  <Icon name="image" size={36} color="#e2ac77" style={styles.underIcon} />
-                  <Icon name="swap-horizontal" size={32} color="#613512" style={styles.topIcon} />
-                </View>
-            </TouchableOpacity>
+        <View style={styles.navInner}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.navButton}>
+            <Icon name="home-outline" size={32} color="#613512" />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={abrirInformacaoDoPrato} disabled={!infoUnlocked} style={styles.navButton}>
+            <View style={styles.infoButtonWrap}>
+              <Icon name="information" size={32} color={infoUnlocked ? '#613512' : '#C7B8AA'} />
+              {!infoUnlocked && (
+                <Icon name="lock" size={22} color="#613512" style={styles.infoLockIcon} />
+              )}
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={enviarOrdemTrocarImagem} style={styles.navButton}>
+            <View style={styles.iconStack}>
+              <Image
+                source={require('../assets/troca_imagem.png')}
+                style={styles.swapIconImage}
+                resizeMode="contain"
+              />
+            </View>
+          </TouchableOpacity>
         </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -689,7 +706,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 75,
+    bottom: 55,
     backgroundColor: '#FBE1CE',
     paddingHorizontal: 28,
     paddingVertical: 28,
@@ -706,7 +723,7 @@ const styles = StyleSheet.create({
   owlContainer: {
     position: 'absolute',
     right: 10,
-    bottom: 65, 
+    bottom: 45, 
     zIndex: 99,
   },
   owlMascot: {
@@ -740,13 +757,6 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
     color: '#9C5325',
-  },
-  subInstructionText: {
-    fontSize: 14,
-    color: '#8A705A',
-    textAlign: 'center',
-    marginTop: 12,
-    alignSelf: 'stretch',
   },
   instructionText: {
     fontSize: 16,
@@ -820,8 +830,8 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#FBE1CE',
     borderRadius: 12,
-    paddingVertical: 22,
-    paddingHorizontal: 18,
+    paddingVertical: 18,
+    paddingHorizontal: 16,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -831,9 +841,9 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     color: '#613512',
-    fontSize: 18,
+    fontSize: 15,
     textAlign: 'center',
-    marginBottom: 18,
+    marginBottom: 14,
   },
   confirmBtnRow: {
     flexDirection: 'row',
@@ -842,17 +852,17 @@ const styles = StyleSheet.create({
   },
   modalActionButton: {
     backgroundColor: '#784115',
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-    minWidth: 90,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    minWidth: 64,
     alignItems: 'center',
-    marginHorizontal: 8,
+    marginHorizontal: 4,
   },
   modalActionText: {
     color: '#FFF',
     fontWeight: '700',
-    fontSize: 16,
+    fontSize: 12,
   },
   nutritionTitle: {
     fontSize: 22,
@@ -904,11 +914,31 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
-    height: 75,
+    height: 55,
     backgroundColor: '#ffffff',
-    paddingBottom: Platform.OS === 'ios' ? 15 : 10,
+    borderTopWidth: 1,
+    borderColor: '#EBD9C6',
+    paddingVertical: 10,
+  },
+  navInner: {
+    width: 370,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  navButton: {
+    width: 72,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  infoButtonWrap: {
+    width: 34,
+    height: 34,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconStack: {
     width: 48,
@@ -916,16 +946,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  underIcon: {
-    position: 'absolute',
-    zIndex: 1,
-    elevation: 1,
-    opacity: 0.85,
+  swapIconImage: {
+    width: 32,
+    height: 32,
   },
-  topIcon: {
+  infoLockIcon: {
     position: 'absolute',
-    zIndex: 2,
-    elevation: 2,
+    top: -8,
+    right: -8,
+  },
+  subInstructionText: {
+    fontSize: 15,
+    color: '#9C5325',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  subInstructionRow: {
+    marginTop: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  subInstructionIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 2,
   },
   disabledNavIcon: {
     opacity: 0.3,

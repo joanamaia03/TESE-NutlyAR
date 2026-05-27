@@ -46,6 +46,7 @@ export default function ImagineScreen({ route, navigation }: any) {
       if (sessionIdParam) {
         const qRef = doc(db, 'quiz_sessions', sessionIdParam);
         await updateDoc(qRef, { answers: arrayUnion(answerData) });
+        console.log(`Fatores guardados no grupo ${currentGroup}`);
       } else {
         const newDoc = await addDoc(collection(db, 'quiz_sessions'), { createdAt: serverTimestamp(), answers: [answerData] });
         // pass new session id forward

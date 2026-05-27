@@ -106,7 +106,6 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
       } else {
         await addDoc(collection(db, 'quiz_sessions'), { createdAt: serverTimestamp(), answers: [answerData] });
       }
-      console.log(`✅ Fatores guardados no grupo ${currentGroup}`);
     } catch (error) {
       console.error('Erro ao guardar fatores:', error);
       Alert.alert('Erro', 'Não foi possível guardar as respostas.');
@@ -152,12 +151,9 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
                   />
 
                   <TouchableOpacity style={styles.orderButtonInside} onPress={() => toggleOrderById(item.id)}>
-                    <MaterialIcons name="sort" size={18} color="#FFF" />
-                    {typeof item.order === 'number' ? (
-                      <View style={styles.orderBadge}>
-                        <Text style={styles.orderBadgeText}>{String(item.order)}</Text>
-                      </View>
-                    ) : null}
+                    <Text style={styles.orderButtonText}>
+                      {typeof item.order === 'number' ? String(item.order) : 'Ordenar'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -318,5 +314,10 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 22,
     fontWeight: 'bold',
+  },
+  orderButtonText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });
