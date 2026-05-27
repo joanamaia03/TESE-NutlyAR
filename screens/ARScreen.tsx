@@ -89,15 +89,28 @@ export default function ARScreen({ navigation, route }: any) {
 
   // ==================== NORMALIZE & NUTRITION ====================
   const normalizeAssetName = (value: string) => String(value).split('/').pop()?.toLowerCase() || '';
+  const removeExt = (value: string) => value.replace(/\.(png|jpg|jpeg)$/i, '');
 
   const currentNutrition = React.useMemo(() => {
     const nomeImagem = imagemAtiva?.nomeImagem || imagemSelecionada?.nomeImagem;
     if (!nomeImagem) return null;
 
     const normalized = normalizeAssetName(nomeImagem);
-   return NUTRITION_DATA.find(item => 
-      item.assetName === normalized || normalized.includes(item.key)
-    ) || null;
+    const normalizedNoExt = removeExt(normalized);
+
+    // 1) match exato por ficheiro (ex: hamburger2.png)
+    const byAssetName = NUTRITION_DATA.find(
+      (item) => normalizeAssetName(item.assetName) === normalized
+    );
+    if (byAssetName) return byAssetName;
+
+    // 2) match exato por chave sem extensão (ex: hamburger2)
+    const byKey = NUTRITION_DATA.find(
+      (item) => item.key.toLowerCase() === normalizedNoExt
+    );
+    if (byKey) return byKey;
+
+    return null;
   }, [imagemAtiva, imagemSelecionada]);
 
   const nutritionLabel = activeGroup >= 3 ? 'Sal' : 'Energia';

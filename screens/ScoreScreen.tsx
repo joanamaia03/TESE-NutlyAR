@@ -22,12 +22,12 @@ export default function ScoreScreen({ navigation }: any) {
   const [totalScore, setTotalScore] = useState(0);
   const [computedGroups, setComputedGroups] = useState<Record<number, any>>({});
 
-  // Respostas corretas mapeadas de acordo com as chaves reais do teu NUTRITION_DATA
-  const correctAnswers: Record<number, { image1: string; imagine: string; image2: string }> = {
-    1: { image1: 'hotdog.png', imagine: 'Não', image2: 'hotdog.png' },
-    2: { image1: 'rissois.png', imagine: 'Não', image2: 'rissois.png' },
-    3: { image1: 'azeitonas.png', imagine: 'Sim', image2: 'azeitonas.png' },
-    4: { image1: 'presunto.png', imagine: 'Não', image2: 'presunto.png' },
+  // Respostas corretas: inclui alternativa base + substituição.
+  const correctAnswers: Record<number, { image1: string[]; imagine: string; image2: string[] }> = {
+    1: { image1: ['hotdog.png', 'lombo.jpg'], imagine: 'Não', image2: ['hotdog.png', 'lombo.jpg'] },
+    2: { image1: ['rissois.png', 'croquete.jpg'], imagine: 'Não', image2: ['rissois.png', 'croquete.jpg'] },
+    3: { image1: ['azeitonas.png', 'chourico.jpg'], imagine: 'Sim', image2: ['azeitonas.png', 'chourico.jpg'] },
+    4: { image1: ['presunto.png', 'hotdog.jpg'], imagine: 'Não', image2: ['presunto.png', 'hotdog.jpg'] },
   };
 
   // Normaliza o nome do ficheiro (remove caminhos e extensões para comparar apenas o prato)
@@ -40,6 +40,12 @@ export default function ScoreScreen({ navigation }: any) {
   const normalizeImagineOption = (value: string | null | undefined) => {
     if (!value) return '';
     return String(value).trim().toLowerCase();
+  };
+
+  const isCorrectMeal = (selected: string, accepted: string[]) => {
+    if (!selected) return false;
+    const selectedNorm = cleanMealName(selected);
+    return accepted.some((item) => cleanMealName(item) === selectedNorm);
   };
 
   useEffect(() => {
@@ -75,7 +81,7 @@ export default function ScoreScreen({ navigation }: any) {
 
             // 1. Extrai a Escolha AR Inicial
             const escolhaP1 = cleanMealName(answerP1?.selectedImage);
-            const p1Correct = escolhaP1 !== '' && escolhaP1 === cleanMealName(gabarito.image1);
+            const p1Correct = isCorrectMeal(escolhaP1, gabarito.image1);
             const p1Points = p1Correct ? MAX_POINTS : 0;
 
             // 2. Extrai a Resposta "Imagine" (Pergunta 2)
@@ -85,7 +91,7 @@ export default function ScoreScreen({ navigation }: any) {
 
             // 3. Extrai a Escolha AR Final
             const escolhaP3 = cleanMealName(answerP3?.selectedImage);
-            const p3Correct = escolhaP3 !== '' && escolhaP3 === cleanMealName(gabarito.image2);
+            const p3Correct = isCorrectMeal(escolhaP3, gabarito.image2);
             const p3Points = p3Correct ? MAX_POINTS : 0;
 
             const totalDoGrupo = p1Points + p2Points + p3Points;
