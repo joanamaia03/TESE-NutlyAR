@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';  
 
@@ -45,8 +45,8 @@ const NUTRITION_DATA: NutritionItem[] = [
   { key: 'torrada', assetName: 'torrada.png', energia: '1.1g/100g', porcao: '65g' },
   { key: 'chourico', assetName: 'chourico.png', energia: '6.6g/100g', porcao: '42g' },
   { key: 'batatafrita', assetName: 'batatafrita.png', energia: '1.2g/100g', porcao: '45g' },
-  { key: 'hamburger', assetName: 'hamburger.png', energia: '1.0g/100g', porcao: '217g' },
-  { key: 'presunto', assetName: 'presunto.png', energia: '3.4g/100g', porcao: '123g' },
+  { key: 'hamburger2', assetName: 'hamburger2.png', energia: '1.0g/100g', porcao: '217g' },
+  { key: 'presunto2', assetName: 'presunto2.png', energia: '3.4g/100g', porcao: '123g' },
   { key: 'caldoverde', assetName: 'caldoverde.png', energia: '0.7g/100g', porcao: '237g' },
   { key: 'sandespanado', assetName: 'sandespanado.png', energia: '1.0g/100g', porcao: '203g' },
   { key: 'hotdog', assetName: 'hotdog.png', energia: '2.0g/100g', porcao: '206g' },
@@ -56,6 +56,7 @@ const NUTRITION_DATA: NutritionItem[] = [
 
 export default function ARScreen({ navigation, route }: any) {
   const { saveAnswer, currentGroup, nextGroup } = useNutlySession();
+  const isFocused = useIsFocused();
   const isFinalGroupStep = route?.params?.finalGroupStep === true;
   const breadcrumbStep = route?.params?.groupNumber ?? currentGroup ?? 1;
   const activeGroup = route?.params?.groupNumber ?? currentGroup ?? 1;
@@ -70,6 +71,7 @@ export default function ARScreen({ navigation, route }: any) {
   const [popupMode, setPopupMode] = React.useState<'help' | 'selection' | 'override'>('help');
   const [infoEnabled, setInfoEnabled] = React.useState<boolean>(false);
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
+  const [webViewInstanceKey, setWebViewInstanceKey] = React.useState(0);
   //const [showWebView, setShowWebView] = React.useState(true);
   const [imagemAtiva, setImagemAtiva] = React.useState<{ targetIndex?: number; nomeImagem?: string; fase?: number } | null>(null);
 
@@ -99,6 +101,10 @@ export default function ARScreen({ navigation, route }: any) {
   }, [imagemAtiva, imagemSelecionada]);
 
   const nutritionLabel = activeGroup >= 3 ? 'Sal' : 'Energia';
+  const webArUri = React.useMemo(
+    () => `${WEB_AR_URL}${activeGroup}&t=${webViewInstanceKey}`,
+    [activeGroup, webViewInstanceKey]
+  );
 
   // ==================== GUARDAR RESPOSTA (Nova estrutura) ====================
   const guardarRespostaAR = React.useCallback(async (payload: any) => {
@@ -157,6 +163,8 @@ export default function ARScreen({ navigation, route }: any) {
   // ==================== USEFOCUS EFFECT ====================
   useFocusEffect(
     React.useCallback(() => {
+      // Recria o WebView em cada entrada para evitar camera stream preso no 2o acesso.
+      setWebViewInstanceKey(prev => prev + 1);
       setInfoEnabled(false);
       setImagemAtiva(null);
       setImagemSelecionada(null);
@@ -222,6 +230,20 @@ export default function ARScreen({ navigation, route }: any) {
       checkCameraPermission();
 
       return () => {
+        // Tenta libertar o stream da câmara quando sai do ecrã.
+        try {
+          webviewRef.current?.injectJavaScript(`
+            (function(){
+              try{
+                var v = document.querySelector('video');
+                if (v && v.srcObject && v.srcObject.getTracks) {
+                  v.srcObject.getTracks().forEach(function(t){ try{ t.stop(); }catch(e){} });
+                }
+              }catch(e){}
+            })();
+            true;
+          `);
+        } catch (_) {}
         // Cleanup
         overridePopupMessageRef.current = null;
       };
@@ -369,27 +391,30 @@ export default function ARScreen({ navigation, route }: any) {
         <ProgressBreadcrumb currentStep={breadcrumbStep} />
       </View>
 
-      <WebView
-        ref={webviewRef}
-        source={{ uri: WEB_AR_URL }}
-        injectedJavaScript={consoleBridge}
-        style={styles.webview}
-        javaScriptEnabled
-        domStorageEnabled
-        allowsInlineMediaPlayback
-        mediaPlaybackRequiresUserAction={false}
-        mixedContentMode="always"
-        originWhitelist={['*']}
-        setSupportMultipleWindows={false}
-        startInLoadingState
-        renderLoading={() => (
-          <View style={styles.loading}>
-            <ActivityIndicator size="large" color="#fff" />
-          </View>
-        )}
-        onMessage={onMessage}
-        onPermissionRequest={(event: { grant: (arg0: any) => any; resources: any; }) => event.grant(event.resources)}
-      />
+      {isFocused && (
+        <WebView
+          key={`ar-${activeGroup}-${webViewInstanceKey}`}
+          ref={webviewRef}
+          source={{ uri: webArUri }}
+          injectedJavaScript={consoleBridge}
+          style={styles.webview}
+          javaScriptEnabled
+          domStorageEnabled
+          allowsInlineMediaPlayback
+          mediaPlaybackRequiresUserAction={false}
+          mixedContentMode="always"
+          originWhitelist={['*']}
+          setSupportMultipleWindows={false}
+          startInLoadingState
+          renderLoading={() => (
+            <View style={styles.loading}>
+              <ActivityIndicator size="large" color="#fff" />
+            </View>
+          )}
+          onMessage={onMessage}
+          onPermissionRequest={(event: { grant: (arg0: any) => any; resources: any; }) => event.grant(event.resources)}
+        />
+      )}
 
       {/* Modal Principal */}
       {/* === POPUP DO MOCHO (Inicial + Seleção) === */}

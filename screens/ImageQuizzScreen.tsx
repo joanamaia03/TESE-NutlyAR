@@ -61,26 +61,16 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   const perguntaAtual = params.perguntaAtual || 1; 
   
   const currentGroupToShow = params.groupNumber ?? currentGroup ?? 1;
+  const [screenRefreshing, setScreenRefreshing] = React.useState(false);
 
   const [showNutritionModal, setShowNutritionModal] = React.useState(false);
   const [infoUnlocked, setInfoUnlocked] = React.useState(false);
   const [showSwapControls, setShowSwapControls] = React.useState(false);
   const [showSwapPrompt, setShowSwapPrompt] = React.useState(false);
 
-  const [displayImages, setDisplayImages] = React.useState(
-    IMAGES_BY_GROUP[currentGroupToShow] || IMAGES_BY_GROUP[1]
-  );
-
-  React.useEffect(() => {
-    const groupToLoad = params.groupNumber ?? currentGroup ?? 1;
-    console.log(`Carregando imagens do Grupo ${groupToLoad}`);
-
-    const newImages = IMAGES_BY_GROUP[groupToLoad] || IMAGES_BY_GROUP[1];
-    setDisplayImages(newImages);           // ← Força as imagens originais
-    setPratoSelecionado(null);             // Limpa seleção
-    setShowSwapControls(false);            // Desativa swap
-    setShowSwapPrompt(false);
-  }, [params.groupNumber, currentGroup]);
+  const [displayImages, setDisplayImages] = React.useState(() => {
+    return IMAGES_BY_GROUP[params.groupNumber ?? currentGroup ?? 1] || IMAGES_BY_GROUP[1];
+  });
 
   // Popup da coruja (inicial + seleção)
   const [showPopup, setShowPopup] = React.useState(false);
@@ -98,7 +88,19 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     : popupOverrideMessage;
   useFocusEffect(
     React.useCallback(() => {
+      setScreenRefreshing(true);
+      // 1. Força o carregamento correto das imagens do grupo atual ao ganhar foco
+      const groupToLoad = route?.params?.groupNumber ?? currentGroup ?? 1;
+      console.log(`Foco Ativo: A garantir imagens do Grupo ${groupToLoad}`);
+      
+      const newImages = IMAGES_BY_GROUP[groupToLoad] || IMAGES_BY_GROUP[1];
+      setDisplayImages(newImages);
+      
+      // Reset de controlos locais de seleção
+      setPratoSelecionado(null);
       setImagemSelecionada(null);
+      setShowSwapControls(false);
+      setShowSwapPrompt(false);
       setPopupOverrideMessage(null);
       setPopupMode('help');
       setShowPopup(false);
@@ -108,9 +110,6 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
       // Detecta se chegámos aqui depois da última pergunta do grupo
       const isFinalGroupStep = route?.params?.finalGroupStep === true;
       if (isFinalGroupStep) {
-        // Do not auto-advance here. We want the user to answer the image question
-        // on this screen (with popup override and info enabled) and only after
-        // they confirm the image selection advance to Transition2.
         setInfoUnlocked(true);
         const { popupOverride } = route?.params || {};
         if (typeof popupOverride === 'string' && popupOverride.length > 0) {
@@ -121,7 +120,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
         } else {
           shouldAutoOpenInitialPopupRef.current = true;
         }
-        // ensure images for the asked question are loaded
+        
         const { perguntaProxima } = route?.params || {};
         if (perguntaProxima) {
           setDisplayImages(IMAGES_BY_GROUP[perguntaProxima] || IMAGES_BY_GROUP[1]);
@@ -148,6 +147,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
         setPopupMode('help');
         setShowPopup(true);
       }
+      setTimeout(() => setScreenRefreshing(false), 50);
       return () => {};
     }, [route?.params?.enableInfo, route?.params?.popupOverride, route?.params?.perguntaProxima, perguntaAtual])
   );
@@ -194,7 +194,8 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     setDisplayImages((prev) => {
       if (!prev || prev.length === 0) return prev;
 
-      const originalItem = IMAGES_BY_GROUP[currentGroupToShow]?.[index] || IMAGES_BY_GROUP[1]?.[index];
+      const originalGroupList = IMAGES_BY_GROUP[currentGroupToShow] || IMAGES_BY_GROUP[1];
+      const originalItem = originalGroupList[index];
       if (!originalItem) return prev;
 
       const next = [...prev];
@@ -322,7 +323,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} key={`refresh-group-${currentGroupToShow}`}>
       {/* Container Superior para o Breadcrumb idêntico ao da imagem */}
       <View style={styles.breadcrumbWrapper}>
         <ProgressBreadcrumb currentStep={route?.params?.groupNumber ?? currentGroup} />
