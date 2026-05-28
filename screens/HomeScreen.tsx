@@ -53,12 +53,51 @@ export default function HomeScreen({ navigation }: any) {
           const demograficos = userData.dadosSociodemograficos || {};
 
           setGenero(demograficos.genero || '');
-          // try to use explicit idade if available; otherwise keep dataNascimento raw
-          const rawIdade = demograficos.idade || '';
+          // try to use explicit `idade` if available; otherwise derive interval from `dataNascimento`
+          const rawIdade = demograficos.idade;
           if (rawIdade) {
             setIdade(rawIdade);
           } else if (demograficos.dataNascimento) {
-            setAnoNascimento(demograficos.dataNascimento || '');
+            const dob = demograficos.dataNascimento;
+            // keep original value for potential editing
+            setAnoNascimento(dob || '');
+
+            try {
+              let birth: Date | null = null;
+              if (typeof dob === 'number') {
+                birth = new Date(dob);
+              } else if (typeof dob === 'string') {
+                // try ISO parse first
+                const parsed = Date.parse(dob);
+                if (!Number.isNaN(parsed)) birth = new Date(parsed);
+                else {
+                  // try common formats like YYYY-MM-DD
+                  const parts = dob.split('-');
+                  if (parts.length >= 3) {
+                    const y = Number(parts[0]);
+                    const m = Number(parts[1]) - 1;
+                    const d = Number(parts[2]);
+                    if (!Number.isNaN(y)) birth = new Date(y, m, d);
+                  }
+                }
+              }
+
+              if (birth) {
+                const now = new Date();
+                let age = now.getFullYear() - birth.getFullYear();
+                const m = now.getMonth() - birth.getMonth();
+                if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age -= 1;
+
+                let ageKey = '';
+                if (age >= 18 && age <= 29) ageKey = '18-29';
+                else if (age >= 30 && age <= 59) ageKey = '30-59';
+                else if (age >= 60) ageKey = '60-120';
+
+                if (ageKey) setIdade(ageKey);
+              }
+            } catch (e) {
+              console.warn('Não foi possível interpretar dataNascimento para idade:', dob, e);
+            }
           }
           setEscolaridade(demograficos.grauEscolaridade || '');
           setMunicipio(demograficos.municipioResidencia || '');

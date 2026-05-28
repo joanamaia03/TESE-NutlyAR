@@ -115,12 +115,12 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   const [popupOverrideMessage, setPopupOverrideMessage] = React.useState<string | null>(null);
   const [pratoSelecionado, setPratoSelecionado] = React.useState<{ id: number; source: any; name: string } | null>(null);
   const shouldAutoOpenInitialPopupRef = React.useRef(true);
-  const isSaltGroup = Number(currentGroupToShow ?? 1) === 2;
+  const isSaltGroup = Number(currentGroupToShow ?? 1) === 2 || Number(currentGroupToShow ?? 1) === 3 || Number(currentGroupToShow ?? 1) === 4;
   const owlInitialMessage = isSaltGroup
     ? 'Qual destas opções considera ter **mais sal**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!'
     : 'Qual destas opções considera ter **mais energia (calorias)**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!';
   const owlOverrideMessage = isSaltGroup
-    ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.'
+    ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Selecione **apenas uma** das opções.\n\nBotão de informação'
     : popupOverrideMessage;
   useFocusEffect(
     React.useCallback(() => {
@@ -333,6 +333,13 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
     ? (owlOverrideMessage || owlInitialMessage)
     : owlInitialMessage;
 
+  // Detect optional footer marker and split main text + footer
+  const FOOTER_KEY = '\n\nBotão de informação';
+  const popupTextStr = typeof owlPopupMessage === 'string' ? owlPopupMessage : String(owlPopupMessage || '');
+  const footerIndex = popupTextStr.indexOf(FOOTER_KEY);
+  const hasFooter = footerIndex >= 0;
+  const popupMainText = hasFooter ? popupTextStr.slice(0, footerIndex) : popupTextStr;
+
   const renderBoldText = (text: string) => {
     if (!text) return null;
     const parts = String(text).split(/(\*\*.*?\*\*)/g);
@@ -359,7 +366,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   };
 
   const selectedDishInfo = DISH_INFO[pratoSelecionado?.name ?? displayImages[0]?.name] ?? null;
-  const showSalt = Number(currentGroupToShow ?? 1) === 2;
+  const showSalt = Number(currentGroupToShow ?? 1) === 2 || Number(currentGroupToShow ?? 1) === 3 || Number(currentGroupToShow ?? 1) === 4;
 
   const confirmarImagemSelecionada = () => {
     if (!pratoSelecionado) return;
@@ -528,7 +535,16 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
               <View style={styles.speechBubbleTriangle} />
 
               <View style={styles.speechBubble}>
-                <Text style={styles.instructionText}>{renderBoldText(owlInitialMessage)}</Text>
+                <Text style={styles.instructionText}>{renderBoldText(popupMainText)}</Text>
+                {hasFooter && (
+                  <View style={styles.overrideFooterRow}>
+                    <Icon name="information" size={26} color="#613512" style={styles.overrideFooterIcon} />
+                    <Text style={styles.overrideFooterText}>Botão de informação.</Text>
+                  </View>
+                )}
+
+                {/* Only show the swap hint on the initial/help popup, not on override popups */}
+                {popupMode !== 'override' && (
                   <View style={styles.subInstructionRow}>
                     <Text style={styles.subInstructionText}>
                       Pode trocar de refeição neste butão
@@ -539,6 +555,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
                       resizeMode="contain"
                     />
                   </View>
+                )}
               </View>
 
               <TouchableOpacity
@@ -971,7 +988,21 @@ const styles = StyleSheet.create({
   subInstructionIcon: {
     width: 30,
     height: 30,
-    marginLeft: 2,
+    marginLeft: 10,
+  },
+  overrideFooterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  overrideFooterIcon: {
+    marginRight: 8,
+  },
+  overrideFooterText: {
+    color: '#9C5325',
+    fontSize: 15,
+    fontWeight: '700',
   },
   disabledNavIcon: {
     opacity: 0.3,

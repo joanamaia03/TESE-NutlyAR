@@ -79,13 +79,17 @@ export default function ARScreen({ navigation, route }: any) {
   const processandoCliqueRef = React.useRef<boolean>(false);
   const overridePopupMessageRef = React.useRef<string | null>(null);
   const shouldAutoOpenInitialPopupRef = React.useRef(true);
-  const isSaltGroup = activeGroup >= 3;
+  const isSaltGroup = activeGroup === 3 || activeGroup === 4;
   const owlInitialMessage = isSaltGroup
     ? 'Qual destas opções considera ter **mais sal**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!'
     : 'Qual destas opções considera ter **mais energia (calorias)**, considerando exatamente a quantidade apresentada. Selecione **apenas uma** das opções clicando na refeição!';
-  const owlOverrideMessage = isSaltGroup
-    ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.'
-    : popupOverrideMessage;
+  // Prefer any explicit popupOverride passed via navigation; otherwise fall back
+  // to the group-specific default (for group 2/3 we show the 'sal' message).
+  const owlOverrideMessage = popupOverrideMessage ?? (
+    isSaltGroup
+      ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Selecione **apenas uma** das opções.\n\nBotão de informação'
+      : null
+  );
   
 
   // ==================== NORMALIZE & NUTRITION ====================
@@ -114,7 +118,7 @@ export default function ARScreen({ navigation, route }: any) {
     return null;
   }, [imagemAtiva, imagemSelecionada]);
 
-  const nutritionLabel = activeGroup >= 3 ? 'Sal' : 'Energia';
+  const nutritionLabel = activeGroup === 3 || activeGroup === 4 ? 'Sal' : 'Energia';
   const webArUri = React.useMemo(
     () => `${WEB_AR_URL}${activeGroup}&t=${webViewInstanceKey}`,
     [activeGroup, webViewInstanceKey]
@@ -453,7 +457,24 @@ export default function ARScreen({ navigation, route }: any) {
                   Selecionou a refeição. Tem a certeza de que quer <Text style={styles.boldText}>confirmar esta opção</Text> para a pergunta {perguntaAtual}?
                 </Text>
               ) : popupMode === 'override' && owlOverrideMessage ? (
-                <Text style={styles.overrideInstructionText}>{renderBoldText(owlOverrideMessage)}</Text>
+                (() => {
+                  const FOOTER_KEY = '\n\nBotão de informação';
+                  const popupTextStr = typeof owlOverrideMessage === 'string' ? owlOverrideMessage : String(owlOverrideMessage || '');
+                  const footerIndex = popupTextStr.indexOf(FOOTER_KEY);
+                  const hasFooter = footerIndex >= 0;
+                  const popupMainText = hasFooter ? popupTextStr.slice(0, footerIndex) : popupTextStr;
+                  return (
+                    <>
+                      <Text style={styles.overrideInstructionText}>{renderBoldText(popupMainText)}</Text>
+                      {hasFooter && (
+                        <View style={styles.overrideFooterRow}>
+                          <Icon name="information" size={26} color="#613512" style={styles.overrideFooterIcon} />
+                          <Text style={styles.overrideFooterText}>Botão de informação</Text>
+                        </View>
+                      )}
+                    </>
+                  );
+                })()
               ) : (
                 // === POPUP INICIAL DO MOCHO ===
                 <>
@@ -681,7 +702,7 @@ export const styles = StyleSheet.create({
   subInstructionIcon: {
     width: 30,
     height: 30,
-    marginLeft: 2,
+    marginLeft: 10,
   },
   instructionText: {
     fontSize: 16,
@@ -701,6 +722,20 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#9C5325',
     fontSize: 16,
+  },
+  overrideFooterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  overrideFooterIcon: {
+    marginRight: 8,
+  },
+  overrideFooterText: {
+    color: '#9C5325',
+    fontSize: 15,
+    fontWeight: '700',
   },
   checkButton: {
     backgroundColor: '#784115', 

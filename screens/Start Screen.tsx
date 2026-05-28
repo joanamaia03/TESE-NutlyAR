@@ -1,6 +1,6 @@
 const descriptionParagraphs = [
   "Este projeto pretende desenvolver uma ferramenta de avaliação dos conhecimentos da população sobre alimentação e nutrição.",
-  "Neste sentido, gostaríamos de convidá-lo a participar neste projeto em que está previsto um conjunto de questionários com e sem realidade aumentada no qual se pretendo saber se reconhecem alguns alimentos e se os costumam consumir frequentemente.",
+  "Neste sentido, gostaríamos de convidá-lo a participar neste projeto em que está previsto um conjunto de questionários com e sem realidade aumentada no qual se pretende saber se reconhecem alguns alimentos e se os costumam consumir frequentemente.",
 ];
 
 import React from 'react';

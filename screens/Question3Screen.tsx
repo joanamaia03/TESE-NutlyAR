@@ -73,8 +73,21 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
   };
 
   const handleSeguinte = async () => {
-    if (selectedItems.length === 0) {
+    const filledItems = items.filter((item) => item.text.trim().length > 0);
+
+    if (filledItems.length === 0) {
       Alert.alert('Aviso', 'Por favor, preencha pelo menos um fator antes de continuar.');
+      return;
+    }
+
+    if (
+      selectedItems.length > 1 && 
+      selectedItems.some((item) => typeof item.order !== 'number')
+    ) {
+      Alert.alert(
+        'Aviso', 
+        'Se escreveu mais do que 1 fator, por favor ordene-os clicando no botão de ordenação ao lado de cada comentário antes de continuar.'
+      );
       return;
     }
 
@@ -135,7 +148,13 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
                     onChangeText={(text) => {
                       setItems((prev) => prev.map((current) => (current.id === item.id ? { ...current, text } : current)));
                     }}
-                    style={[styles.inputReason, styles.optionInput]}
+                    style={[
+                      styles.inputReason,
+                      styles.optionInput,
+                      !item.text && styles.inputPlaceholderText,
+                    ]}
+                    placeholder="Forneça um comentário"
+                    placeholderTextColor="#C7B8AA"
                     multiline
                   />
 
@@ -241,6 +260,10 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 10,
     paddingRight: 76,
+  },
+
+  inputPlaceholderText: {
+    fontWeight: '400',
   },
   footerNote: {
     fontSize: 13,

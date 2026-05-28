@@ -66,6 +66,8 @@ export default function ReasonScreen({ route, navigation }: any) {
                     value={values[index]}
                     onChangeText={setters[index]}
                     style={styles.inputReason}
+                    placeholder="Escreva o motivo"
+                    placeholderTextColor="#C7B8AA"
                     multiline
                   />
                 </View>

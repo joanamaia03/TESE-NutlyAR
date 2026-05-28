@@ -11,10 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
-import { MaterialIcons } from '@expo/vector-icons';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { db } from '../src/firebase';
-import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 type FactorItem = {
   id: number;
@@ -76,8 +73,21 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
   };
 
   const handleSeguinte = async () => {
-    if (selectedItems.length === 0) {
+    const filledItems = items.filter((item) => item.text.trim().length > 0);
+
+    if (filledItems.length === 0) {
       Alert.alert('Aviso', 'Por favor, preencha pelo menos um fator antes de continuar.');
+      return;
+    }
+
+    if (
+      selectedItems.length > 1 && 
+      selectedItems.some((item) => typeof item.order !== 'number')
+    ) {
+      Alert.alert(
+        'Aviso', 
+        'Se escreveu mais do que 1 fator, por favor ordene-os clicando no botão de ordenação ao lado de cada comentário antes de continuar.'
+      );
       return;
     }
 
@@ -99,23 +109,15 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-      const sessionIdParam = route.params?.sessionId;
-      if (sessionIdParam) {
-        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
-        await updateDoc(qRef, { answers: arrayUnion(answerData) });
-      } else {
-        await addDoc(collection(db, 'quiz_sessions'), { createdAt: serverTimestamp(), answers: [answerData] });
-      }
+
+      navigation.navigate('Image4Screen', {
+        perguntaAtual,
+        groupNumber: currentGroup,
+      });
     } catch (error) {
       console.error('Erro ao guardar fatores:', error);
       Alert.alert('Erro', 'Não foi possível guardar as respostas.');
     }
-
-    navigation.navigate('Image4Screen', {
-      perguntaAtual,
-      groupNumber: currentGroup,
-      sessionId: route.params?.sessionId,
-    });
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -146,7 +148,13 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
                     onChangeText={(text) => {
                       setItems((prev) => prev.map((current) => (current.id === item.id ? { ...current, text } : current)));
                     }}
-                    style={[styles.inputReason, styles.optionInput]}
+                    style={[
+                      styles.inputReason,
+                      styles.optionInput,
+                      !item.text && styles.inputPlaceholderText,
+                    ]}
+                    placeholder="Forneça um comentário"
+                    placeholderTextColor="#C7B8AA"
                     multiline
                   />
 
@@ -175,54 +183,54 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAF5F0',
-    paddingTop: Platform.OS === 'android' ? 35 : 10,
+    paddingTop: Platform.OS === 'android' ? 24 : 8,
   },
   breadcrumbContainer: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 7,
   },
   content: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 0,
+    paddingHorizontal: 22,
+    paddingTop: 4,
     paddingBottom: 16,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     color: '#613512',
     fontWeight: 'bold',
     textAlign: 'center',
-    lineHeight: 36,
-    marginBottom: 20,
-    marginTop: 20,
+    lineHeight: 33,
+    marginBottom: 18,
+    marginTop: 14,
   },
   instructions: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#613512',
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 20,
     opacity: 0.9,
-    marginBottom: 25,
+    marginBottom: 22,
   },
   optionsContainer: {
     width: '100%',
-    gap: 10,
+    gap: 12,
   },
   buttonWrapper: {
     width: '100%',
   },
   factorLabel: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#613512',
     fontWeight: '600',
     marginBottom: 6,
-    paddingLeft: 12,
+    paddingLeft: 10,
   },
   optionRowInner: {
     flexDirection: 'row',
@@ -233,7 +241,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flex: 1,
     position: 'relative',
-    minHeight: 44,
+    minHeight: 46,
     justifyContent: 'center',
   },
   inputReason: {
@@ -242,31 +250,36 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E28A47',
     borderRadius: 12,
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     color: '#613512',
   },
   optionInput: {
-    color: '#613512',
+    color: '#844d25',
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 10,
-    paddingRight: 80,
+    paddingRight: 76,
+  },
+
+  inputPlaceholderText: {
+    fontWeight: '400',
   },
   footerNote: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#613512',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 18,
     opacity: 0.85,
-    marginTop: 25,
-    paddingHorizontal: 10,
+    marginTop: 22,
+    paddingHorizontal: 8,
   },
   orderButtonInside: {
     position: 'absolute',
-    right: 10,
-    top: 8,
+    right: 9,
+    top: 6,
     paddingVertical: 6,
-    paddingHorizontal: 10,
+    paddingHorizontal: 9,
     backgroundColor: '#A15B2A',
     borderRadius: 8,
     alignItems: 'center',
@@ -274,25 +287,13 @@ const styles = StyleSheet.create({
     zIndex: 20,
     elevation: 6,
   },
-  orderBadge: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    backgroundColor: '#613512',
-    borderRadius: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    minWidth: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  orderBadgeText: {
+  orderButtonText: {
     color: '#FFF',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
   },
   footer: {
-    paddingBottom: 32,
+    paddingBottom: 24,
     alignItems: 'center',
     backgroundColor: '#FAF5F0',
     paddingTop: 10,
@@ -300,9 +301,9 @@ const styles = StyleSheet.create({
   nextButton: {
     backgroundColor: '#784115',
     width: '60%',
-    maxWidth: 190,
-    paddingVertical: 14,
-    borderRadius: 22,
+    maxWidth: 185,
+    paddingVertical: 13,
+    borderRadius: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -312,12 +313,7 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     color: '#FFF',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-  },
-  orderButtonText: {
-    color: '#FFF',
-    fontSize: 12,
-    fontWeight: '700',
   },
 });

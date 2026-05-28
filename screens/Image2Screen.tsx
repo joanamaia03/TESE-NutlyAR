@@ -77,6 +77,8 @@ export default function ReasonScreen({ route, navigation }: any) {
                     value={values[index]}
                     onChangeText={setters[index]}
                     style={styles.inputReason}
+                    placeholder="Escreva o motivo"
+                    placeholderTextColor="#C7B8AA"
                     multiline
                   />
                 </View>
@@ -186,12 +188,12 @@ const styles = StyleSheet.create({
   inputReason: { width: '100%', minHeight: 52, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#E28A47', borderRadius: 12, paddingVertical: 12, paddingLeft: 34, paddingRight: 10, color: '#613512' },
   
   footerNote: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#6B3E1F',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 18,
     opacity: 0.85,
-    marginTop: 25,
+    marginTop: 16,
     paddingHorizontal: 10,
   },
   footer: {

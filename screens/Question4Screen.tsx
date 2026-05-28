@@ -20,6 +20,7 @@ export default function ImagineScreen({ route, navigation }: any) {
   const { saveAnswer, currentGroup } = useNutlySession();
   const { perguntaAtual = 4, groupNumber } = route.params || {};
   const breadcrumbStep = groupNumber ?? currentGroup ?? 1;
+  const isSaltGroup = (groupNumber ?? currentGroup ?? 1) === 3 || (groupNumber ?? currentGroup ?? 1) === 4;
 
   const [opcaoSelecionada, setOpcaoSelecionada] = useState<string | null>(null);
   const [porqueTexto, setPorqueTexto] = useState('');
@@ -50,7 +51,9 @@ export default function ImagineScreen({ route, navigation }: any) {
       perguntaProxima: 1,
       enableInfo: true,
       finalGroupStep: true,
-      popupOverride: 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.',
+      popupOverride: isSaltGroup
+          ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Selecione **apenas uma** das opções.\n\nBotão de informação'
+          : 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Selecione **apenas uma** das opções.\n\nBotão de informação',
       sessionId: route.params?.sessionId,
     });
   };
@@ -66,7 +69,8 @@ export default function ImagineScreen({ route, navigation }: any) {
 
           <View style={styles.questionContainer}>
             <Text style={styles.mainQuestion}>
-              Imagine se este <Text style={styles.boldText}>alimento que escolheu</Text> tivesse apenas <Text style={styles.boldText}>metade</Text> da quantidade apresentada. {'\n'}{'\n'}Continuaria a ser a opção com <Text style={styles.boldText}>mais energia</Text> (calorias)?
+              Imagine se este <Text style={styles.boldText}>alimento que escolheu</Text> tivesse apenas <Text style={styles.boldText}>metade</Text> da quantidade apresentada. {'\n'}{'\n'}
+              Continuaria a ser a opção com <Text style={styles.boldText}>{isSaltGroup ? 'mais sal' : 'mais energia'}</Text> {isSaltGroup ? '(sal)' : '(calorias)'}?
             </Text>
           </View>
 

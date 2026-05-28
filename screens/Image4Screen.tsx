@@ -13,8 +13,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';
-import { db } from '../src/firebase';
-import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 
 const opcoes = ['Sim', 'Não'];
 
@@ -22,9 +20,11 @@ export default function ImagineScreen({ route, navigation }: any) {
   const { saveAnswer, currentGroup } = useNutlySession();
   const { perguntaAtual = 4, groupNumber } = route.params || {};
   const breadcrumbStep = groupNumber ?? currentGroup ?? 1;
+  const isSaltGroup = (groupNumber ?? currentGroup ?? 1) === 2 || (groupNumber ?? currentGroup ?? 1) === 3 || (groupNumber ?? currentGroup ?? 1) === 4;
 
   const [opcaoSelecionada, setOpcaoSelecionada] = useState<string | null>(null);
   const [porqueTexto, setPorqueTexto] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSeguinte = async () => {
     if (!opcaoSelecionada || !porqueTexto.trim()) {
@@ -41,17 +41,7 @@ export default function ImagineScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-
-      const sessionIdParam = route.params?.sessionId;
-      if (sessionIdParam) {
-        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
-        await updateDoc(qRef, { answers: arrayUnion(answerData) });
-        console.log(`Fatores guardados no grupo ${currentGroup}`);
-      } else {
-        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { createdAt: serverTimestamp(), answers: [answerData] });
-        // pass new session id forward
-        route.params = { ...(route.params || {}), sessionId: newDoc.id };
-      }
+      
     } catch (error) {
       console.error(error);
     }
@@ -61,7 +51,9 @@ export default function ImagineScreen({ route, navigation }: any) {
       perguntaProxima: 1,
       enableInfo: true,
       finalGroupStep: true,
-      popupOverride: 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Pode fazer uma estimativa, **sem usar calculadora**. Selecione **apenas uma** das opções.',
+      popupOverride: isSaltGroup
+          ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Selecione **apenas uma** das opções.\n\nBotão de informação'
+          : 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Selecione **apenas uma** das opções.\n\nBotão de informação',
       sessionId: route.params?.sessionId,
     });
   };
@@ -69,14 +61,16 @@ export default function ImagineScreen({ route, navigation }: any) {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+        <View style={styles.breadcrumbContainer}>
+          <ProgressBreadcrumb currentStep={breadcrumbStep} />
+        </View>
+
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          <View style={styles.breadcrumbContainer}>
-            <ProgressBreadcrumb currentStep={breadcrumbStep} />
-          </View>
 
           <View style={styles.questionContainer}>
             <Text style={styles.mainQuestion}>
-              Imagine se este alimento que escolheu tivesse apenas metade da quantidade apresentada. Continuaria a ser a opção com mais energia (calorias)?
+              Imagine se este <Text style={styles.boldText}>alimento que escolheu</Text> tivesse apenas <Text style={styles.boldText}>metade</Text> da quantidade apresentada. {'\n'}{'\n'}
+              Continuaria a ser a opção com <Text style={styles.boldText}>{isSaltGroup ? 'mais sal' : 'mais energia'}</Text> {isSaltGroup ? '(sal)' : '(calorias)'}?
             </Text>
           </View>
 
@@ -94,7 +88,7 @@ export default function ImagineScreen({ route, navigation }: any) {
           <View style={styles.inputSection}>
             <Text style={styles.inputLabel}>Porquê?</Text>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, isFocused && styles.textInputFocused]}
               multiline
               numberOfLines={4}
               placeholder="Escreva aqui a sua justificação..."
@@ -102,6 +96,8 @@ export default function ImagineScreen({ route, navigation }: any) {
               value={porqueTexto}
               onChangeText={setPorqueTexto}
               textAlignVertical="top"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
             />
           </View>
 
@@ -109,8 +105,8 @@ export default function ImagineScreen({ route, navigation }: any) {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.nxtButton} onPress={handleSeguinte} activeOpacity={0.8}>
-            <Text style={styles.nxtButtonText}>Seguinte</Text>
+          <TouchableOpacity style={styles.nextButton} onPress={handleSeguinte} activeOpacity={0.8}>
+            <Text style={styles.nextButtonText}>Seguinte</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -126,57 +122,59 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'flex-start',
-    paddingHorizontal: 24,
-    paddingBottom: 16,
-    paddingTop: 8,
+    justifyContent: 'center',
+    paddingHorizontal: 28,
+    paddingBottom: 24,
+    paddingTop: 12,
     alignItems: 'center',
   },
   breadcrumbContainer: {
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 28,
+    marginTop: 0,
+    marginBottom: 20,
   },
   questionContainer: {
     width: '100%',
-    marginBottom: 12,
-    alignItems: 'flex-start',
+    marginBottom: 10,
+    alignItems: 'center',
   },
   mainQuestion: {
-    fontSize: 20,
+    fontSize: 19,
     color: '#613512',
-    lineHeight: 28,
+    lineHeight: 24,
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
     width: '100%',
     textAlign: 'left',
+    marginTop:-30,
   },
   radioGroup: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 28,
   },
   radioButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 6,
+    marginBottom: 6,
   },
   radioOuterCircle: {
     height: 28,
     width: 28,
     borderRadius: 14,
-    borderWidth: 2,
-    borderColor: '#613512',
+    borderWidth: 1.5,
+    borderColor: '#E28A47',
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
   radioOuterCircleActive: {
-    borderColor: '#733D14',
+    borderColor: '#E28A47',
   },
   radioInnerCircle: {
     height: 14,
     width: 14,
     borderRadius: 7,
-    backgroundColor: '#733D14',
+    backgroundColor: '#E28A47',
   },
   radioLabel: {
     fontSize: 18,
@@ -184,7 +182,7 @@ const styles = StyleSheet.create({
   },
   inputSection: {
     width: '100%',
-    marginBottom: 24,
+    marginBottom: 36,
   },
   inputLabel: {
     fontSize: 22,
@@ -194,22 +192,29 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: '100%',
-    minHeight: 120,
-    backgroundColor: '#FAF5F0',
-    borderWidth: 1.5,
-    borderColor: '#613512',
+    minHeight: 140,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E28A47',
     borderRadius: 20,
     padding: 15,
     fontSize: 16,
     color: '#613512',
   },
+  textInputFocused: {
+    borderColor: '#D9903E',
+  },
+  boldText: {
+    fontWeight: '700',
+    color: '#9C5325',
+  },
   footer: {
-    paddingBottom: 32,
+    paddingBottom: 36,
     alignItems: 'center',
     backgroundColor: '#FAF5F0',
-    paddingTop: 10,
+    paddingTop: 12,
   },
-  nxtButton: {
+  nextButton: {
     backgroundColor: '#784115',
     width: '60%',
     maxWidth: 190,
@@ -222,7 +227,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
   },
-  nxtButtonText: {
+  nextButtonText: {
     color: '#FFF',
     fontSize: 22,
     fontWeight: 'bold',
