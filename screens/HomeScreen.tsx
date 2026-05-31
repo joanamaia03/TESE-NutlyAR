@@ -235,7 +235,7 @@ export default function HomeScreen({ navigation }: any) {
                   setTimeout(() => inputRef.current?.focus(), 50);
                 }
               }}>
-                <Icon name="pencil" size={20} color="#613512" style={styles.pencilIcon} />
+                <Icon name="pencil" size={20} color="#4b4b4b" style={styles.pencilIcon} />
               </TouchableOpacity>
             </>
           ) : (
@@ -337,7 +337,7 @@ export default function HomeScreen({ navigation }: any) {
                   </ScrollView>
                 </View>
                 <TouchableOpacity onPress={() => setEditingField(null)} style={styles.confirmIcon}>
-                  <Icon name="check" size={20} color="#784115" />
+                  <Icon name="check" size={20} color="#4b4b4b" />
                 </TouchableOpacity>
                 </>
               ) : (
@@ -354,7 +354,7 @@ export default function HomeScreen({ navigation }: any) {
               )}
               {!hasOptions && (
                 <TouchableOpacity onPress={() => setEditingField(null)} style={styles.confirmIcon}>
-                  <Icon name="check" size={20} color="#784115" />
+                  <Icon name="check" size={20} color="#4b4b4b" />
                 </TouchableOpacity>
               )}
             </>
@@ -407,7 +407,7 @@ export default function HomeScreen({ navigation }: any) {
       {/* main content (kept your layout/changes) */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => setIsMenuOpen(true)}>
-          <Icon name="cog" size={35} color="#6B3E1F" />
+          <Icon name="cog" size={35} color="#709985" />
         </TouchableOpacity>
       </View>
 
@@ -468,7 +468,7 @@ export default function HomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
   },
   header: {
     alignItems: 'flex-end',
@@ -484,11 +484,11 @@ const styles = StyleSheet.create({
   logoTextMain: {
     fontSize: 55,
     fontFamily: 'serif',
-    color: '#E28A47',
+    color: '#9dc3b0',
     fontWeight: '500',
   },
   logoTextSub: {
-    color: '#784115',
+    color: '#e0a475',
     fontWeight: 'bold',
   },
   buttonsContainer: {
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   iconBox: {
     width: 140,
     height: 140,
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 22,
-    color: '#A15B2A',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 30,
   },
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     width: width * 0.75,
-    backgroundColor: '#fbe1ce',
+    backgroundColor: '#f9e7d9',
     zIndex: 20,
     borderTopLeftRadius: 30,
     borderBottomLeftRadius: 30,
@@ -573,13 +573,13 @@ const styles = StyleSheet.create({
   drawerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#613512',
+    color: '#709985',
     marginBottom: 25,
     textAlign: 'center',
   },
   fieldLabel: {
     fontSize: 18,
-    color: '#613512',
+    color: '#4b4b4b',
     fontWeight: '600',
     marginBottom: 8,
     marginTop: 12,
@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
   drawerInput: {
     flex: 1,
     fontSize: 18,
-    color: '#6B3E1F',
+    color: '#4b4b4b',
   },
   drawerInputDisabled: {
     color: '#999',
@@ -617,7 +617,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   saveButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     paddingVertical: 14,
     borderRadius: 25,
     marginTop: 35,
@@ -639,28 +639,28 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#E28A47',
+    borderColor: '#FFCDA6',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   radioOuterActive: {
-    borderColor: '#E28A47',
+    borderColor: '#FFCDA6',
   },
   radioInner: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#E28A47',
+    backgroundColor: '#FFCDA6',
   },
   radioLabel: {
     fontSize: 16,
-    color: '#613512',
+    color: '#4b4b4b',
     flex: 1,
   },
   displayText: {
     fontSize: 18,
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     flex: 1,
     marginRight: 8,
   },
@@ -670,24 +670,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     fontSize: 16,
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     marginTop: 10,
-  },
-  optionsContainer: {
-    backgroundColor: '#F5E6D3',
-    borderRadius: 15,
-    padding: 12,
-    marginBottom: 10,
-    maxHeight: 150,
-    flex: 1,
-    marginRight: 8,
   },
   optionsOverlay: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: 56,
-    backgroundColor: '#F5E6D3',
+    backgroundColor: '#fff5ee',
     borderRadius: 12,
     padding: 12,
     zIndex: 50,

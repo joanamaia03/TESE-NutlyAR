@@ -151,14 +151,14 @@ export default function SocioDemographicScreen({ navigation }: any) {
       {RenderOption("Prefiro Não Responder", "pnr", genero, setGenero)}
       {RenderOption("Outro", "outro", genero, setGenero)}
       {genero === 'outro' && (
-        <TextInput style={styles.input} placeholderTextColor="#A15B2A" value={generoOutro} onChangeText={setGeneroOutro} placeholder="Especificar género" />
+        <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={generoOutro} onChangeText={setGeneroOutro} placeholder="Especificar género" />
       )}
 
       {/* DATA NASCIMENTO */}
       <Text style={styles.sectionTitle}>Ano de Nascimento</Text>
       <TextInput 
         style={styles.input} 
-        placeholderTextColor="#A15B2A"
+        placeholderTextColor="#c0c0c0"
         onChangeText={setAnoNascimento}
         keyboardType="numeric"
       />
@@ -187,12 +187,12 @@ export default function SocioDemographicScreen({ navigation }: any) {
       {RenderOption("Prefiro não responder", "pnr", escolaridade, setEscolaridade)}
       {RenderOption("Outro", "outro", escolaridade, setEscolaridade)}
       {escolaridade === 'outro' && (
-        <TextInput style={styles.input} placeholderTextColor="#A15B2A" value={escolaridadeOutro} onChangeText={setEscolaridadeOutro} placeholder="Especificar grau de escolaridade" />
+        <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={escolaridadeOutro} onChangeText={setEscolaridadeOutro} placeholder="Especificar grau de escolaridade" />
       )}
 
       {/* MUNICIPIO */}
       <Text style={styles.sectionTitle}>Município de Residência</Text>
-      <TextInput style={styles.input} placeholderTextColor="#A15B2A" onChangeText={setMunicipio} />
+      <TextInput style={styles.input} placeholderTextColor="#c0c0c0" onChangeText={setMunicipio} />
 
       {/* RESIDIU SEMPRE */}
       <Text style={styles.sectionTitle}>Residiu sempre neste município?</Text>
@@ -205,7 +205,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
       {residiuSempre === 'nao' && (
         <>
           <Text style={styles.sectionTitle}>Em que municípios residiu anteriormente?</Text>
-          <TextInput style={styles.input} placeholderTextColor="#A15B2A" value={municipiosAnteriores} onChangeText={setMunicipiosAnteriores} />
+          <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={municipiosAnteriores} onChangeText={setMunicipiosAnteriores} />
         </>
       )}
 
@@ -222,7 +222,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
       {RenderOption("Prefiro não responder", "pnr", condicaoMedica, setCondicaoMedica)}
       {RenderOption("Outro", "outro", condicaoMedica, setCondicaoMedica)}
       {condicaoMedica === 'outro' && (
-        <TextInput style={styles.input} placeholderTextColor="#A15B2A" value={condicaoMedicaOutro} onChangeText={setCondicaoMedicaOutro} placeholder="Especificar condição médica" />
+        <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={condicaoMedicaOutro} onChangeText={setCondicaoMedicaOutro} placeholder="Especificar condição médica" />
       )}
       
 
@@ -235,7 +235,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
       {RenderOption("Prefiro não responder", "pnr", padraoAlimentar, setPadraoAlimentar)}
       {RenderOption("Outro", "outro", padraoAlimentar, setPadraoAlimentar)}
       {padraoAlimentar === 'outro' && (
-        <TextInput style={styles.input} placeholderTextColor="#A15B2A" value={padraoAlimentarOutro} onChangeText={setPadraoAlimentarOutro} placeholder="Especificar padrão alimentar" />
+        <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={padraoAlimentarOutro} onChangeText={setPadraoAlimentarOutro} placeholder="Especificar padrão alimentar" />
       )}
 
       {/* BOTÃO GUARDAR */}
@@ -247,18 +247,18 @@ export default function SocioDemographicScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FCF8F5'},
+  container: { flex: 1, backgroundColor: '#FFF8F1'},
   content: { flexGrow: 1, paddingHorizontal: 25, paddingTop: 60, paddingBottom: 50, alignItems: 'stretch' },
-  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#6B3E1F', textAlign: 'center', marginBottom: 30 },
-  sectionTitle: { fontSize: 20, color: '#7A4419', marginTop: 20, marginBottom: 10, fontWeight: '600' },
+  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#709985', textAlign: 'center', marginBottom: 30 },
+  sectionTitle: { fontSize: 20, color: '#4b4b4b', marginTop: 20, marginBottom: 10, fontWeight: '600' },
   radioItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
-  radioLabel: { fontSize: 16, color: '#A15B2A' },
-  radioOuter: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: '#E28A47', alignItems: 'center', justifyContent: 'center', marginRight: 10 },
-  radioOuterActive: { borderColor: '#E28A47' },
-  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#E28A47' },
-  input: { backgroundColor: '#FFF', borderWidth: 1, borderColor: '#E28A47', borderRadius: 15, padding: 10, fontSize: 16, color: '#6B3E1F' },
-  subText: { fontSize: 12, color: '#7A4419', marginTop: 4, marginLeft: 5 },
-  submitButton: { alignSelf: 'center', width: '50%', maxWidth: 360, height: 55, borderRadius: 14, backgroundColor: '#784115', alignItems: 'center', justifyContent: 'center', marginTop: 24, paddingHorizontal: 12, paddingVertical: 6 },
+  radioLabel: { fontSize: 16, color: '#4b4b4b' },
+  radioOuter: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: '#FFCDA6', alignItems: 'center', justifyContent: 'center', marginRight: 10 },
+  radioOuterActive: { borderColor: '#FFCDA6' },
+  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#FFCDA6' },
+  input: { backgroundColor: '#FFF', borderWidth: 1, borderColor: '#FFCDA6', borderRadius: 15, padding: 10, fontSize: 16, color: '#4b4b4b' },
+  subText: { fontSize: 12, color: '#4b4b4b', marginTop: 4, marginLeft: 5 },
+  submitButton: { alignSelf: 'center', width: '50%', maxWidth: 360, height: 55, borderRadius: 14, backgroundColor: '#81B29A', alignItems: 'center', justifyContent: 'center', marginTop: 24, paddingHorizontal: 12, paddingVertical: 6 },
   submitButtonPressed: { opacity: 0.85 },
   submitButtonText: { color: '#FFFFFF', fontSize: 22, fontWeight: '700' }
 });

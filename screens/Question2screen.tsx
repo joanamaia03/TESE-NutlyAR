@@ -38,7 +38,7 @@ export default function ReasonScreen({ route, navigation }: any) {
 
     try {
       await saveAnswer(currentGroup, answerData);
-      navigation.navigate('Question3Screen', { perguntaAtual, groupNumber: currentGroup });
+      navigation.navigate('Question4Screen', { perguntaAtual, groupNumber: currentGroup });
     } catch (error) {
       console.error("Erro ao guardar motivos:", error);
     }
@@ -67,7 +67,7 @@ export default function ReasonScreen({ route, navigation }: any) {
                     onChangeText={setters[index]}
                     style={styles.inputReason}
                     placeholder="Escreva o motivo"
-                    placeholderTextColor="#C7B8AA"
+                    placeholderTextColor="#c0c0c0"
                     multiline
                   />
                 </View>
@@ -76,7 +76,7 @@ export default function ReasonScreen({ route, navigation }: any) {
           })}
         </View>
         <Text style={styles.footerNote}>
-          Se identificar mais do que um fator, por favor ordene por ordem de importância {'\n'}(1: nada importante; 5: muito importante) 
+          Se identificar mais do que um fator, por favor ordene por ordem de importância {'\n'}(1: muito importante; 5: nada importante) 
         </Text>
       </ScrollView>
 
@@ -92,7 +92,7 @@ export default function ReasonScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0', // Fundo bege claro limpo padrão
+    backgroundColor: '#FFF8F1', // Fundo bege claro limpo padrão
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
   breadcrumbContainer: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    color: '#613512',
+    color: '#709985',
     fontWeight: 'bold',
     textAlign: 'center',
     lineHeight: 36,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   optionButton: {
     width: '100%',
     minHeight: 54,
-    borderRadius: 25, // Cantos arredondados totalmente ovais de acordo com a imagem
+    borderRadius: 25, 
     borderWidth: 1.5,
     justifyContent: 'center',
     paddingHorizontal: 24,
@@ -131,12 +131,9 @@ const styles = StyleSheet.create({
   },
   optionButtonInactive: {
     backgroundColor: '#FAF5F0',
-    borderColor: '#613512', // Contorno castanho elegante
+    borderColor: '#FFCDA6', 
   },
   optionButtonActive: {
-    backgroundColor: '#733D14', // Preenche com o castanho chocolate ao selecionar
-    borderColor: '#733D14',
-    // Pequena sombra para destacar a opção ativa
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -149,7 +146,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   optionTextInactive: {
-    color: '#613512',
+    color: '#709985',
   },
   optionTextActive: {
     color: '#000000',
@@ -166,19 +163,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 14,
     top: 14,
-    color: '#E28A47',
+    color: '#81B29A',
     fontSize: 15,
     fontWeight: '700',
     zIndex: 2,
   },
-  radioOuter: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: '#613512', alignItems: 'center', justifyContent: 'center' },
-  radioOuterActive: { borderColor: '#733D14' },
-  radioInner: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#733D14' },
-  inputReason: { width: '100%', minHeight: 52, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#E28A47', borderRadius: 12, paddingVertical: 12, paddingLeft: 34, paddingRight: 10, color: '#613512' },
+  radioOuter: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: '#FFCDA6', alignItems: 'center', justifyContent: 'center' },
+  radioOuterActive: { borderColor: '#FFCDA6' },
+  radioInner: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#FFCDA6' },
+  inputReason: { width: '100%', minHeight: 52, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#FFCDA6', borderRadius: 12, paddingVertical: 12, paddingLeft: 34, paddingRight: 10, color: '#4b4b4b' },
   
   footerNote: {
     fontSize: 14,
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 20,
     opacity: 0.85,
@@ -188,10 +185,10 @@ const styles = StyleSheet.create({
   footer: {
     paddingBottom: 32,
     alignItems: 'center',
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
   },
   nextButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     width: '60%',
     maxWidth: 190,
     paddingVertical: 14,

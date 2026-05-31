@@ -186,7 +186,7 @@ export default function DecisionFactorsScreen({ route, navigation }: any) {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingTop: Platform.OS === 'android' ? 24 : 8,
   },
   breadcrumbContainer: {
@@ -203,7 +203,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: '#613512',
+    color: '#709985',
     fontWeight: 'bold',
     textAlign: 'center',
     lineHeight: 33,
@@ -212,7 +212,7 @@ export const styles = StyleSheet.create({
   },
   instructions: {
     fontSize: 14,
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 20,
     opacity: 0.9,
@@ -227,7 +227,7 @@ export const styles = StyleSheet.create({
   },
   factorLabel: {
     fontSize: 15,
-    color: '#613512',
+    color: '#4b4b4b',
     fontWeight: '600',
     marginBottom: 6,
     paddingLeft: 10,
@@ -248,14 +248,14 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: '#E28A47',
+    borderColor: '#FFCDA6',
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    color: '#613512',
+    color: '#4b4b4b',
   },
   optionInput: {
-    color: '#844d25',
+    color: '#4b4b4b',
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 10,
@@ -267,7 +267,7 @@ export const styles = StyleSheet.create({
   },
   footerNote: {
     fontSize: 13,
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 18,
     opacity: 0.85,
@@ -280,7 +280,7 @@ export const styles = StyleSheet.create({
     top: 6,
     paddingVertical: 6,
     paddingHorizontal: 9,
-    backgroundColor: '#A15B2A',
+    backgroundColor: '#81B29A',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -295,11 +295,11 @@ export const styles = StyleSheet.create({
   footer: {
     paddingBottom: 24,
     alignItems: 'center',
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingTop: 10,
   },
   nextButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     width: '60%',
     maxWidth: 185,
     paddingVertical: 13,

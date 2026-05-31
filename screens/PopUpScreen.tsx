@@ -100,7 +100,7 @@ export default function QuestionScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
   },
   /* Indicador de Progresso */
   progressContainer: {
@@ -117,10 +117,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   activeStep: {
-    backgroundColor: '#C48A5E', // Cor de destaque do passo 1
+    backgroundColor: '#81B29A', 
   },
   inactiveStep: {
-    backgroundColor: '#F2E6D9',
+    backgroundColor: '#f9e7d9',
     borderWidth: 1,
     borderColor: '#EBD9C6',
   },
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   activeStepText: { color: '#FFF' },
-  inactiveStepText: { color: '#C48A5E' },
+  inactiveStepText: { color: '#ffffff' },
   progressLine: {
     width: 15,
     height: 2,
@@ -168,22 +168,22 @@ const styles = StyleSheet.create({
     maxHeight: 250,
   },
   owlImage: {
-    width: 80,
-    height: 80,
-    marginTop: -40, // Faz a coruja "saltar" para fora da caixa
+    width: 100,
+    height: 100,
+    marginTop: -50, // Faz a coruja "saltar" para fora da caixa
   },
   textContainer: {
     marginTop: 10,
   },
   mainInstruction: {
     fontSize: 16,
-    color: '#613512',
+    color: '#81B29A',
     textAlign: 'center',
     lineHeight: 22,
   },
   boldText: {
     fontWeight: 'bold',
-    color: '#D47C34', // Laranja do destaque
+    color: '#81B29A', // Laranja do destaque
   },
   subInstruction: {
     fontSize: 13,

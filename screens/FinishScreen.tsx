@@ -16,7 +16,7 @@ export default function FinishScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
   },
   content: {
     flex: 1,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: '800',
-    color: '#613512',
+    color: '#709985',
     textAlign: 'center',
     lineHeight: 48,
   },

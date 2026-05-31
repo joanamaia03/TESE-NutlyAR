@@ -36,7 +36,8 @@ export default function Transition2Screen({ route, navigation }: any) {
 							Parabéns por ter concluído o {groupNumber}º grupo. Pode avançar para o grupo {nextGroup}
 						</Text>
 					</View>
-					<View style={styles.bubbleTail} />
+					<View style={styles.bubbleTailOuter} />
+					<View style={styles.bubbleTailInner} />
 				</View>
 
 				<Image source={require('../assets/Owl.png')} style={styles.owl} resizeMode="contain" />
@@ -52,7 +53,7 @@ export default function Transition2Screen({ route, navigation }: any) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#FBF2E9',
+		backgroundColor: '#FFF8F1',
 	},
 	content: {
 		flex: 1,
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
 		marginTop: 120,
 		fontSize: 28,
 		fontWeight: '800',
-		color: '#7B451C',
+		color: '#709985',
 		textAlign: 'center',
 	},
 	bubbleWrap: {
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
 		minHeight: 158,
 		backgroundColor: '#FFF',
 		borderWidth: 1.5,
-		borderColor: '#fafafa',
+		borderColor: '#FFCDA6',
 		borderRadius: 22,
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -89,10 +90,22 @@ const styles = StyleSheet.create({
 	message: {
 		fontSize: 20,
 		lineHeight: 27,
-		color: '#7B451C',
+		color: '#4b4b4b',
 		textAlign: 'center',
 	},
-	bubbleTail: {
+	bubbleTailOuter: {
+		width: 0,
+		height: 0,
+		borderLeftWidth: 22,
+		borderRightWidth: 22,
+		borderTopWidth: 30,
+		borderLeftColor: 'transparent',
+		borderRightColor: 'transparent',
+		borderTopColor: '#FFCDA6',
+		marginTop: -1,
+		zIndex: 1,
+	},
+	bubbleTailInner: {
 		width: 0,
 		height: 0,
 		borderLeftWidth: 20,
@@ -100,17 +113,18 @@ const styles = StyleSheet.create({
 		borderTopWidth: 28,
 		borderLeftColor: 'transparent',
 		borderRightColor: 'transparent',
-		borderTopColor: '#ffffff',
-		marginTop: -1,
+		borderTopColor: '#FFFFFF',
+		marginTop: -31,
+		zIndex: 2,
 	},
 	owl: {
 		width: 210,
 		height: 210,
-		marginTop: -28,
+		marginTop: -100,
 	},
 	nextButton: {
 		width: 200,
-		backgroundColor: '#8B4B17',
+		backgroundColor: '#81B29A',
 		borderRadius: 18,
 		alignItems: 'center',
 		justifyContent: 'center',

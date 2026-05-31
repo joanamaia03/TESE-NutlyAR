@@ -127,7 +127,7 @@ export default function CertificadosScreen({ navigation }: any) {
                 {item.imageSource ? (
                   <Image source={item.imageSource} style={styles.certImage} resizeMode="contain" />
                 ) : (
-                  <Icon name={item.iconFallback} size={70} color="#784115" />
+                  <Icon name={item.iconFallback} size={70} color="#81B29A" />
                 )}
               </TouchableOpacity>
 
@@ -137,7 +137,7 @@ export default function CertificadosScreen({ navigation }: any) {
                 onPress={() => handleDownload(item.id, item.titulo, item.imageSource)}
                 style={styles.downloadButton}
               >
-                <Icon name="download-outline" size={24} color="#784115" />
+                <Icon name="download-outline" size={24} color="#81B29A" />
               </TouchableOpacity>
             </View>
           ))}
@@ -197,7 +197,7 @@ export default function CertificadosScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingTop: Platform.OS === 'android' ? 40 : 10,
   },
   scrollContainer: {
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   mainTitle: {
     fontSize: 34,
     fontWeight: 'bold',
-    color: '#613512',
+    color: '#709985',
     marginTop: 30,
     marginBottom: 10,
     textAlign: 'center',
@@ -221,13 +221,13 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: 'center',
   },
-  modalTitle: { fontSize: 18, fontWeight: '700', color: '#613512', marginBottom: 12 },
+  modalTitle: { fontSize: 18, fontWeight: '700', color: '#709985', marginBottom: 12 },
   modalImage: { width: '100%', height: 300, marginBottom: 12 },
   modalButtons: { flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
-  modalButton: { flex: 1, padding: 12, backgroundColor: '#784115', margin: 8, borderRadius: 8, alignItems: 'center' },
+  modalButton: { flex: 1, padding: 12, backgroundColor: '#81B29A', margin: 8, borderRadius: 8, alignItems: 'center' },
   modalButtonText: { color: '#fff', fontWeight: '700' },
-  modalClose: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#784115' },
-  modalCloseText: { color: '#784115' },
+  modalClose: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#81B29A' },
+  modalCloseText: { color: '#81B29A' },
   gridContainer: {
     width: '100%',
     flexDirection: 'row',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E8CBB6',
+    borderColor: '#FFCDA6',
     borderRadius: 12,
     padding: 10,
     overflow: 'hidden',
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   certTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 18,
     minHeight: 54,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E8CBB6',
+    borderColor: '#FFCDA6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   nextButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     width: '60%',
     maxWidth: 190,
     paddingVertical: 14,

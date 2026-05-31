@@ -100,7 +100,7 @@ export default function ReflexaoFinalScreen({ navigation }: any) {
               multiline
               numberOfLines={10}
               placeholder="Escreva aqui as suas notas ou comentários sobre o estudo..."
-              placeholderTextColor="#C7B8AA"
+              placeholderTextColor="#c0c0c0"
               value={reflexaoTexto}
               onChangeText={setReflexaoTexto}
               textAlignVertical="top"
@@ -132,7 +132,7 @@ export default function ReflexaoFinalScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0', 
+    backgroundColor: '#FFF8F1', 
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
   scrollContent: {
@@ -145,14 +145,14 @@ const styles = StyleSheet.create({
   mainTitle: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#613512', 
+    color: '#709985', 
     marginTop: 50,
     marginBottom: 50,
     textAlign: 'center',
   },
   instructions: {
     fontSize: 18,
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'left',
     alignSelf: 'stretch',
     marginHorizontal: 12,
@@ -170,23 +170,23 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     minHeight: 280,
-    backgroundColor: '#FAF5F0', 
+    backgroundColor: '#FFFFFF', 
     borderWidth: 1.5,
-    borderColor: '#E28A47', 
+    borderColor: '#FFCDA6', 
     borderRadius: 24, 
     padding: 20,
     fontSize: 16,
-    color: '#613512',
+    color: '#4b4b4b',
     lineHeight: 24,
   },
   footer: {
     paddingBottom: 45,
     alignItems: 'center',
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingTop: 10,
   },
   concluirButton: {
-    backgroundColor: '#784115', // Castanho chocolate escuro dos teus botões de ação
+    backgroundColor: '#81B29A', 
     width: '60%',
     maxWidth: 200,
     paddingVertical: 14,

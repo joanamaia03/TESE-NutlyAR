@@ -76,8 +76,8 @@ export default function ScoreScreen({ navigation }: any) {
 
             // Mapeamento fixo por posição no array de respostas do grupo
             const answerP1 = answersArray[0];
-            const answerP2 = answersArray[4];
-            const answerP3 = answersArray[5];
+            const answerP2 = answersArray[3];
+            const answerP3 = answersArray[4];
 
             // 1. Extrai a Escolha AR Inicial
             const escolhaP1 = cleanMealName(answerP1?.selectedImage);
@@ -123,7 +123,7 @@ export default function ScoreScreen({ navigation }: any) {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#784115" />
+        <ActivityIndicator size="large" color="#ffffff" />
         <Text style={styles.loadingText}>A calcular os teus resultados...</Text>
       </SafeAreaView>
     );
@@ -183,9 +183,9 @@ export default function ScoreScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FAF5F0' },
+  container: { flex: 1, backgroundColor: '#FFF8F1' },
   header: { alignItems: 'center', paddingTop: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#613512', marginTop: 30 },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#709985', marginTop: 30 },
   scrollContent: { padding: 20, paddingBottom: 40 },
   groupCard: {
     backgroundColor: '#fff',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  groupTitle: { fontSize: 20, fontWeight: 'bold', color: '#784115', marginBottom: 12 },
+  groupTitle: { fontSize: 20, fontWeight: 'bold', color: '#4b4b4b', marginBottom: 12 },
   questionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -206,13 +206,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F5EFE6',
   },
-  questionText: { fontSize: 15, color: '#613512' },
+  questionText: { fontSize: 15, color: '#4b4b4b' },
   correct: { color: '#4CAF50', fontWeight: 'bold' },
   incorrect: { color: '#F44336', fontWeight: 'bold' },
-  groupTotal: { marginTop: 12, paddingTop: 12, borderTopWidth: 2, borderTopColor: '#E28A47' },
-  groupTotalText: { fontSize: 17, fontWeight: 'bold', color: '#784115', textAlign: 'center' },
+  groupTotal: { marginTop: 12, paddingTop: 12, borderTopWidth: 2, borderTopColor: '#81B29A' },
+  groupTotalText: { fontSize: 17, fontWeight: 'bold', color: '#4b4b4b', textAlign: 'center' },
   finalScore: {
-    backgroundColor: '#784115',
+    backgroundColor: '#709985',
     borderRadius: 16,
     padding: 25,
     alignItems: 'center',
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   finalScoreText: { color: '#fff', fontSize: 18, marginBottom: 8 },
   finalScoreNumber: { color: '#fff', fontSize: 38, fontWeight: 'bold' },
   finishButton: {
-    backgroundColor: '#613512',
+    backgroundColor: '#81B29A',
     marginHorizontal: 20,
     marginBottom: 35,
     padding: 16,
@@ -230,5 +230,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   finishButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  loadingText: { marginTop: 20, color: '#613512', fontSize: 16, textAlign: 'center' },
+  loadingText: { marginTop: 20, color: '#4b4b4b', fontSize: 16, textAlign: 'center' },
 });

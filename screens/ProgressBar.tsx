@@ -85,14 +85,14 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   activeCircle: {
-    backgroundColor: '#733D14', 
+    backgroundColor: '#709985', 
     width: 42,
     height: 42,
     borderRadius: 21,
     transform: [{ scale: 1 }],
   },
   inactiveCircle: {
-    backgroundColor: '#FFE1C4', 
+    backgroundColor: '#f8decb', 
   },
   stepText: {
     fontSize: 14,

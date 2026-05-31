@@ -92,7 +92,7 @@ export default function ImagineScreen({ route, navigation }: any) {
               multiline
               numberOfLines={4}
               placeholder="Escreva aqui a sua justificação..."
-              placeholderTextColor="#C7B8AA"
+              placeholderTextColor="#c0c0c0"
               value={porqueTexto}
               onChangeText={setPorqueTexto}
               textAlignVertical="top"
@@ -117,7 +117,7 @@ export default function ImagineScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
   scrollContent: {
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   mainQuestion: {
     fontSize: 19,
-    color: '#613512',
+    color: '#4b4b4b',
     lineHeight: 24,
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
     width: '100%',
@@ -162,23 +162,23 @@ const styles = StyleSheet.create({
     width: 28,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#E28A47',
+    borderColor: '#FFCDA6',
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
   radioOuterCircleActive: {
-    borderColor: '#E28A47',
+    borderColor: '#FFCDA6',
   },
   radioInnerCircle: {
     height: 14,
     width: 14,
     borderRadius: 7,
-    backgroundColor: '#E28A47',
+    backgroundColor: '#FFCDA6',
   },
   radioLabel: {
     fontSize: 18,
-    color: '#613512',
+    color: '#4b4b4b',
   },
   inputSection: {
     width: '100%',
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#613512',
+    color: '#4b4b4b',
     marginBottom: 12,
   },
   textInput: {
@@ -195,27 +195,27 @@ const styles = StyleSheet.create({
     minHeight: 140,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E28A47',
+    borderColor: '#FFCDA6',
     borderRadius: 20,
     padding: 15,
     fontSize: 16,
-    color: '#613512',
+    color: '#4b4b4b',
   },
   textInputFocused: {
-    borderColor: '#D9903E',
+    borderColor: '#FFCDA6',
   },
   boldText: {
     fontWeight: '700',
-    color: '#9C5325',
+    color: '#709985',
   },
   footer: {
     paddingBottom: 36,
     alignItems: 'center',
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingTop: 12,
   },
   nextButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     width: '60%',
     maxWidth: 190,
     paddingVertical: 14,

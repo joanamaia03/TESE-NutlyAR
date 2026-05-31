@@ -65,7 +65,7 @@ export default function ConfidenceScreen({ route, navigation }: any) {
             return (
               <TouchableOpacity key={starNumber} onPress={() => setRating(starNumber)} style={styles.starButton}>
                 <View style={styles.starIconWrapper}>
-                  <Icon name={isSelected ? "star" : "star-outline"} size={55} color="#6B3E1F" />
+                 <Icon name={isSelected ? "star" : "star-outline"} size={55} color={isSelected ? '#81B29A' : '#FFCDA6'} />
                   <Text style={[styles.starNumberText, isSelected && styles.starNumberTextActive]}>
                     {starNumber}
                   </Text>
@@ -90,7 +90,7 @@ export default function ConfidenceScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF5F0', // Fundo bege claro limpo de toda a aplicação
+    backgroundColor: '#FFF8F1',
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
   breadcrumbContainer: {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    color: '#6B3E1F',
+    color: '#709985',
     fontWeight: 'bold',
     textAlign: 'center',
     lineHeight: 36,
@@ -132,15 +132,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#6B3E1F', // Número castanho quando a estrela está vazia
-    top: Platform.OS === 'ios' ? 18 : 16, // Ajuste milimétrico para centralização vertical
+    color: '#709985', 
+    top: Platform.OS === 'ios' ? 18 : 16, 
   },
   starNumberTextActive: {
-    color: '#FAF5F0', // O número passa a bege claro/branco quando a estrela se preenche
+    color: '#FAF5F0', 
   },
   subtitle: {
     fontSize: 15,
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 22,
     opacity: 0.85,
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nextButton: {
-    backgroundColor: '#784115', // Castanho chocolate escuro oficial dos teus botões principais
+    backgroundColor: '#81B29A', // Castanho chocolate escuro oficial dos teus botões principais
     width: '60%',
     maxWidth: 190,
     paddingVertical: 14,

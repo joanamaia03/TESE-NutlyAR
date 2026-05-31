@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   StyleSheet,
   Text,
   View,
@@ -362,6 +363,11 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
   };
 
   const abrirInformacaoDoPrato = () => {
+    if (!pratoSelecionado) {
+      Alert.alert('Aviso', 'Por favor selecione uma imagem');
+      return;
+    }
+
     setShowNutritionModal(true);
   };
 
@@ -390,7 +396,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
           <View key={`${item.id}-${index}`} style={styles.imageCardRow}>
             {showSwapControls && (
               <TouchableOpacity style={styles.swapArrowButton} onPress={() => restoreOriginalImageAtIndex(index)} activeOpacity={0.75}>
-                <Icon name="chevron-left" size={34} color="#613512" />
+                <Icon name="chevron-left" size={34} color="#81B29A" />
               </TouchableOpacity>
             )}
 
@@ -410,7 +416,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
 
             {showSwapControls && (
               <TouchableOpacity style={styles.swapArrowButton} onPress={() => changeImageAtIndex(index)} activeOpacity={0.75}>
-                <Icon name="chevron-right" size={34} color="#613512" />
+                <Icon name="chevron-right" size={34} color="#81B29A" />
               </TouchableOpacity>
             )}
           </View>
@@ -430,7 +436,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
             height: 42,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#784115',
+            backgroundColor: '#81B29A',
             borderRadius: 14,
             zIndex: 1000,
           }}
@@ -538,7 +544,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
                 <Text style={styles.instructionText}>{renderBoldText(popupMainText)}</Text>
                 {hasFooter && (
                   <View style={styles.overrideFooterRow}>
-                    <Icon name="information" size={26} color="#613512" style={styles.overrideFooterIcon} />
+                    <Icon name="information" size={26} color="#81B29A" style={styles.overrideFooterIcon} />
                     <Text style={styles.overrideFooterText}>Botão de informação.</Text>
                   </View>
                 )}
@@ -547,7 +553,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
                 {popupMode !== 'override' && (
                   <View style={styles.subInstructionRow}>
                     <Text style={styles.subInstructionText}>
-                      Pode trocar de refeição neste butão
+                      Pode trocar de refeição neste botão
                     </Text>
                     <Image
                       source={require('../assets/troca_imagem.png')}
@@ -583,7 +589,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
                 <Text style={styles.nutritionLine}>Porção: {selectedDishInfo.porcao}</Text>
               </>
             ) : (
-              <Text style={{ color: '#613512', fontSize: 16, textAlign: 'center' }}>Seleciona uma imagem primeiro para ver a informação desse prato.</Text>
+              <Text style={{ color: '#4b4b4b', fontSize: 16, textAlign: 'center' }}>Seleciona uma imagem primeiro para ver a informação desse prato.</Text>
             )}
             <TouchableOpacity style={styles.nutritionCloseButton} onPress={() => setShowNutritionModal(false)}>
               <Text style={styles.nutritionCloseText}>Fechar</Text>
@@ -596,14 +602,14 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
       <View style={styles.bottomNav}>
         <View style={styles.navInner}>
           <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.navButton}>
-            <Icon name="home-outline" size={32} color="#613512" />
+            <Icon name="home-outline" size={32} color="#81B29A" />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={abrirInformacaoDoPrato} disabled={!infoUnlocked} style={styles.navButton}>
             <View style={styles.infoButtonWrap}>
-              <Icon name="information" size={32} color={infoUnlocked ? '#613512' : '#C7B8AA'} />
+              <Icon name="information" size={32} color={infoUnlocked ? '#81B29A' : '#d9dddb'} />
               {!infoUnlocked && (
-                <Icon name="lock" size={22} color="#613512" style={styles.infoLockIcon} />
+                <Icon name="lock" size={22} color="#81B29A" style={styles.infoLockIcon} />
               )}
             </View>
           </TouchableOpacity>
@@ -626,14 +632,14 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
   breadcrumbWrapper: {
     alignSelf: 'center',
     marginTop: 15,
     marginBottom: 10,
-    backgroundColor: '#FAF5F0',
+    backgroundColor: '#FFF8F1',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -645,7 +651,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 16,
-    color: '#613512',
+    color: '#709985',
     fontWeight: '600',
     textAlign: 'center',
     marginTop: 15,
@@ -656,13 +662,13 @@ const styles = StyleSheet.create({
     width: '80%',
     maxWidth: 340,
     aspectRatio: 1.4, 
-    backgroundColor: '#FCDCB7', 
+    backgroundColor: '#f9e7d9', 
     borderRadius: 8,
     padding: 4,
     marginBottom: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#613512',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -671,8 +677,8 @@ const styles = StyleSheet.create({
 
   selectedImageCard: {
     borderWidth: 4,
-    borderColor: '#784115',
-    shadowColor: '#784115',
+    borderColor: '#709985',
+    shadowColor: '#84a58c',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
     shadowRadius: 6,
@@ -692,7 +698,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(251, 225, 206, 0.95)',
+    backgroundColor: '#f9e7d9',
     marginHorizontal: 8,
   },
   mealImage: {
@@ -710,7 +716,7 @@ const styles = StyleSheet.create({
   },
   modalCardBottom: {
     width: '100%',
-    backgroundColor: '#fbe1ce',
+    backgroundColor: '#f9e7d9',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 24,
@@ -724,7 +730,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 55,
-    backgroundColor: '#FBE1CE',
+    backgroundColor: '#f9e7d9',
     paddingHorizontal: 28,
     paddingVertical: 28,
     alignItems: 'center',
@@ -733,19 +739,19 @@ const styles = StyleSheet.create({
   },
   swapPromptText: {
     fontSize: 18,
-    color: '#6B3E1F',
-    textAlign: 'left',
+    color: '#4b4b4b',
+    textAlign: 'center',
     width: '100%',
   },
   owlContainer: {
     position: 'absolute',
-    right: 10,
-    bottom: 45, 
+    left: 290,
+    bottom: 40,
     zIndex: 99,
   },
   owlMascot: {
-    width: 100,
-    height: 110,
+    width: 138,
+    height: 138,
   },
   speechBubbleTriangle: {
     width: 0,
@@ -773,22 +779,22 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
-    color: '#9C5325',
+    color: '#709985',
   },
   instructionText: {
     fontSize: 16,
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 22,
     alignSelf: 'stretch',
   },
   overrideBoldText: {
     fontWeight: 'bold',
-    color: '#9C5325',
+    color: '#709985',
     fontSize: 16,
   },
   checkButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     width: 110,
     height: 50,
     borderRadius: 18,
@@ -811,7 +817,7 @@ const styles = StyleSheet.create({
   cancelButton: {
     backgroundColor: '#FFF',
     borderWidth: 1,
-    borderColor: '#C7B8AA',
+    borderColor: '#FFCDA6',
     width: 120,
     height: 48,
     borderRadius: 14,
@@ -819,12 +825,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButtonText: {
-    color: '#613512',
+    color: '#4b4b4b',
     fontWeight: '700',
     fontSize: 16,
   },
   confirmButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     width: 120,
     height: 48,
     borderRadius: 14,
@@ -845,9 +851,9 @@ const styles = StyleSheet.create({
   },
   confirmCard: {
     width: '100%',
-    backgroundColor: '#FBE1CE',
+    backgroundColor: '#f9e7d9',
     borderRadius: 12,
-    paddingVertical: 18,
+    paddingVertical: 25,
     paddingHorizontal: 16,
     alignItems: 'center',
     shadowColor: '#000',
@@ -857,7 +863,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   confirmText: {
-    color: '#613512',
+    color: '#4b4b4b',
     fontSize: 15,
     textAlign: 'center',
     marginBottom: 14,
@@ -868,11 +874,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalActionButton: {
-    backgroundColor: '#784115',
-    paddingVertical: 6,
+    backgroundColor: '#81B29A',
+    paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 8,
-    minWidth: 64,
+    minWidth: 70,
     alignItems: 'center',
     marginHorizontal: 4,
   },
@@ -884,13 +890,13 @@ const styles = StyleSheet.create({
   nutritionTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'center',
     marginBottom: 14,
   },
   nutritionLine: {
     fontSize: 20,
-    color: '#7B5A43',
+    color: '#4b4b4b',
     textAlign: 'center',
     marginBottom: 6,
   },
@@ -913,7 +919,7 @@ const styles = StyleSheet.create({
   },
   nutritionCloseButton: {
     marginTop: 18,
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 14,
@@ -936,7 +942,7 @@ const styles = StyleSheet.create({
     height: 55,
     backgroundColor: '#ffffff',
     borderTopWidth: 1,
-    borderColor: '#EBD9C6',
+    borderColor: '#ffffff',
     paddingVertical: 10,
   },
   navInner: {
@@ -974,7 +980,7 @@ const styles = StyleSheet.create({
   },
   subInstructionText: {
     fontSize: 15,
-    color: '#9C5325',
+    color: '#709985',
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -1000,7 +1006,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   overrideFooterText: {
-    color: '#9C5325',
+    color: '#709985',
     fontSize: 15,
     fontWeight: '700',
   },

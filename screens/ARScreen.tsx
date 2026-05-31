@@ -468,7 +468,7 @@ export default function ARScreen({ navigation, route }: any) {
                       <Text style={styles.overrideInstructionText}>{renderBoldText(popupMainText)}</Text>
                       {hasFooter && (
                         <View style={styles.overrideFooterRow}>
-                          <Icon name="information" size={26} color="#613512" style={styles.overrideFooterIcon} />
+                          <Icon name="information" size={26} color="#81B29A" style={styles.overrideFooterIcon} />
                           <Text style={styles.overrideFooterText}>Botão de informação</Text>
                         </View>
                       )}
@@ -481,7 +481,7 @@ export default function ARScreen({ navigation, route }: any) {
                   <Text style={styles.instructionText}>{renderBoldText(owlInitialMessage)}</Text>
                   <View style={styles.subInstructionRow}>
                     <Text style={styles.subInstructionText}>
-                      Pode trocar de refeição neste butão
+                      Pode trocar de refeição neste botão
                     </Text>
                     <Image
                       source={require('../assets/troca_imagem.png')}
@@ -526,7 +526,7 @@ export default function ARScreen({ navigation, route }: any) {
         <View style={styles.swapControlsOverlay} pointerEvents="box-none">
           <View style={styles.swapControlsCard}>
             <TouchableOpacity style={styles.swapArrowButton} onPress={trocarImagemComSeta} activeOpacity={0.8}>
-              <Icon name="chevron-left" size={34} color="#613512" />
+              <Icon name="chevron-left" size={34} color="#81B29A" />
             </TouchableOpacity>
 
             <View style={styles.swapImageWrap}>
@@ -539,7 +539,7 @@ export default function ARScreen({ navigation, route }: any) {
             </View>
 
             <TouchableOpacity style={styles.swapArrowButton} onPress={trocarImagemComSeta} activeOpacity={0.8}>
-              <Icon name="chevron-right" size={34} color="#613512" />
+              <Icon name="chevron-right" size={34} color="#81B29A" />
             </TouchableOpacity>
           </View>
         </View>
@@ -549,13 +549,13 @@ export default function ARScreen({ navigation, route }: any) {
       <View style={styles.bottomNav}>
         <View style={styles.navInner}>
           <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.navButton}>
-            <Icon name="home-outline" size={32} color="#613512" />
+            <Icon name="home-outline" size={32} color="#81B29A" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setShowNutritionModal(true)} disabled={!infoEnabled} style={styles.navButton}>
             <View style={styles.infoButtonWrap}>
-              <Icon name="information" size={32} color={infoEnabled ? '#613512' : '#C7B8AA'} />
+              <Icon name="information" size={32} color={infoEnabled ? '#81B29A' : '#d9dddb'} />
               {!infoEnabled && (
-                <Icon name="lock" size={22} color="#613512" style={styles.infoLockIcon} />
+                <Icon name="lock" size={22} color="#81B29A" style={styles.infoLockIcon} />
               )}
             </View>
           </TouchableOpacity>
@@ -645,7 +645,7 @@ export const styles = StyleSheet.create({
   },
   modalCardBottom: {
     width: '100%',
-    backgroundColor: '#fbe1ce', 
+    backgroundColor: '#f9e7d9', 
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 24,
@@ -655,8 +655,8 @@ export const styles = StyleSheet.create({
     minHeight: 420,
   },
   owlMascot: {
-    width: 118,
-    height: 118,
+    width: 138,
+    height: 138,
   },
   speechBubbleTriangle: {
     width: 0,
@@ -684,11 +684,11 @@ export const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
-    color: '#9C5325', 
+    color: '#709985', 
   },
   subInstructionText: {
     fontSize: 15,
-    color: '#9C5325',
+    color: '#709985',
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -706,21 +706,21 @@ export const styles = StyleSheet.create({
   },
   instructionText: {
     fontSize: 16,
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 22,
     alignSelf: 'stretch',
   },
   overrideInstructionText: {
     fontSize: 16,
-    color: '#613512',
+    color: '#4b4b4b',
     textAlign: 'center',
     lineHeight: 22,
     alignSelf: 'stretch',
   },
   overrideBoldText: {
     fontWeight: 'bold',
-    color: '#9C5325',
+    color: '#709985',
     fontSize: 16,
   },
   overrideFooterRow: {
@@ -733,12 +733,12 @@ export const styles = StyleSheet.create({
     marginRight: 8,
   },
   overrideFooterText: {
-    color: '#9C5325',
+    color: '#709985',
     fontSize: 15,
     fontWeight: '700',
   },
   checkButton: {
-    backgroundColor: '#784115', 
+    backgroundColor: '#81B29A', 
     width: 110,
     height: 50,
     borderRadius: 18,
@@ -752,7 +752,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   overrideCheckButton: {
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     width: 110,
     height: 50,
     borderRadius: 20,
@@ -833,17 +833,12 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
-  breadcrumbText: {
-    color: '#613512',
-    fontWeight: '700',
-    fontSize: 14,
-  },
   owlButton: {
     position: 'absolute',
-    right: 5,
-    bottom: 45,
-    width: 110,
-    height: 110,
+    left: 290,
+    bottom: 40,
+    width: 138,
+    height: 138,
     zIndex: 80,
     elevation: 12,
   },
@@ -915,12 +910,12 @@ export const styles = StyleSheet.create({
   },
   swapImageLabel: {
     fontSize: 11,
-    color: '#613512',
+    color: '#4b4b4b',
     fontWeight: '700',
     textAlign: 'center',
   },
   nutritionCard: {
-    backgroundColor: '#FBE1CE',
+    backgroundColor: '#f9e7d9',
     borderRadius: 16,
     paddingHorizontal: 24,
     paddingVertical: 36,
@@ -931,45 +926,45 @@ export const styles = StyleSheet.create({
   nutritionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     marginBottom: 6,
     textAlign: 'center',
   },
   nutritionMeal: {
     fontSize: 30,
     fontWeight: '700',
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     marginVertical: 10,
   },
   nutritionMeta: {
     fontSize: 20,
-    color: '#7B5A43',
+    color: '#4b4b4b',
     marginBottom: 6,
     textAlign: 'center',
   },
   nutritionSubTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     marginTop: 8,
     marginBottom: 6,
   },
   nutritionLine: {
     fontSize: 20,
-    color: '#6B3E1F',
+    color: '#4b4b4b',
     lineHeight: 28,
     textAlign: 'center',
   },
   nutritionHint: {
     fontSize: 16,
-    color: '#7B5A43',
+    color: '#4b4b4b',
     lineHeight: 22,
     marginBottom: 6,
     textAlign: 'center',
   },
   nutritionCloseButton: {
     marginTop: 18,
-    backgroundColor: '#784115',
+    backgroundColor: '#81B29A',
     alignSelf: 'center',
     borderRadius: 16,
     paddingHorizontal: 24,
