@@ -25,8 +25,8 @@
       .custom-popup.is-open { display: flex; }
       .custom-popup-card {
         width: min(92vw, 420px);
-        background: #FFCDA6;
-        border-radius: 12px;
+        background: #f9e7d9;
+        border-radius: 16px;
         padding: 20px 22px;
         box-sizing: border-box;
         font-family: sans-serif;
@@ -36,7 +36,7 @@
       /* Texto do Pop Up */
       .custom-popup-text {
         margin: 0 0 16px;
-        color: #111111;
+        color: #4b4b4b;
         font-size: 16px;
         white-space: nowrap;
       }
@@ -45,18 +45,21 @@
       .custom-popup-actions {
         display: flex;
         justify-content: center;
-        gap: 8px;
+        width: 100%;
       }
       .popup-btn {
         border: 0;
         border-radius: 8px;
-        padding: 8px 12px;
-        font-size: 14px;
+        padding: 10px 14px;
+        font-size: 12px;
         cursor: pointer;
+        font-weight: 700;
+        min-width: 70px;
+        margin: 0 4px;
       }
 
-      .popup-btn.cancel { background: #784115; color: #ffffff; }
-      .popup-btn.confirm { background: #784115; color: #ffffff; }
+      .popup-btn.cancel { background: #81B29A; color: #ffffff; }
+      .popup-btn.confirm { background: #81B29A; color: #ffffff; }
     </style>
 
     <script>
