@@ -168,13 +168,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   radioOuterCircleActive: {
-    borderColor: '#FFCDA6',
+    borderColor: '#81B29A',
   },
   radioInnerCircle: {
     height: 14,
     width: 14,
     borderRadius: 7,
-    backgroundColor: '#FFCDA6',
+    backgroundColor: '#81B29A',
   },
   radioLabel: {
     fontSize: 18,

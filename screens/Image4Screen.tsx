@@ -13,18 +13,20 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBreadcrumb from './ProgressBar';
 import { useNutlySession } from '../src/NutlySessionContext';
+import { db } from '../src/firebase';
+import { addDoc, collection, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
+import { auth } from '../src/firebase';
 
 const opcoes = ['Sim', 'Não'];
 
-export default function ImagineScreen({ route, navigation }: any) {
+export default function Image4Screen({ route, navigation }: any) {
   const { saveAnswer, currentGroup } = useNutlySession();
   const { perguntaAtual = 4, groupNumber } = route.params || {};
   const breadcrumbStep = groupNumber ?? currentGroup ?? 1;
-  const isSaltGroup = (groupNumber ?? currentGroup ?? 1) === 2 || (groupNumber ?? currentGroup ?? 1) === 3 || (groupNumber ?? currentGroup ?? 1) === 4;
+  const isSaltGroup = (groupNumber ?? currentGroup ?? 1) >= 2;
 
   const [opcaoSelecionada, setOpcaoSelecionada] = useState<string | null>(null);
   const [porqueTexto, setPorqueTexto] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
 
   const handleSeguinte = async () => {
     if (!opcaoSelecionada || !porqueTexto.trim()) {
@@ -40,43 +42,68 @@ export default function ImagineScreen({ route, navigation }: any) {
     };
 
     try {
+      // 1. Guarda na nova estrutura por grupos (NutlySessionContext)
       await saveAnswer(currentGroup, answerData);
+
+      // 2. Guarda também na coleção quiz_sessions (como nos outros ecrãs)
+      const sessionIdParam = route.params?.sessionId;
       
+      if (sessionIdParam) {
+        const qRef = doc(db, 'quiz_sessions', sessionIdParam);
+        await updateDoc(qRef, { 
+          answers: arrayUnion(answerData),
+          updatedAt: serverTimestamp() 
+        });
+      } else {
+        const newDoc = await addDoc(collection(db, 'quiz_sessions'), { 
+          createdAt: serverTimestamp(), 
+          answers: [answerData],
+          userId: auth.currentUser?.uid  // Adicionado para segurança
+        });
+        // Se quiseres passar o novo ID para os próximos ecrãs:
+        // navigation.navigate('...', { sessionId: newDoc.id });
+      }
+
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao guardar resposta Imagine:", error);
+      Alert.alert('Erro', 'Não foi possível guardar a resposta.');
     }
 
+    // Navegação
     navigation.navigate('ImageQuizzScreen', {
-      // Esta fase continua a pertencer ao grupo 1 — manter breadcrumb no passo 1
       perguntaProxima: 1,
       enableInfo: true,
       finalGroupStep: true,
       popupOverride: isSaltGroup
-          ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Selecione **apenas uma** das opções.\n\nBotão de informação'
-          : 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Selecione **apenas uma** das opções.\n\nBotão de informação',
-      sessionId: route.params?.sessionId,
+        ? 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e ao sal por 100g. Qual destas porções terá **mais sal** no total? Selecione **apenas uma** das opções.'
+        : 'Nesta fase desbloqueou o **botão de informação**, no qual tem acesso ao peso dos alimentos e à energia por 100g. Qual destas porções terá **mais energia (calorias)** no total? Selecione **apenas uma** das opções.',
     });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <View style={styles.breadcrumbContainer}>
-          <ProgressBreadcrumb currentStep={breadcrumbStep} />
-        </View>
-
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+          
+          <View style={styles.breadcrumbContainer}>
+            <ProgressBreadcrumb currentStep={breadcrumbStep} />
+          </View>
 
           <View style={styles.questionContainer}>
             <Text style={styles.mainQuestion}>
               Imagine se este <Text style={styles.boldText}>alimento que escolheu</Text> tivesse apenas <Text style={styles.boldText}>metade</Text> da quantidade apresentada. {'\n'}{'\n'}
-              Continuaria a ser a opção com <Text style={styles.boldText}>{isSaltGroup ? 'mais sal' : 'mais energia'}</Text> {isSaltGroup ? '(sal)' : '(calorias)'}?
+              Continuaria a ser a opção com <Text style={styles.boldText}>{isSaltGroup ? 'mais sal' : 'mais energia (calorias)'}</Text>?
             </Text>
           </View>
 
           <View style={styles.radioGroup}>
             {opcoes.map((opcao) => (
-              <TouchableOpacity key={opcao} style={styles.radioButtonContainer} onPress={() => setOpcaoSelecionada(opcao)} activeOpacity={0.7}>
+              <TouchableOpacity 
+                key={opcao} 
+                style={styles.radioButtonContainer} 
+                onPress={() => setOpcaoSelecionada(opcao)} 
+                activeOpacity={0.7}
+              >
                 <View style={[styles.radioOuterCircle, opcaoSelecionada === opcao && styles.radioOuterCircleActive]}>
                   {opcaoSelecionada === opcao && <View style={styles.radioInnerCircle} />}
                 </View>
@@ -88,7 +115,7 @@ export default function ImagineScreen({ route, navigation }: any) {
           <View style={styles.inputSection}>
             <Text style={styles.inputLabel}>Porquê?</Text>
             <TextInput
-              style={[styles.textInput, isFocused && styles.textInputFocused]}
+              style={styles.textInput}
               multiline
               numberOfLines={4}
               placeholder="Escreva aqui a sua justificação..."
@@ -96,16 +123,12 @@ export default function ImagineScreen({ route, navigation }: any) {
               value={porqueTexto}
               onChangeText={setPorqueTexto}
               textAlignVertical="top"
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
             />
           </View>
-
-          
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.nextButton} onPress={handleSeguinte} activeOpacity={0.8}>
+          <TouchableOpacity style={styles.nextButton} onPress={handleSeguinte}>
             <Text style={styles.nextButtonText}>Seguinte</Text>
           </TouchableOpacity>
         </View>
@@ -130,22 +153,21 @@ const styles = StyleSheet.create({
   },
   breadcrumbContainer: {
     alignItems: 'center',
-    marginTop: 0,
     marginBottom: 20,
   },
   questionContainer: {
     width: '100%',
-    marginBottom: 10,
-    alignItems: 'center',
+    marginBottom: 20,
   },
   mainQuestion: {
     fontSize: 19,
     color: '#4b4b4b',
     lineHeight: 24,
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
-    width: '100%',
     textAlign: 'left',
-    marginTop:-30,
+  },
+  boldText: {
+    fontWeight: '700',
+    color: '#709985',
   },
   radioGroup: {
     width: '100%',
@@ -168,13 +190,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   radioOuterCircleActive: {
-    borderColor: '#FFCDA6',
+    borderColor: '#81B29A',
   },
   radioInnerCircle: {
     height: 14,
     width: 14,
     borderRadius: 7,
-    backgroundColor: '#FFCDA6',
+    backgroundColor: '#81B29A',
   },
   radioLabel: {
     fontSize: 18,
@@ -200,13 +222,6 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 16,
     color: '#4b4b4b',
-  },
-  textInputFocused: {
-    borderColor: '#FFCDA6',
-  },
-  boldText: {
-    fontWeight: '700',
-    color: '#709985',
   },
   footer: {
     paddingBottom: 36,

@@ -657,13 +657,13 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   radioOuterActive: {
-    borderColor: '#FFCDA6',
+    borderColor: '#81B29A',
   },
   radioInner: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#FFCDA6',
+    backgroundColor: '#81B29A',
   },
   radioLabel: {
     fontSize: 16,

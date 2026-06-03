@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, View, Text, TextInput, Pressable, Alert } from 'react-native';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { db, auth } from '../src/firebase';
 import { doc, updateDoc, setDoc } from "firebase/firestore";
 
@@ -17,25 +18,52 @@ export default function SocioDemographicScreen({ navigation }: any) {
   const [municipio, setMunicipio] = useState('');
   const [municipiosAnteriores, setMunicipiosAnteriores] = useState('');
 
-  // Estados para as escolhas (Radio Buttons)
+  // Estados para as escolhas simples (Radio Buttons)
   const [genero, setGenero] = useState('');
   const [generoOutro, setGeneroOutro] = useState('');
   const [idade, setIdade] = useState('');
   const [escolaridade, setEscolaridade] = useState('');
   const [escolaridadeOutro, setEscolaridadeOutro] = useState('');
   const [residiuSempre, setResidiuSempre] = useState('');
-  const [condicaoMedica, setCondicaoMedica] = useState('');
-  const [condicaoMedicaOutro, setCondicaoMedicaOutro] = useState('');
   const [padraoAlimentar, setPadraoAlimentar] = useState('');
   const [padraoAlimentarOutro, setPadraoAlimentarOutro] = useState('');
 
-  // Limpa o campo de municípios anteriores se a resposta a 'residiuSempre' não for 'nao'
-  useEffect(() => {
-    if (residiuSempre !== 'nao') {
-      setMunicipiosAnteriores('');
+  // Multi-seleção para Condição Médica
+  const [condicoesMedicas, setCondicoesMedicas] = useState<string[]>([]);
+  const [condicaoMedicaOutro, setCondicaoMedicaOutro] = useState('');
+
+  const medicalOptions = [
+    'Excesso de peso/obesidade',
+    'Diabetes/pré-diabetes',
+    'Níveis altos de colesterol/triglicerídeos',
+    'Hipertensão arterial',
+    'Outra doença cardiovascular',
+    'Dificuldade visual',
+    'Nenhuma das anteriores',
+    'Não sei',
+    'Prefiro não responder',
+    'Outro',
+  ];
+
+  const toggleCondicaoMedica = (option: string) => {
+    if (option === 'Nenhuma das anteriores') {
+      setCondicoesMedicas(['Nenhuma das anteriores']);
+      setCondicaoMedicaOutro('');
+      return;
     }
-  }, [residiuSempre]);
-  // Validação dos campos obrigatórios: devolve uma lista com os nomes das perguntas em falta
+
+    if (condicoesMedicas.includes('Nenhuma das anteriores')) {
+      setCondicoesMedicas([]);
+    }
+
+    setCondicoesMedicas(prev =>
+      prev.includes(option)
+        ? prev.filter(item => item !== option)
+        : [...prev, option]
+    );
+  };
+
+  // Validação
   const validarCamposObrigatorios = () => {
     const faltam: string[] = [];
 
@@ -53,84 +81,83 @@ export default function SocioDemographicScreen({ navigation }: any) {
     if (!residiuSempre) faltam.push('Residiu sempre neste município?');
     if (residiuSempre === 'nao' && !municipiosAnteriores) faltam.push('Municípios anteriores');
 
-    if (!condicaoMedica) faltam.push('Condição Médica');
-    if (condicaoMedica === 'outro' && !condicaoMedicaOutro) faltam.push('Especificar condição médica');
+    if (condicoesMedicas.length === 0) faltam.push('Condição Médica');
+    if (condicoesMedicas.includes('Outro') && !condicaoMedicaOutro) faltam.push('Especificar condição médica');
 
     if (!padraoAlimentar) faltam.push('Padrão Alimentar');
     if (padraoAlimentar === 'outro' && !padraoAlimentarOutro) faltam.push('Especificar padrão alimentar');
 
     return faltam;
   };
+
   const handleGuardar = async () => {
-    const user = auth.currentUser;
+  const user = auth.currentUser;
+  if (!user) {
+    Alert.alert("Erro", "Precisas de estar com a sessão iniciada!");
+    return;
+  }
 
-    if (!user) {
-      Alert.alert("Erro", "Precisas de estar com a sessão iniciada!");
-      return;
-    }
+  const faltam = validarCamposObrigatorios();
+  if (faltam.length > 0) {
+    Alert.alert('Preenchimento incompleto', 'Por favor responde às seguintes perguntas:\n' + faltam.join('\n'));
+    return;
+  }
 
-    // Validação: não permite avançar se houver perguntas em falta
-    const faltam = validarCamposObrigatorios();
-    if (faltam.length > 0) {
-      Alert.alert(
-        'Preenchimento incompleto',
-        'Por favor responde às seguintes perguntas antes de avançar:\n' + faltam.join('\n'),
-        [{ text: 'OK' }]
-      );
-      return;
-    }
+  // Tratamento do array de condições médicas
+  let resolvedCondicaoMedica: string[] = [...condicoesMedicas];
 
-    // Resolve 'outro' values: se selecionado 'outro', usa o texto especificado
-    const resolvedGenero = genero === 'outro' ? generoOutro : genero;
-    const resolvedEscolaridade = escolaridade === 'outro' ? escolaridadeOutro : escolaridade;
-    const resolvedCondicaoMedica = condicaoMedica === 'outro' ? condicaoMedicaOutro : condicaoMedica;
-    const resolvedPadraoAlimentar = padraoAlimentar === 'outro' ? padraoAlimentarOutro : padraoAlimentar;
+  if (condicoesMedicas.includes('Outro') && condicaoMedicaOutro.trim()) {
+    resolvedCondicaoMedica = [
+      ...condicoesMedicas.filter(c => c !== 'Outro'),
+      `Outro: ${condicaoMedicaOutro.trim()}`
+    ];
+  }
 
-    try {
-      // Guarda uma cópia das respostas numa coleção 'demographics' (id = user.uid)
-      const demoRef = doc(db, "demographics", user.uid);
-      await setDoc(demoRef, {
-        userId: user.uid,
-        dadosSociodemograficos: {
-          genero: resolvedGenero,
-          dataNascimento: anoNascimento,
-          grupoIdade: idade,
-          grauEscolaridade: resolvedEscolaridade,
-          municipioResidencia: municipio,
-          residiuSempreNesteMunicipio: residiuSempre,
-          municipiosAnteriores,
-          condicaoMedica: resolvedCondicaoMedica,
-          padraoAlimentar: resolvedPadraoAlimentar,
-        },
-        ultimaAtualizacao: new Date().toISOString()
-      }, { merge: true });
+  const resolvedGenero = genero === 'outro' ? generoOutro : genero;
+  const resolvedEscolaridade = escolaridade === 'outro' ? escolaridadeOutro : escolaridade;
+  const resolvedPadraoAlimentar = padraoAlimentar === 'outro' ? padraoAlimentarOutro : padraoAlimentar;
 
-      // Atualiza o documento do utilizador que já existe no Firestore
-      const userRef = doc(db, "utilizadores", user.uid);
-      await updateDoc(userRef, {
-        perfilCompleto: true,
-        dadosSociodemograficos: {
-          genero: resolvedGenero,
-          dataNascimento: anoNascimento,
-          grupoIdade: idade,
-          grauEscolaridade: resolvedEscolaridade,
-          municipioResidencia: municipio,
-          residiuSempreNesteMunicipio: residiuSempre,
-          municipiosAnteriores,
-          condicaoMedica: resolvedCondicaoMedica,
-          padraoAlimentar: resolvedPadraoAlimentar,
-        },
-        ultimaAtualizacao: new Date().toISOString()
-      });
-
-      Alert.alert("Sucesso", "Dados guardados com sucesso!");
-      navigation.navigate('Home'); // Vai para a Home após guardar
-    } catch (error: any) {
-      Alert.alert("Erro ao guardar", error?.message || String(error));
-    }
+  const dadosSociodemograficos = {
+    genero: resolvedGenero,
+    dataNascimento: anoNascimento,
+    grupoIdade: idade,
+    grauEscolaridade: resolvedEscolaridade,
+    municipioResidencia: municipio,
+    residiuSempreNesteMunicipio: residiuSempre,
+    municipiosAnteriores,
+    condicaoMedica: resolvedCondicaoMedica,        // ← Array
+    padraoAlimentar: resolvedPadraoAlimentar,
   };
 
-  // Função auxiliar para criar as opções de rádio com círculo customizado
+  try {
+    // 1. Guarda na coleção "demographics"
+    const demoRef = doc(db, "demographics", user.uid);
+    await setDoc(demoRef, {
+      userId: user.uid,
+      dadosSociodemograficos,
+      ultimaAtualizacao: new Date().toISOString()
+    }, { merge: true });
+
+    console.log("✅ Guardado em 'demographics'");
+
+    // 2. Guarda na coleção "utilizadores"
+    const userRef = doc(db, "utilizadores", user.uid);
+    await setDoc(userRef, {
+      perfilCompleto: true,
+      dadosSociodemograficos,
+      ultimaAtualizacao: new Date().toISOString()
+    }, { merge: true });
+
+    console.log("✅ Guardado em 'utilizadores'");
+
+    Alert.alert("Sucesso", "Dados guardados com sucesso em ambas as coleções!");
+    navigation.navigate('Home');
+  } catch (error: any) {
+    console.error("Erro ao guardar:", error);
+    Alert.alert("Erro ao guardar", error?.message || String(error));
+  }
+};
+
   const RenderOption = (label: string, value: string, state: string, setState: any) => (
     <Pressable style={styles.radioItem} onPress={() => setState(state === value ? '' : value)}>
       <View style={[styles.radioOuter, state === value && styles.radioOuterActive]}>
@@ -154,7 +181,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
         <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={generoOutro} onChangeText={setGeneroOutro} placeholder="Especificar género" />
       )}
 
-      {/* DATA NASCIMENTO */}
+      {/* ANO DE NASCIMENTO */}
       <Text style={styles.sectionTitle}>Ano de Nascimento</Text>
       <TextInput
         style={styles.input}
@@ -163,19 +190,20 @@ export default function SocioDemographicScreen({ navigation }: any) {
         onChangeText={setAnoNascimento}
         keyboardType="numeric"
       />
-      <Text style={styles.subText}>entre 1900 e 2010</Text>
 
-      {/* IDADE (faixas) */}
+      {/* IDADE */}
       <Text style={styles.sectionTitle}>Idade</Text>
       {[
         { id: '18-29', label: '18 - 29' },
         { id: '30-59', label: '30 - 59' },
         { id: '60-120', label: '60 - 120' },
       ].map((opt) => (
-        <React.Fragment key={opt.id}>{RenderOption(opt.label, opt.id, idade, setIdade)}</React.Fragment>
+        <React.Fragment key={opt.id}>
+          {RenderOption(opt.label, opt.id, idade, setIdade)}
+        </React.Fragment>
       ))}
 
-      {/* GRAU ESCOLARIDADE (Exemplo resumido) */}
+      {/* GRAU DE ESCOLARIDADE */}
       <Text style={styles.sectionTitle}>Grau de Escolaridade</Text>
       {RenderOption("1º Ciclo do Ensino Básico", "1basico", escolaridade, setEscolaridade)}
       {RenderOption("2º Ciclo do Ensino Básico", "2basico", escolaridade, setEscolaridade)}
@@ -191,7 +219,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
         <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={escolaridadeOutro} onChangeText={setEscolaridadeOutro} placeholder="Especificar grau de escolaridade" />
       )}
 
-      {/* MUNICIPIO */}
+      {/* MUNICÍPIO */}
       <Text style={styles.sectionTitle}>Município de Residência</Text>
       <TextInput style={styles.input} placeholder="Escreva aqui o município de residência" placeholderTextColor="#c0c0c0" onChangeText={setMunicipio} />
 
@@ -202,30 +230,40 @@ export default function SocioDemographicScreen({ navigation }: any) {
       {RenderOption("Não sei", "nsei", residiuSempre, setResidiuSempre)}
       {RenderOption("Prefiro não responder", "pnr", residiuSempre, setResidiuSempre)}
 
-      {/* MUNICIPIOS ANTERIORES (aparece só se residiuSempre === 'nao') */}
       {residiuSempre === 'nao' && (
         <>
           <Text style={styles.sectionTitle}>Em que municípios residiu anteriormente?</Text>
-          <TextInput style={styles.input} placeholder="Escreva aqui o município de residência" placeholderTextColor="#c0c0c0" value={municipiosAnteriores} onChangeText={setMunicipiosAnteriores} />
+          <TextInput style={styles.input} placeholder="Escreva aqui..." placeholderTextColor="#c0c0c0" value={municipiosAnteriores} onChangeText={setMunicipiosAnteriores} />
         </>
       )}
 
-      {/* CONDIÇÃO MÉDICA */}
+      {/* CONDIÇÃO MÉDICA - MULTIPLA ESCOLHA */}
       <Text style={styles.sectionTitle}>Condição Médica</Text>
-      {RenderOption("Excesso de peso/obesidade", "excesso", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Diabetes/pré-diabetes", "diabetes", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Níveis altos de colesterol/triglicerídeos", "colesterol", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Hipertensão arterial", "hipertensao", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Outra doença cardiovascular", "outra", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Dificuldade visual", "dificuldadeVisual", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Nenhuma das anteriores", "nenhuma", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Não sei", "nsei", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Prefiro não responder", "pnr", condicaoMedica, setCondicaoMedica)}
-      {RenderOption("Outro", "outro", condicaoMedica, setCondicaoMedica)}
-      {condicaoMedica === 'outro' && (
-        <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={condicaoMedicaOutro} onChangeText={setCondicaoMedicaOutro} placeholder="Especificar condição médica" />
+
+      {medicalOptions.map((option) => (
+        <Pressable
+          key={option}
+          style={styles.checkboxItem}
+          onPress={() => toggleCondicaoMedica(option)}
+        >
+          <Icon
+            name={condicoesMedicas.includes(option) ? "checkbox-marked" : "checkbox-blank-outline"}
+            size={26}
+            color={condicoesMedicas.includes(option) ? "#81B29A" : "#FFCDA6"}
+          />
+          <Text style={styles.checkboxLabel}>{option}</Text>
+        </Pressable>
+      ))}
+
+      {condicoesMedicas.includes('Outro') && (
+        <TextInput
+          style={styles.input}
+          placeholderTextColor="#c0c0c0"
+          value={condicaoMedicaOutro}
+          onChangeText={setCondicaoMedicaOutro}
+          placeholder="Especificar condição médica"
+        />
       )}
-      
 
       {/* PADRÃO ALIMENTAR */}
       <Text style={styles.sectionTitle}>Padrão Alimentar</Text>
@@ -239,7 +277,6 @@ export default function SocioDemographicScreen({ navigation }: any) {
         <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={padraoAlimentarOutro} onChangeText={setPadraoAlimentarOutro} placeholder="Especificar padrão alimentar" />
       )}
 
-      {/* BOTÃO GUARDAR */}
       <Pressable onPress={handleGuardar} style={({ pressed }) => [styles.submitButton, pressed && styles.submitButtonPressed]}>
         <Text style={styles.submitButtonText}>Guardar</Text>
       </Pressable>
@@ -250,16 +287,18 @@ export default function SocioDemographicScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFF8F1'},
   content: { flexGrow: 1, paddingHorizontal: 25, paddingTop: 60, paddingBottom: 50, alignItems: 'stretch' },
-  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#709985', textAlign: 'center', marginBottom: 30 },
+  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#709985', textAlign: 'center', marginBottom: 20 },
   sectionTitle: { fontSize: 20, color: '#4b4b4b', marginTop: 20, marginBottom: 10, fontWeight: '600' },
-  radioItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
+  radioItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
   radioLabel: { fontSize: 16, color: '#4b4b4b' },
   radioOuter: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: '#FFCDA6', alignItems: 'center', justifyContent: 'center', marginRight: 10 },
-  radioOuterActive: { borderColor: '#FFCDA6' },
-  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#FFCDA6' },
+  radioOuterActive: { borderColor: '#81B29A' },
+  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#81B29A' },
   input: { backgroundColor: '#FFF', borderWidth: 1, borderColor: '#FFCDA6', borderRadius: 15, padding: 10, fontSize: 16, color: '#4b4b4b' },
   subText: { fontSize: 12, color: '#4b4b4b', marginTop: 4, marginLeft: 5 },
   submitButton: { alignSelf: 'center', width: '50%', maxWidth: 360, height: 55, borderRadius: 14, backgroundColor: '#81B29A', alignItems: 'center', justifyContent: 'center', marginTop: 24, paddingHorizontal: 12, paddingVertical: 6 },
   submitButtonPressed: { opacity: 0.85 },
-  submitButtonText: { color: '#FFFFFF', fontSize: 22, fontWeight: '700' }
+  submitButtonText: { color: '#FFFFFF', fontSize: 22, fontWeight: '700' },
+  checkboxItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingVertical: 4}, 
+  checkboxLabel: { fontSize: 16, color: '#4b4b4b', marginLeft: 10 },
 });

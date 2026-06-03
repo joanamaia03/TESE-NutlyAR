@@ -14,7 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import ProgressBreadcrumb from './ProgressBar';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { auth, db } from '../src/firebase';
-import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp, updateDoc, arrayUnion } from 'firebase/firestore';
 import { useNutlySession } from '../src/NutlySessionContext';
 
 const IMAGES_BY_GROUP: Record<number, Array<{ id: number; source: any; name: string }>> = {
@@ -483,13 +483,34 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
                         return;
                       }
 
-                      const sessionDocRef = await addDoc(collection(db, 'quiz_sessions'), {
-                        userId: user.uid,
+                      const answerData = {
+                        questionId: `g${currentGroup}_q${perguntaAtual}_imagem`,
+                        groupNumber: currentGroup,
                         selectedImage: { id: imagemSelecionada?.id ?? null, name: imagemSelecionada?.name ?? null },
-                        perguntaInicial: perguntaAtual,
-                        answers: [],
-                        createdAt: serverTimestamp(),
-                      });
+                        targetIndex: imagemSelecionada?.id ?? null,
+                        answeredAt: new Date(),
+                      };
+
+                      const sessionIdParam = route?.params?.sessionId;
+                      let sessionDocId = sessionIdParam;
+                      if (sessionIdParam) {
+                        await updateDoc(doc(db, 'quiz_sessions', sessionIdParam), {
+                          userId: user.uid,
+                          selectedImage: answerData.selectedImage,
+                          perguntaInicial: perguntaAtual,
+                          answers: arrayUnion(answerData),
+                          updatedAt: serverTimestamp(),
+                        });
+                      } else {
+                        const sessionDocRef = await addDoc(collection(db, 'quiz_sessions'), {
+                          userId: user.uid,
+                          selectedImage: answerData.selectedImage,
+                          perguntaInicial: perguntaAtual,
+                          answers: [answerData],
+                          createdAt: serverTimestamp(),
+                        });
+                        sessionDocId = sessionDocRef.id;
+                      }
 
                       const wasFinalGroupStep = route?.params?.finalGroupStep === true;
 
@@ -508,7 +529,7 @@ export default function ImageQuizzScreen({ navigation, route }: any) {
                           navigation.navigate('Transition2Screen', { groupNumber: currentGroup });
                         }
                       } else {
-                        navigation.navigate('Image1Screen', { sessionId: sessionDocRef.id });
+                        navigation.navigate('Image1Screen', { sessionId: sessionDocId });
                       }
                     } catch (e) {
                       console.error('Erro ao criar sessão de quiz:', e);
