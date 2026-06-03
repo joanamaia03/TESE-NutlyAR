@@ -156,8 +156,9 @@ export default function SocioDemographicScreen({ navigation }: any) {
 
       {/* DATA NASCIMENTO */}
       <Text style={styles.sectionTitle}>Ano de Nascimento</Text>
-      <TextInput 
-        style={styles.input} 
+      <TextInput
+        style={styles.input}
+        placeholder="Escreva aqui o ano de nascimento"
         placeholderTextColor="#c0c0c0"
         onChangeText={setAnoNascimento}
         keyboardType="numeric"
@@ -192,7 +193,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
 
       {/* MUNICIPIO */}
       <Text style={styles.sectionTitle}>Município de Residência</Text>
-      <TextInput style={styles.input} placeholderTextColor="#c0c0c0" onChangeText={setMunicipio} />
+      <TextInput style={styles.input} placeholder="Escreva aqui o município de residência" placeholderTextColor="#c0c0c0" onChangeText={setMunicipio} />
 
       {/* RESIDIU SEMPRE */}
       <Text style={styles.sectionTitle}>Residiu sempre neste município?</Text>
@@ -205,7 +206,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
       {residiuSempre === 'nao' && (
         <>
           <Text style={styles.sectionTitle}>Em que municípios residiu anteriormente?</Text>
-          <TextInput style={styles.input} placeholderTextColor="#c0c0c0" value={municipiosAnteriores} onChangeText={setMunicipiosAnteriores} />
+          <TextInput style={styles.input} placeholder="Escreva aqui o município de residência" placeholderTextColor="#c0c0c0" value={municipiosAnteriores} onChangeText={setMunicipiosAnteriores} />
         </>
       )}
 

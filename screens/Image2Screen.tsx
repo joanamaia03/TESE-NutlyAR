@@ -86,9 +86,6 @@ export default function ReasonScreen({ route, navigation }: any) {
             );
           })}
         </View>
-        <Text style={styles.footerNote}>
-          Se identificar mais do que um fator, por favor ordene por ordem de importância {'\n'}(1: muito importante; 5: nada importante) 
-        </Text>
       </ScrollView>
 
       <View style={styles.footer}>

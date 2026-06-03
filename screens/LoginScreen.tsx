@@ -12,8 +12,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
-import { auth } from '../src/firebase';
+import { auth, db } from '../src/firebase';
+
+const ADMIN_EMAILS = ['adminNutlyAr@gmail.com'].map((value) => value.trim().toLowerCase());
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
@@ -33,7 +36,17 @@ export default function LoginScreen({ navigation }: any) {
       setIsSubmitting(true);
       const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
       console.log('Logado com:', userCredential.user.email);
-      navigation.navigate('Start');
+
+      const userDocRef = doc(db, 'utilizadores', userCredential.user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      const userData = userDocSnap.data() || {};
+
+      const isAdminByDoc =
+        userData.isAdmin === true ||
+        String(userData.role || '').toLowerCase() === 'admin';
+
+      const isAdminByEmail = ADMIN_EMAILS.includes(cleanEmail.toLowerCase());
+      navigation.navigate(isAdminByDoc || isAdminByEmail ? 'AdminDashboard' : 'Start');
     } catch (error: any) {
       console.error('Login erro code:', error?.code);
       console.error('Login erro message:', error?.message);

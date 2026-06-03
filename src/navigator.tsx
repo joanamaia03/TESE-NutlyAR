@@ -21,6 +21,7 @@ import FinishScreen from '../screens/FinishScreen';
 import ScoreScreen from '../screens/ScoreScreen';
 import CertificadosScreen from '../screens/CertificadosScreen';
 import ReflexãoScreen from '../screens/ReflexãoScreen';
+import AdminDashboard from '../screens/AdminDashboard';
 
 const Stack = createStackNavigator();
 
@@ -50,6 +51,7 @@ export default function AppNavigator() {
       <Stack.Screen name="ScoreScreen" component={ScoreScreen} />
       <Stack.Screen name="CertificadosScreen" component={CertificadosScreen} />
       <Stack.Screen name="ReflexãoScreen" component={ReflexãoScreen} />
+      <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
     </Stack.Navigator>
   );
 }

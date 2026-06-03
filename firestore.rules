@@ -1,36 +1,61 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /usuarios/{userId} {
-      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
-    }
 
-    // Nutly session: only the authenticated owner can create/read/update/delete
-    match /nutly_sessions/{sessionId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
-    }
-
-    // Quiz sessions: allow authenticated users to create and update their quiz session entries
-    match /quiz_sessions/{quizSessionId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if request.auth != null && (
-        // allow if owner field matches or if owner not set, require authentication
-        (resource.data.userId == request.auth.uid) || (resource.data.userId == null)
+    // Função auxiliar para verificar se é Admin
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email == 'adminnutlyar@gmail.com' ||
+        get(/databases/$(database)/documents/utilizadores/$(request.auth.uid)).data.isAdmin == true ||
+        get(/databases/$(database)/documents/utilizadores/$(request.auth.uid)).data.role == 'admin'
       );
     }
 
-    // Support collections used by demographic flow and ImageQuizzScreen
+    // Utilizadores normais podem gerir os seus próprios dados
     match /utilizadores/{userId} {
-      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow read:   if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow delete: if request.auth != null && (request.auth.uid == userId || isAdmin());
     }
 
+    // Dados sociodemográficos por utilizador
     match /demographics/{userId} {
-      allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow read:   if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow delete: if request.auth != null && (request.auth.uid == userId || isAdmin());
     }
 
+    // Coleção principal das sessões com RA
+    match /nutly_sessions/{sessionId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Coleção para a versão sem RA (ImageQuizz)
+    match /nutly_image_sessions/{sessionId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Coleções auxiliares antigas (mantidas para compatibilidade)
     match /question/{userId} {
       allow create, read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /quiz_sessions/{quizSessionId} {
+      allow create, read, update, delete: if request.auth != null && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+    }
+
+    // Bloqueia tudo o resto por segurança
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

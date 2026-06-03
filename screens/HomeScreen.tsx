@@ -394,6 +394,18 @@ export default function HomeScreen({ navigation }: any) {
         ultimaAtualizacao: new Date().toISOString(),
       }, { merge: true });
 
+      // Também grava uma cópia na coleção 'demographics' (id = user.uid)
+      try {
+        const demoRef = doc(db, 'demographics', user.uid);
+        await setDoc(demoRef, {
+          userId: user.uid,
+          dadosSociodemograficos: dadosSociodemograficos,
+          ultimaAtualizacao: new Date().toISOString(),
+        }, { merge: true });
+      } catch (err) {
+        console.warn('Falha ao guardar em demographics:', err);
+      }
+
       Alert.alert('Sucesso', 'Preferências atualizadas com sucesso!');
       setIsMenuOpen(false);
     } catch (error) {
