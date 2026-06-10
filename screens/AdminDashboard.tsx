@@ -18,7 +18,7 @@ export default function AdminDashboard({ navigation }: any) {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const hiddenUserMarkers = ['admin', 'inesctec', 'joana maia', 'anonimo'];
+  const hiddenUserMarkers = ['admin', 'inesctec', 'joana maia', 'anonimo', 'maria'];
 
   const formatValue = (value: any) => {
     if (value === null || value === undefined || value === '') {
@@ -36,7 +36,7 @@ export default function AdminDashboard({ navigation }: any) {
     return String(value);
   };
 
-  const getSocioData = (data: any) => data?.dadosSociodemograficos || data || {};
+  const getSocioData = (data: any) => data?.dadosSociodemograficos || {};
 
   const shouldHideUser = (user: any) => {
     const fieldsToCheck = [
@@ -63,28 +63,19 @@ export default function AdminDashboard({ navigation }: any) {
       setSessions([]);
       
       const usersQuery = collection(db, 'utilizadores');
-      const demographicsQuery = collection(db, 'demographics');
       const sessionsQuery = collection(db, 'nutly_sessions');
 
-      const [usersSnapshot, demographicsSnapshot, sessionsSnapshot] = await Promise.all([
+      // OTIMIZAÇÃO: Eliminada a consulta assíncrona à coleção 'demographics'
+      const [usersSnapshot, sessionsSnapshot] = await Promise.all([
         forceServer ? getDocsFromServer(usersQuery) : getDocs(usersQuery),
-        forceServer ? getDocsFromServer(demographicsQuery) : getDocs(demographicsQuery),
         forceServer ? getDocsFromServer(sessionsQuery) : getDocs(sessionsQuery),
       ]);
 
-      // 1. Mapeia utilizadores por ID
+      // 1. Mapeia utilizadores por ID (Garante acesso rápido ao perfil completo)
       const usersById = new Map<string, any>();
       usersSnapshot.forEach((doc) => usersById.set(doc.id, doc.data()));
 
-      // 2. Mapeia dados sociodemográficos por ID de utilizador
-      const demographicsByUser = new Map<string, any>();
-      demographicsSnapshot.forEach((doc) => {
-        const dData = doc.data();
-        const uId = dData.userId || dData.uid || doc.id;
-        if (uId) demographicsByUser.set(String(uId).trim(), dData);
-      });
-
-      // 3. FILTRO AVANÇADO: Apenas sessões 'completed' E com todos os grupos respondidos
+      // 2. FILTRO AVANÇADO: Apenas sessões 'completed' E com todos os grupos respondidos
       const latestSessionsByUser = new Map<string, any>();
 
       sessionsSnapshot.forEach((doc) => {
@@ -105,8 +96,6 @@ export default function AdminDashboard({ navigation }: any) {
           const groupData = groups[String(g)] || groups[g];
           const answers = groupData?.answers || [];
           
-          // Se o grupo não existir ou o array de respostas estiver totalmente vazio,
-          // significa que o utilizador saltou ou não preencheu este grupo devido a navegação para trás
           if (!groupData || answers.length === 0) {
             todosOsGruposValidos = false;
             break;
@@ -133,7 +122,6 @@ export default function AdminDashboard({ navigation }: any) {
         
         if (existingSession) {
           const existingSessionTime = getTime(existingSession.data.startedAt) || getTime(existingSession.data.started_at) || 0;
-          // Retém sempre a sessão preenchida mais recente
           if (currentSessionTime > existingSessionTime) {
             latestSessionsByUser.set(uId, { id: doc.id, data: sessionData });
           }
@@ -144,19 +132,19 @@ export default function AdminDashboard({ navigation }: any) {
 
       const allUsers: any[] = [];
 
-      // 4. Construção da tabela usando apenas as sessões legítimas e completas
+      // 3. Construção da tabela usando apenas as sessões legítimas e dados sociodemográficos de 'utilizadores'
       latestSessionsByUser.forEach((sessionInfo, uId) => {
         const sessionData = sessionInfo.data;
         const groups = sessionData.groups || {};
         
-        const demoData = demographicsByUser.get(uId) || {};
-        const socio = getSocioData(demoData);
+        // MUDANÇA CRÍTICA: Os dados são extraídos diretamente do documento do utilizador
         const userData = usersById.get(uId) || {};
+        const socio = getSocioData(userData);
 
         const user = {
           id: sessionInfo.id,
-          username: userData.username || userData.displayName || userData.name || demoData.username || sessionData.username || 'Anónimo',
-          email: userData.email || demoData.email || '—',
+          username: userData.username || userData.displayName || userData.name || sessionData.username || 'Anónimo',
+          email: userData.email || '—',
           genero: formatValue(socio.genero),
           dataNascimento: formatValue(socio.dataNascimento),
           idade: formatValue(socio.grupoIdade || socio.idade),
@@ -165,7 +153,7 @@ export default function AdminDashboard({ navigation }: any) {
           municipiosAnteriores: formatValue(socio.municipiosAnteriores),
           condicaoMedica: formatValue(socio.condicaoMedica),
           padraoAlimentar: formatValue(socio.padraoAlimentar),
-          raw: demoData,
+          raw: userData,
           sessionRaw: sessionData,
           
           ...[1, 2, 3, 4].reduce((acc, g) => {
@@ -241,6 +229,7 @@ export default function AdminDashboard({ navigation }: any) {
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.center}>
@@ -265,7 +254,7 @@ export default function AdminDashboard({ navigation }: any) {
 
         <ScrollView horizontal showsHorizontalScrollIndicator={true}>
           <View>
-            {/* Cabeçalho da Tabela com chaves estritas em cada Text */}
+            {/* Cabeçalho da Tabela */}
             <View style={styles.tableHeader}>
               <Text key="h-id" style={[styles.headerCell, { width: 120 }]}>ID</Text>
               <Text key="h-user" style={[styles.headerCell, { width: 160 }]}>Username</Text>
@@ -279,7 +268,6 @@ export default function AdminDashboard({ navigation }: any) {
               <Text key="h-cond" style={[styles.headerCell, { width: 220 }]}>Condição Médica</Text>
               <Text key="h-pad" style={[styles.headerCell, { width: 220 }]}>Padrão Alimentar</Text>
               
-              {/* Loop corrigido: Usamos React.Fragment com chave numérica para acalmar o RCTView */}
               {[1, 2, 3, 4].map((g) => (
                 <React.Fragment key={`h-group-${g}`}>
                   <Text style={[styles.headerCell, { width: 160 }]}>G{g}-0 </Text>
@@ -294,7 +282,6 @@ export default function AdminDashboard({ navigation }: any) {
             {/* Linhas da Tabela (Utilizadores) */}
             {sessions.map((user) => (
               <View key={`row-${user.id}`} style={styles.tableRow}>
-                {/* ID do Utilizador */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 120 }]} 
                   onPress={() => Alert.alert("ID Completo", user.id)}
@@ -302,7 +289,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.id.slice(0, 8)}...</Text>
                 </TouchableOpacity>
 
-                {/* Username */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 160 }]} 
                   onPress={() => Alert.alert("Username", String(user.username))}
@@ -310,7 +296,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.username}</Text>
                 </TouchableOpacity>
 
-                {/* Email */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 220 }]} 
                   onPress={() => Alert.alert("Email", String(user.email))}
@@ -318,7 +303,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.email}</Text>
                 </TouchableOpacity>
 
-                {/* Género */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 120 }]} 
                   onPress={() => Alert.alert("Género", String(user.genero))}
@@ -326,7 +310,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.genero}</Text>
                 </TouchableOpacity>
 
-                {/* Data Nascimento */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 140 }]} 
                   onPress={() => Alert.alert("Data de Nascimento", String(user.dataNascimento))}
@@ -334,7 +317,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.dataNascimento}</Text>
                 </TouchableOpacity>
 
-                {/* Idade */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 90 }]} 
                   onPress={() => Alert.alert("Idade", String(user.idade))}
@@ -342,7 +324,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.idade}</Text>
                 </TouchableOpacity>
 
-                {/* Grau Escolaridade */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 180 }]} 
                   onPress={() => Alert.alert("Grau de Escolaridade", String(user.grauEscolaridade))}
@@ -350,7 +331,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.grauEscolaridade}</Text>
                 </TouchableOpacity>
 
-                {/* Município Residência */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 200 }]} 
                   onPress={() => Alert.alert("Município de Residência", String(user.municipioResidencia))}
@@ -358,7 +338,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.municipioResidencia}</Text>
                 </TouchableOpacity>
 
-                {/* Municípios Anteriores */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 220 }]} 
                   onPress={() => Alert.alert("Municípios Anteriores", String(user.municipiosAnteriores))}
@@ -366,7 +345,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.municipiosAnteriores}</Text>
                 </TouchableOpacity>
 
-                {/* Condição Médica */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 220 }]} 
                   onPress={() => Alert.alert("Condição Médica", String(user.condicaoMedica))}
@@ -374,7 +352,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.condicaoMedica}</Text>
                 </TouchableOpacity>
 
-                {/* Padrão Alimentar */}
                 <TouchableOpacity 
                   style={[styles.cellWrapper, { width: 220 }]} 
                   onPress={() => Alert.alert("Padrão Alimentar", String(user.padraoAlimentar))}
@@ -382,7 +359,6 @@ export default function AdminDashboard({ navigation }: any) {
                   <Text style={styles.cell} numberOfLines={1}>{user.padraoAlimentar}</Text>
                 </TouchableOpacity>
                 
-                {/* Células Dinâmicas das Respostas dos Grupos 1 a 4 */}
                 {[1, 2, 3, 4].map((g) => {
                   const titulos = [
                     `Grupo ${g} - Primeira Escolha`,
@@ -460,6 +436,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
     color: '#4b4b4b',
+    width: '100%',
   },
   refreshButton: {
     backgroundColor: '#81B29A',

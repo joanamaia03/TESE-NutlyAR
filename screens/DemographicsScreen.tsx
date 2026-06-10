@@ -125,21 +125,13 @@ export default function SocioDemographicScreen({ navigation }: any) {
     municipioResidencia: municipio,
     residiuSempreNesteMunicipio: residiuSempre,
     municipiosAnteriores,
-    condicaoMedica: resolvedCondicaoMedica,        // ← Array
+    condicaoMedica: resolvedCondicaoMedica,        
     padraoAlimentar: resolvedPadraoAlimentar,
   };
 
   try {
-    // 1. Guarda na coleção "demographics"
-    const demoRef = doc(db, "demographics", user.uid);
-    await setDoc(demoRef, {
-      userId: user.uid,
-      dadosSociodemograficos,
-      ultimaAtualizacao: new Date().toISOString()
-    }, { merge: true });
 
-
-    // 2. Guarda na coleção "utilizadores"
+    // Guarda na coleção "utilizadores"
     const userRef = doc(db, "utilizadores", user.uid);
     await setDoc(userRef, {
       perfilCompleto: true,
@@ -149,7 +141,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
 
 
 
-    Alert.alert("Sucesso", "Dados guardados com sucesso em ambas as coleções!");
+    Alert.alert("Sucesso", "Dados guardados com sucesso!");
     navigation.navigate('Home');
   } catch (error: any) {
     console.error("Erro ao guardar:", error);
