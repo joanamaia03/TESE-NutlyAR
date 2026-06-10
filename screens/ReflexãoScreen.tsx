@@ -114,7 +114,7 @@ export default function ReflexaoFinalScreen({ navigation }: any) {
           <TouchableOpacity
             style={styles.concluirButton}
             onPress={handleConcluir}
-            activeOpacity={0.8}
+            activeOpacity={1}
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -186,12 +186,13 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   concluirButton: {
-    backgroundColor: '#81B29A', 
+    backgroundColor: '#81B29A',
     width: '60%',
-    maxWidth: 200,
-    paddingVertical: 14,
+    maxWidth: 190,
+    height: 60,
     borderRadius: 22,
     alignItems: 'center',
+    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.15,
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
   },
   concluirButtonText: {
     color: '#FFF',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
   },
 });

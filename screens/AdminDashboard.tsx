@@ -84,7 +84,7 @@ export default function AdminDashboard({ navigation }: any) {
         if (uId) demographicsByUser.set(String(uId).trim(), dData);
       });
 
-      // 3. NOVO FILTRO: Agrupar as sessões por utilizador e escolher apenas a mais RECENTE
+      // 3. FILTRO AVANÇADO: Apenas sessões 'completed' E com todos os grupos respondidos
       const latestSessionsByUser = new Map<string, any>();
 
       sessionsSnapshot.forEach((doc) => {
@@ -92,7 +92,33 @@ export default function AdminDashboard({ navigation }: any) {
         const uId = String(sessionData.userId || sessionData.uid || sessionData.user_id || '').trim();
         if (!uId) return;
 
-        // Função auxiliar para converter qualquer formato de data (Timestamp ou String) num número comparável
+        // Filtro A: Tem de estar marcada como concluída
+        if (sessionData.status !== 'completed') {
+          return;
+        }
+
+        // Filtro B: Validação de consistência interna (Garante que preencheu as opções dos grupos)
+        const groups = sessionData.groups || {};
+        let todosOsGruposValidos = true;
+
+        for (let g = 1; g <= 4; g++) {
+          const groupData = groups[String(g)] || groups[g];
+          const answers = groupData?.answers || [];
+          
+          // Se o grupo não existir ou o array de respostas estiver totalmente vazio,
+          // significa que o utilizador saltou ou não preencheu este grupo devido a navegação para trás
+          if (!groupData || answers.length === 0) {
+            todosOsGruposValidos = false;
+            break;
+          }
+        }
+
+        // Se detetar que falta preenchimento em algum grupo, ignora esta sessão corrupta
+        if (!todosOsGruposValidos) {
+          return;
+        }
+
+        // Função auxiliar para converter qualquer formato de data num número comparável
         const getTime = (t: any) => {
           if (!t) return 0;
           if (typeof t === 'number') return t;
@@ -107,30 +133,28 @@ export default function AdminDashboard({ navigation }: any) {
         
         if (existingSession) {
           const existingSessionTime = getTime(existingSession.data.startedAt) || getTime(existingSession.data.started_at) || 0;
-          // Se a sessão que estamos a ler agora for mais recente do que a que já guardámos, substitui
+          // Retém sempre a sessão preenchida mais recente
           if (currentSessionTime > existingSessionTime) {
             latestSessionsByUser.set(uId, { id: doc.id, data: sessionData });
           }
         } else {
-          // Se for a primeira vez que vemos este utilizador, guarda a sessão
           latestSessionsByUser.set(uId, { id: doc.id, data: sessionData });
         }
       });
 
       const allUsers: any[] = [];
 
-      // 4. Construção da tabela usando apenas as sessões mais recentes filtradas acima
+      // 4. Construção da tabela usando apenas as sessões legítimas e completas
       latestSessionsByUser.forEach((sessionInfo, uId) => {
         const sessionData = sessionInfo.data;
         const groups = sessionData.groups || {};
         
-        // Puxa os dados cruzados (Demografia e Utilizador)
         const demoData = demographicsByUser.get(uId) || {};
         const socio = getSocioData(demoData);
         const userData = usersById.get(uId) || {};
 
         const user = {
-          id: sessionInfo.id, // ID da sessão mais recente
+          id: sessionInfo.id,
           username: userData.username || userData.displayName || userData.name || demoData.username || sessionData.username || 'Anónimo',
           email: userData.email || demoData.email || '—',
           genero: formatValue(socio.genero),
@@ -217,7 +241,6 @@ export default function AdminDashboard({ navigation }: any) {
       setLoading(false);
     }
   };
-
   if (loading) {
     return (
       <SafeAreaView style={styles.center}>

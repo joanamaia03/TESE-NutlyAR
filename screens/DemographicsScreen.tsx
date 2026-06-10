@@ -138,7 +138,6 @@ export default function SocioDemographicScreen({ navigation }: any) {
       ultimaAtualizacao: new Date().toISOString()
     }, { merge: true });
 
-    console.log("✅ Guardado em 'demographics'");
 
     // 2. Guarda na coleção "utilizadores"
     const userRef = doc(db, "utilizadores", user.uid);
@@ -148,7 +147,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
       ultimaAtualizacao: new Date().toISOString()
     }, { merge: true });
 
-    console.log("✅ Guardado em 'utilizadores'");
+
 
     Alert.alert("Sucesso", "Dados guardados com sucesso em ambas as coleções!");
     navigation.navigate('Home');
@@ -187,8 +186,10 @@ export default function SocioDemographicScreen({ navigation }: any) {
         style={styles.input}
         placeholder="Escreva aqui o ano de nascimento"
         placeholderTextColor="#c0c0c0"
+        value={anoNascimento}
         onChangeText={setAnoNascimento}
         keyboardType="numeric"
+        maxLength={4}
       />
 
       {/* IDADE */}
