@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -22,7 +23,7 @@ export default function ConfidenceScreen({ route, navigation }: any) {
 
   const handleSeguinte = async () => {
     if (rating === 0) {
-      alert("Por favor, selecione o seu nível de confiança antes de continuar.");
+      Alert.alert('Aviso', 'Por favor, selecione o seu nível de confiança antes de continuar.');
       return;
     }
 
