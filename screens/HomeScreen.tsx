@@ -386,9 +386,7 @@ export default function HomeScreen({ navigation }: any) {
           `Outro: ${condicaoMedicaOutro.trim()}`
         ];
       }
-
-      // NOVO: Aqui estruturamos os dados SEM incluir o campo 'dataNascimento' (Ano de Nascimento).
-      // Desta forma, o valor original desaparece/é removido do mapa de dados deste utilizador.
+      
       const dadosSociodemograficos = {
         genero: finalGenero || '',
         idade: idade || '',

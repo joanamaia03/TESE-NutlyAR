@@ -117,6 +117,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
   const resolvedEscolaridade = escolaridade === 'outro' ? escolaridadeOutro : escolaridade;
   const resolvedPadraoAlimentar = padraoAlimentar === 'outro' ? padraoAlimentarOutro : padraoAlimentar;
 
+  // Estrutura Orientada a Objetos
   const dadosSociodemograficos = {
     genero: resolvedGenero,
     dataNascimento: anoNascimento,
@@ -130,8 +131,7 @@ export default function SocioDemographicScreen({ navigation }: any) {
   };
 
   try {
-
-    // Guarda na coleção "utilizadores"
+    //Persistência direta no Cloud Firestore
     const userRef = doc(db, "utilizadores", user.uid);
     await setDoc(userRef, {
       perfilCompleto: true,
