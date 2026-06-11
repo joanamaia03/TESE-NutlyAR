@@ -209,7 +209,7 @@ export default function ARScreen({ navigation, route }: any) {
         if (enableInfo === true) setInfoEnabled(true);
       }
 
-      // Hide navigation bar (Android)
+      // Esconde a barra de navegação do Android
       const hideNav = async () => {
         if (Platform.OS !== 'android') return;
         try {
@@ -241,7 +241,6 @@ export default function ARScreen({ navigation, route }: any) {
             setCameraGranted(false);
           }
         } else {
-          // iOS / web - assumimos disponível via configurações
           setCameraGranted(true);
         }
       };

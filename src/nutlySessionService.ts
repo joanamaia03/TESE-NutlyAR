@@ -28,7 +28,7 @@ export const nutlySessionService = {
       startedAt: Timestamp.fromDate(sessionData.startedAt)
     });
 
-    return docId; // Guarda este ID na app (Context ou AsyncStorage)
+    return docId; // Guarda este ID na app 
   },
 
   // Guardar uma resposta num grupo específico
