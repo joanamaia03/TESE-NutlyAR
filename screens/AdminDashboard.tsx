@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Clipboard,
   Platform,
 } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -25,7 +26,7 @@ export default function AdminDashboard({ navigation }: any) {
       return '—';
     }
     if (Array.isArray(value)) {
-      return value.length > 0 ? value.join(', ') : '—';
+      return value.length > 0 ? value.join('; ') : '—';
     }
     if (typeof value === 'object') {
       if (typeof value.toDate === 'function') {
@@ -33,7 +34,7 @@ export default function AdminDashboard({ navigation }: any) {
       }
       return JSON.stringify(value);
     }
-    return String(value);
+    return String(value).replace(/,/g, ';'); 
   };
 
   const getSocioData = (data: any) => data?.dadosSociodemograficos || {};
@@ -54,7 +55,22 @@ export default function AdminDashboard({ navigation }: any) {
 
   useEffect(() => {
     fetchAllUsers();
+
+    // Esconde a barra de navegação do Android dinamicamente (Immersive Mode)
+    const hideNav = async () => {
+      if (Platform.OS !== 'android') return;
+      try {
+        const nav: any = await import('expo-navigation-bar');
+        await nav.setVisibilityAsync('hidden');
+        await nav.setBehaviorAsync('sticky-immersive');
+      } catch (e) {
+        console.warn('expo-navigation-bar error', e);
+      }
+    };
+    hideNav();
   }, []);
+
+  
 
   const fetchAllUsers = async (forceServer = false) => {
     try {
@@ -65,17 +81,14 @@ export default function AdminDashboard({ navigation }: any) {
       const usersQuery = collection(db, 'utilizadores');
       const sessionsQuery = collection(db, 'nutly_sessions');
 
-      // OTIMIZAÇÃO: Eliminada a consulta assíncrona à coleção 'demographics'
       const [usersSnapshot, sessionsSnapshot] = await Promise.all([
         forceServer ? getDocsFromServer(usersQuery) : getDocs(usersQuery),
         forceServer ? getDocsFromServer(sessionsQuery) : getDocs(sessionsQuery),
       ]);
 
-      // 1. Mapeia utilizadores por ID (Garante acesso rápido ao perfil completo)
       const usersById = new Map<string, any>();
       usersSnapshot.forEach((doc) => usersById.set(doc.id, doc.data()));
 
-      // 2. FILTRO AVANÇADO: Apenas sessões 'completed' E com todos os grupos respondidos
       const latestSessionsByUser = new Map<string, any>();
 
       sessionsSnapshot.forEach((doc) => {
@@ -83,31 +96,22 @@ export default function AdminDashboard({ navigation }: any) {
         const uId = String(sessionData.userId || sessionData.uid || sessionData.user_id || '').trim();
         if (!uId) return;
 
-        // Filtro A: Tem de estar marcada como concluída
-        if (sessionData.status !== 'completed') {
-          return;
-        }
+        if (sessionData.status !== 'completed') return;
 
-        // Filtro B: Validação de consistência interna (Garante que preencheu as opções dos grupos)
         const groups = sessionData.groups || {};
         let todosOsGruposValidos = true;
 
         for (let g = 1; g <= 4; g++) {
           const groupData = groups[String(g)] || groups[g];
           const answers = groupData?.answers || [];
-          
           if (!groupData || answers.length === 0) {
             todosOsGruposValidos = false;
             break;
           }
         }
 
-        // Se detetar que falta preenchimento em algum grupo, ignora esta sessão corrupta
-        if (!todosOsGruposValidos) {
-          return;
-        }
+        if (!todosOsGruposValidos) return;
 
-        // Função auxiliar para converter qualquer formato de data num número comparável
         const getTime = (t: any) => {
           if (!t) return 0;
           if (typeof t === 'number') return t;
@@ -132,12 +136,9 @@ export default function AdminDashboard({ navigation }: any) {
 
       const allUsers: any[] = [];
 
-      // 3. Construção da tabela usando apenas as sessões legítimas e dados sociodemográficos de 'utilizadores'
       latestSessionsByUser.forEach((sessionInfo, uId) => {
         const sessionData = sessionInfo.data;
         const groups = sessionData.groups || {};
-        
-        // MUDANÇA CRÍTICA: Os dados são extraídos diretamente do documento do utilizador
         const userData = usersById.get(uId) || {};
         const socio = getSocioData(userData);
 
@@ -184,9 +185,9 @@ export default function AdminDashboard({ navigation }: any) {
 
               const ans2 = answers.find((a: any) => a && (a.questionId === `g${g}_q1_motivos` || a.orderedFactors || a.reasons)) || answers[2];
               if (ans2?.orderedFactors && Array.isArray(ans2.orderedFactors)) {
-                acc[`g${g}_p2`] = ans2.orderedFactors.map((f: any) => `${f.order}º:${f.title}`).join(', ');
+                acc[`g${g}_p2`] = ans2.orderedFactors.map((f: any) => `${f.order}º:${f.title}`).join('; ');
               } else if (ans2?.reasons) {
-                acc[`g${g}_p2`] = Array.isArray(ans2.reasons) ? ans2.reasons.join(', ') : String(ans2.reasons);
+                acc[`g${g}_p2`] = Array.isArray(ans2.reasons) ? ans2.reasons.join('; ') : String(ans2.reasons);
               } else {
                 acc[`g${g}_p2`] = '—';
               }
@@ -199,11 +200,7 @@ export default function AdminDashboard({ navigation }: any) {
               const ans4 = answers.find((a: any) => a && a.questionId === `g${g}_q1_ar` && a.fase === 2) || answers[answers.length - 1];
               acc[`g${g}_p4`] = extractMealName(ans4);
             } else {
-              acc[`g${g}_p0`] = '—';
-              acc[`g${g}_p1`] = '—';
-              acc[`g${g}_p2`] = '—';
-              acc[`g${g}_p3`] = '—';
-              acc[`g${g}_p4`] = '—';
+              acc[`g${g}_p0`] = '—'; acc[`g${g}_p1`] = '—'; acc[`g${g}_p2`] = '—'; acc[`g${g}_p3`] = '—'; acc[`g${g}_p4`] = '—';
             }
             return acc;
           }, {} as any),
@@ -218,15 +215,48 @@ export default function AdminDashboard({ navigation }: any) {
       setSessions(allUsers);
     } catch (error) {
       console.error('Erro ao carregar sessões:', error);
-      const errorCode = (error as any)?.code;
-      if (errorCode === 'permission-denied') {
-        setLoadError('Sem permissões para ler as sessões.');
-      } else {
-        setLoadError('Não foi possível carregar os dados.');
-      }
-      Alert.alert('Erro', 'Não foi possível carregar os dados.');
+      setLoadError('Não foi possível carregar os dados.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const exportToCSV = async () => {
+    if (sessions.length === 0) {
+      Alert.alert('Aviso', 'Não existem dados para exportar de momento.');
+      return;
+    }
+
+    const headers = [
+      'ID_Sessao', 'Username', 'Email', 'Genero', 'Data_Nascimento', 'Idade_Grupo', 
+      'Escolaridade', 'Municipio_Residencia', 'Municipios_Anteriores', 'Condicao_Medica', 'Padrao_Alimentar',
+      'G1_P0_EscolhaInicial', 'G1_P1_Confianca', 'G1_P2_Motivos', 'G1_P3_MetadeQuantidade', 'G1_P4_EscolhaFinal',
+      'G2_P0_EscolhaInicial', 'G2_P1_Confianca', 'G2_P2_Motivos', 'G2_P3_MetadeQuantidade', 'G2_P4_EscolhaFinal',
+      'G3_P0_EscolhaInicial', 'G3_P1_Confianca', 'G3_P2_Motivos', 'G3_P3_MetadeQuantidade', 'G3_P4_EscolhaFinal',
+      'G4_P0_EscolhaInicial', 'G4_P1_Confianca', 'G4_P2_Motivos', 'G4_P3_MetadeQuantidade', 'G4_P4_EscolhaFinal'
+    ];
+
+    const rows = sessions.map(user => [
+      user.id, user.username, user.email, user.genero, user.dataNascimento, user.idade,
+      user.grauEscolaridade, user.municipioResidencia, user.municipiosAnteriores, user.condicaoMedica, user.padraoAlimentar,
+      user.g1_p0, user.g1_p1, user.g1_p2, user.g1_p3, user.g1_p4,
+      user.g2_p0, user.g2_p1, user.g2_p2, user.g2_p3, user.g2_p4,
+      user.g3_p0, user.g3_p1, user.g3_p2, user.g3_p3, user.g3_p4,
+      user.g4_p0, user.g4_p1, user.g4_p2, user.g4_p3, user.g4_p4
+    ].map(val => `"${String(val).replace(/"/g, '""')}"`).join(','));
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+
+    try {
+      Clipboard.setString(csvContent);
+      Alert.alert(
+        'Sucesso!', 
+        'A matriz de dados foi copiada para a área de transferência.\n\nBasta abrir um bloco de notas, e-mail ou mensagem e escolher "Colar".',
+        [{ text: 'Ok' }]
+      );
+    } catch (error) {
+      console.error('Erro ao copiar dados:', error);
+      Alert.alert('Erro', 'Não foi possível copiar os dados.');
     }
   };
 
@@ -254,19 +284,18 @@ export default function AdminDashboard({ navigation }: any) {
 
         <ScrollView horizontal showsHorizontalScrollIndicator={true}>
           <View>
-            {/* Cabeçalho da Tabela */}
             <View style={styles.tableHeader}>
-              <Text key="h-id" style={[styles.headerCell, { width: 120 }]}>ID</Text>
-              <Text key="h-user" style={[styles.headerCell, { width: 160 }]}>Username</Text>
-              <Text key="h-mail" style={[styles.headerCell, { width: 220 }]}>Email</Text>
-              <Text key="h-gen" style={[styles.headerCell, { width: 120 }]}>Género</Text>
-              <Text key="h-dat" style={[styles.headerCell, { width: 140 }]}>Data Nascimento</Text>
-              <Text key="h-ida" style={[styles.headerCell, { width: 90 }]}>Idade</Text>
-              <Text key="h-esc" style={[styles.headerCell, { width: 180 }]}>Grau Escolaridade</Text>
-              <Text key="h-mun" style={[styles.headerCell, { width: 200 }]}>Município Residência</Text>
-              <Text key="h-muna" style={[styles.headerCell, { width: 220 }]}>Municípios Anteriores</Text>
-              <Text key="h-cond" style={[styles.headerCell, { width: 220 }]}>Condição Médica</Text>
-              <Text key="h-pad" style={[styles.headerCell, { width: 220 }]}>Padrão Alimentar</Text>
+              <Text style={[styles.headerCell, { width: 120 }]}>ID</Text>
+              <Text style={[styles.headerCell, { width: 160 }]}>Username</Text>
+              <Text style={[styles.headerCell, { width: 220 }]}>Email</Text>
+              <Text style={[styles.headerCell, { width: 120 }]}>Género</Text>
+              <Text style={[styles.headerCell, { width: 140 }]}>Data Nascimento</Text>
+              <Text style={[styles.headerCell, { width: 90 }]}>Idade</Text>
+              <Text style={[styles.headerCell, { width: 180 }]}>Grau Escolaridade</Text>
+              <Text style={[styles.headerCell, { width: 200 }]}>Município Residência</Text>
+              <Text style={[styles.headerCell, { width: 220 }]}>Municípios Anteriores</Text>
+              <Text style={[styles.headerCell, { width: 220 }]}>Condição Médica</Text>
+              <Text style={[styles.headerCell, { width: 220 }]}>Padrão Alimentar</Text>
               
               {[1, 2, 3, 4].map((g) => (
                 <React.Fragment key={`h-group-${g}`}>
@@ -279,100 +308,62 @@ export default function AdminDashboard({ navigation }: any) {
               ))}
             </View>
 
-            {/* Linhas da Tabela (Utilizadores) */}
             {sessions.map((user) => (
               <View key={`row-${user.id}`} style={styles.tableRow}>
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 120 }]} 
-                  onPress={() => Alert.alert("ID Completo", user.id)}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 120 }]} onPress={() => Alert.alert("ID Completo", user.id)}>
                   <Text style={styles.cell} numberOfLines={1}>{user.id.slice(0, 8)}...</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 160 }]} 
-                  onPress={() => Alert.alert("Username", String(user.username))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 160 }]} onPress={() => Alert.alert("Username", String(user.username))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.username}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 220 }]} 
-                  onPress={() => Alert.alert("Email", String(user.email))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 220 }]} onPress={() => Alert.alert("Email", String(user.email))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.email}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 120 }]} 
-                  onPress={() => Alert.alert("Género", String(user.genero))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 120 }]} onPress={() => Alert.alert("Género", String(user.genero))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.genero}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 140 }]} 
-                  onPress={() => Alert.alert("Data de Nascimento", String(user.dataNascimento))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 140 }]} onPress={() => Alert.alert("Data de Nascimento", String(user.dataNascimento))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.dataNascimento}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 90 }]} 
-                  onPress={() => Alert.alert("Idade", String(user.idade))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 90 }]} onPress={() => Alert.alert("Idade", String(user.idade))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.idade}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 180 }]} 
-                  onPress={() => Alert.alert("Grau de Escolaridade", String(user.grauEscolaridade))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 180 }]} onPress={() => Alert.alert("Grau de Escolaridade", String(user.grauEscolaridade))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.grauEscolaridade}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 200 }]} 
-                  onPress={() => Alert.alert("Município de Residência", String(user.municipioResidencia))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 200 }]} onPress={() => Alert.alert("Município de Residência", String(user.municipioResidencia))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.municipioResidencia}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 220 }]} 
-                  onPress={() => Alert.alert("Municípios Anteriores", String(user.municipiosAnteriores))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 220 }]} onPress={() => Alert.alert("Municípios Anteriores", String(user.municipiosAnteriores))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.municipiosAnteriores}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 220 }]} 
-                  onPress={() => Alert.alert("Condição Médica", String(user.condicaoMedica))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 220 }]} onPress={() => Alert.alert("Condição Médica", String(user.condicaoMedica))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.condicaoMedica}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.cellWrapper, { width: 220 }]} 
-                  onPress={() => Alert.alert("Padrão Alimentar", String(user.padraoAlimentar))}
-                >
+                <TouchableOpacity style={[styles.cellWrapper, { width: 220 }]} onPress={() => Alert.alert("Padrão Alimentar", String(user.padraoAlimentar))}>
                   <Text style={styles.cell} numberOfLines={1}>{user.padraoAlimentar}</Text>
                 </TouchableOpacity>
                 
                 {[1, 2, 3, 4].map((g) => {
                   const titulos = [
-                    `Grupo ${g} - Primeira Escolha`,
-                    `Grupo ${g} - Nível de Confiança`,
-                    `Grupo ${g} - Motivos`,
-                    `Grupo ${g} - Metade da Quantidade`,
-                    `Grupo ${g} - Escolha Final`
+                    `Grupo ${g} - Primeira Escolha`, `Grupo ${g} - Nível de Confiança`,
+                    `Grupo ${g} - Motivos`, `Grupo ${g} - Metade da Quantidade`, `Grupo ${g} - Escolha Final`
                   ];
                   const larguras = [160, 100, 200, 200, 160];
                   const quebrasLinha = [1, 1, 2, 2, 1];
 
                   return [0, 1, 2, 3, 4].map((pIndex) => {
                     const valorCelula = String(user[`g${g}_p${pIndex}`] || '—');
-                    
                     return (
                       <TouchableOpacity 
                         key={`cell-g${g}-p${pIndex}-${user.id}`}
@@ -380,9 +371,7 @@ export default function AdminDashboard({ navigation }: any) {
                         onPress={() => Alert.alert(titulos[pIndex], valorCelula)}
                         activeOpacity={0.6}
                       >
-                        <Text style={styles.cell} numberOfLines={quebrasLinha[pIndex]}>
-                          {valorCelula}
-                        </Text>
+                        <Text style={styles.cell} numberOfLines={quebrasLinha[pIndex]}>{valorCelula}</Text>
                       </TouchableOpacity>
                     );
                   });
@@ -392,10 +381,18 @@ export default function AdminDashboard({ navigation }: any) {
           </View>
         </ScrollView>
 
-        <TouchableOpacity style={styles.refreshButton} onPress={() => fetchAllUsers(true)}>
-          <Icon name="refresh" size={24} color="#fff" />
-          <Text style={styles.refreshText}>Atualizar Dados</Text>
-        </TouchableOpacity>
+        <View style={styles.actionContainer}>
+          <TouchableOpacity style={[styles.actionButton, { backgroundColor: '#81B29A' }]} onPress={() => fetchAllUsers(true)}>
+            <Icon name="refresh" size={24} color="#fff" />
+            <Text style={styles.actionText}>Atualizar dados</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.actionButton, { backgroundColor: '#e0a475' }]} onPress={exportToCSV}>
+            <Icon name="download" size={24} color="#fff" />
+            <Text style={styles.actionText}>Exportar dados</Text>
+          </TouchableOpacity>
+        </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -415,46 +412,38 @@ const styles = StyleSheet.create({
     borderBottomColor: '#FFCDA6',
   },
   headerCell: {
-    color: '#4b4b4b',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    paddingHorizontal: 8,
-    fontSize: 13,
-    lineHeight: 18,
+    color: '#4b4b4b', fontWeight: 'bold', textAlign: 'center', textAlignVertical: 'center',
+    paddingHorizontal: 8, fontSize: 13, lineHeight: 18,
   },
   tableRow: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#FFCDA6',
-    alignItems: 'center',
+    flexDirection: 'row', backgroundColor: '#fff', paddingVertical: 10,
+    borderBottomWidth: 1, borderBottomColor: '#FFCDA6', alignItems: 'center',
   },
-  cell: {
-    paddingHorizontal: 8,
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#4b4b4b',
-    width: '100%',
-  },
-  refreshButton: {
-    backgroundColor: '#81B29A',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 14,
-    margin: 20,
-    borderRadius: 25,
-  },
-  cellWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  refreshText: { color: '#fff', fontWeight: 'bold', marginLeft: 8 },
+  cell: { paddingHorizontal: 8, textAlign: 'center', fontSize: 14, color: '#4b4b4b', width: '100%' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFF8F1' },
   loadingText: { marginTop: 12, color: '#4b4b4b', fontSize: 16, fontWeight: '600' },
   errorBanner: { margin: 16, padding: 12, borderRadius: 12, backgroundColor: '#FBE1CE', borderWidth: 1, borderColor: '#FFCDA6' },
   errorText: { color: '#4b4b4b', textAlign: 'center', fontSize: 14, fontWeight: '600' },
+  cellWrapper: { justifyContent: 'center', alignItems: 'center', paddingVertical: 4 },
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 15,
+    marginTop: 25,
+    gap: 10
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 14,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3
+  },
+  actionText: { color: '#fff', fontWeight: 'bold', marginLeft: 8, fontSize: 16 },
 });
